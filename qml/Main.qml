@@ -1,45 +1,60 @@
 import QtQuick
 import QtQuick.Controls.Material
 
-Item {
-    id: rootItem
+ApplicationWindow {
+    id: rootWindow
 
-    property bool globalVisibleChanger: true
+    width: 1280
+    height: 720
+    minimumWidth: 300
+    minimumHeight: 350
+    visible: true
 
-    Connections{
-        target: Initializer
-        // step 1 failed
-        function onApplicationIsAlreadyRunning(){
-            // inform user about that
-            // exit
-            // e1.show();
-            console.log("onApplicationIsAlreadyRunning")
-        }
+    Material.theme: Material.Dark
 
-        // step 2 failed
-        function onPersonalizationInitializeFailed(){
-            // ask user if retry, use/leave default or exit
-            // popup will handle cases
-            // e2.show();
-            console.log("onPersonalizationInitializeFailed")
-        }
-
-        // step 3 failed
-        function onDatabaseInitializeFailed(){
-            // ask user if retry or exit
-            // popup will handle cases
-            // e3.show();
-            console.log("onDatabaseInitializeFailed")
-        }
-
-        // positive end
-        function onInitialized(){
-            // make main window visible and other stuff to init
-            // mainWindow.showMaximized()
-            // mainWindow.showNormal()
-            console.log("onInitialized")
-        }
+    Loader{
+        id: rootLoader
+        anchors.fill: parent
+        source: "Login.qml"
     }
+
+
+    // Connections{
+    //     target: Initializer
+    //     // step 1 failed
+    //     function onApplicationIsAlreadyRunning(){
+    //         // inform user about that
+    //         // exit
+    //         // e1.show();
+    //         console.log("onApplicationIsAlreadyRunning")
+    //     }
+
+    //     // step 2 failed
+    //     function onPersonalizationInitializeFailed(){
+    //         // ask user if retry, use/leave default or exit
+    //         // popup will handle cases
+    //         // e2.show();
+    //         console.log("onPersonalizationInitializeFailed")
+    //     }
+
+    //     // step 3 failed
+    //     function onDatabaseInitializeFailed(){
+    //         // ask user if retry or exit
+    //         // popup will handle cases
+    //         // e3.show();
+    //         console.log("onDatabaseInitializeFailed")
+    //     }
+
+    //     // positive end
+    //     function onInitialized(){
+    //         // make main window visible and other stuff to init
+    //         // mainWindow.showMaximized()
+    //         // mainWindow.showNormal()
+    //         console.log("onInitialized")
+    //     }
+    // }
+
+
 
     // MainWindow{
     //     id: mainWindow
