@@ -29,11 +29,12 @@ private:
     Database& operator=(      Database &&) = delete; // rm move operator (y = std::move(x))
     ~Database();
 
-public:
+public slots:
     static Database * const getInstance() noexcept;
 
     void initialize();
 
+public:
     const QString &getLastError() const;
 
 private:

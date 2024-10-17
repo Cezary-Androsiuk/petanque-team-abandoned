@@ -4,8 +4,7 @@
 #include <QObject>
 #include <QSharedMemory>
 
-#include "cpp/storages/Personalization.h"
-#include "cpp/storages/Database.h"
+#include "cpp/support/Log.h"
 
 #define UNIQUE_KEY_PREVENT_DOUBLE_RUN "PetanqueTeam-IsRunning-mt9n8MSxmKiEUZo"
 
@@ -20,43 +19,18 @@ private:
     Initializer& operator=(const Initializer &) = delete; // rm copy operator
     Initializer& operator=(      Initializer &&) = delete; // rm move operator (y = std::move(x))
 
-    void createConnections() noexcept;
-
 public slots:
     static Initializer *const getInstance() noexcept;
 
-    /// init 0
     void initialize() noexcept; /// start point
 
 private:
-    /// init 1
-    static bool testIfApplicationAlreadyRunning() noexcept; /// step, that if fail, cannot be reused
-
-public slots:
-    /// init 2
-    void initializePersonalization() noexcept; /// step that can be reused (due to user decision)
-
-    /// init 3
-    void initializeDatabase() noexcept; /// step that can be reused (due to user decision)
+    static bool testIfApplicationAlreadyRunning() noexcept; /// step, that if fail, cannot be retry
 
 signals:
-    /// init 0
     void initialized(); /// positive end
 
-    /// init 1
     void applicationIsAlreadyRunning(); /// negative end
-
-    /// init 2
-    void personalizationInitialized();      /// positive step
-    void personalizationInitializeFailed(); /// negative step - requires decision from user
-
-    /// init 3
-    void databaseInitialized();         /// positive step
-    void databaseInitializeFailed();    /// negative step - requires decision from user
-
-private:
-    Personalization *m_personalization;
-    Database *m_database;
 };
 
 #endif // INITIALIZER_H

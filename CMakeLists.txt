@@ -21,8 +21,9 @@ qt_add_qml_module(appPetanqueTeam
     SOURCES cpp/storages/Database.h cpp/storages/Database.cpp
     SOURCES cpp/support/Log.h cpp/support/Log.cpp
     SOURCES cpp/Login.h cpp/Login.cpp
-    QML_FILES qml/Login.qml
+    QML_FILES qml/LoginForm.qml
     SOURCES cpp/Backend.h cpp/Backend.cpp
+    QML_FILES qml/ApplicationIsAlreadyRunning.qml
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

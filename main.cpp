@@ -5,20 +5,20 @@
 #include <QUrl>
 
 #include "cpp/Initializer.h"
+#include "cpp/Backend.h"
+#include "cpp/Login.h"
 
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
     QQmlApplicationEngine engine;
 
-// /// tell QML if application is in debug mode
-// #ifdef QT_DEBUG
-//     engine.rootContext()->setContextProperty("isDebugMode", true);
-// #else
-//     engine.rootContext()->setContextProperty("isDebugMode", false);
-// #endif
+    Backend backend;
+    Login login;
 
     engine.rootContext()->setContextProperty("Initializer", Initializer::getInstance());
+    engine.rootContext()->setContextProperty("Backend", &backend);
+    engine.rootContext()->setContextProperty("Login", &login);
 
     const QUrl url(QStringLiteral("qrc:/PetanqueTeam/qml/Main.qml"));
     QObject::connect(
