@@ -7,6 +7,7 @@
 #include "cpp/Initializer.h"
 #include "cpp/Backend.h"
 #include "cpp/Login.h"
+#include "cpp/Memory.h"
 
 int main(int argc, char *argv[])
 {
@@ -15,10 +16,12 @@ int main(int argc, char *argv[])
 
     Backend backend;
     Login login;
+    Memory memory;
 
     engine.rootContext()->setContextProperty("Initializer", Initializer::getInstance());
     engine.rootContext()->setContextProperty("Backend", &backend);
     engine.rootContext()->setContextProperty("Login", &login);
+    engine.rootContext()->setContextProperty("Memory", &memory);
 
     const QUrl url(QStringLiteral("qrc:/PetanqueTeam/qml/Main.qml"));
     QObject::connect(
