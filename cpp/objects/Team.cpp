@@ -11,6 +11,11 @@ Team::~Team()
     m_players.clear();
 }
 
+QList<Player *> * const Team::getPlayersPtr()
+{
+    return &m_players;
+}
+
 void Team::addPlayer(const Player &player)
 {
     Player *newPlayer = new Player(this);
@@ -18,7 +23,7 @@ void Team::addPlayer(const Player &player)
     m_players.append(newPlayer);
 }
 
-void Team::removePlayer(size_t index)
+void Team::removePlayer(qsizetype index)
 {
     if(index > m_players.size()-1)
     {
@@ -42,9 +47,9 @@ QList<Player *> Team::getPlayers() const
     return m_players;
 }
 
-QList<Player *> * const Team::getPlayersPtr()
+qsizetype Team::getPlayersCount() const
 {
-    return &m_players;
+    return m_players.size();
 }
 
 void Team::setTeamName(const QString &teamName)

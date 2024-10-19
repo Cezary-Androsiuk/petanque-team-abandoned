@@ -15,7 +15,7 @@
 
 #define MEMORY_DIR "./memory"
 #define MEMORY_FILE "./memory/PetanqueMemory.json"
-#define DELETE_MEMORY_AT_START false
+#define DELETE_MEMORY_AT_START true
 #define PRINT_VALUES false // if true, prints values after loadPersonalization and before savePersonalization
 
 #define BOOL_TO_STR(x) ( (x) ? QString("true") : QString("false") )

@@ -10,11 +10,17 @@
 class Backend : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(QList<Team *> teams READ getTeams NOTIFY teamsChanged FINAL)
 
 public:
     explicit Backend(QObject *parent = nullptr);
+    ~Backend();
+    QList<Team *> getTeams() const;
+    void setTeams(const QList<Team *> &teams);
 
 signals:
+
+    void teamsChanged();
 
 private:
     QList<Team*> m_teams;
