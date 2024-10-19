@@ -2,8 +2,10 @@
 #define BACKEND_H
 
 #include <QObject>
+#include <QList>
 
 #include "cpp/support/Log.h"
+#include "cpp/objects/Team.h"
 
 class Backend : public QObject
 {
@@ -15,6 +17,7 @@ public:
 signals:
 
 private:
+    QList<Team*> m_teams;
 };
 
 #endif // BACKEND_H
