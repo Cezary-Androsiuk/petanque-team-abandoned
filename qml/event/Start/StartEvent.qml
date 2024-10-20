@@ -6,6 +6,8 @@ import "../../delegates"
 Item {
     id: startEvent
 
+    readonly property var event: Backend !== null ? Backend.event : null
+
     Item{
         id: listField
         anchors{
@@ -22,64 +24,81 @@ Item {
 
         Rectangle{
             id: scrollViewBorder
-            anchors.fill: scrollView
+            anchors.fill: listLoader
             color: "transparent"
             border.color: Qt.rgba(1,1,1, 0.5)
             border.width: 1
         }
 
-        ScrollView{
-            id: scrollView
+        Loader{
+            id: listLoader
             anchors{
                 fill: parent
                 margins: 30
             }
-            clip: true
+            // I prefer hiding whole list than changing model to 0
+            // seems more natural while closing site
+            sourceComponent: event !== null ? listComponent : null
+        }
 
-            // // left hand side scrollBar
-            // ScrollBar.vertical: ScrollBar{
-            //     parent: scrollView
-            //     x: 0
-            //     y: scrollView.topPadding
-            //     height: scrollView.availableHeight
-            //     active: scrollView.ScrollBar.horizontal.active
-            // }
-            ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
-
-            ListView{
-                id: listView
-                anchors{
-                    fill: parent
-                    rightMargin: 20
-                    leftMargin: 20
-                }
-
-                model: Backend.teams
-                boundsBehavior: Flickable.StopAtBounds
+        Component{
+            id: listComponent
+            ScrollView{
+                id: scrollView
                 clip: true
 
-                footer: Item{
-                    width: listView.width
-                    height: 50
-                    Button{
-                        anchors.fill: parent
-                        text: qsTr("Add new team")
-                        onClicked: {
-                            var t = Backend.addEmptyTeam()
-                            startStackView.push("AddTeam.qml", {team: t})
+                // // left hand side scrollBar
+                // ScrollBar.vertical: ScrollBar{
+                //     parent: scrollView
+                //     x: 0
+                //     y: scrollView.topPadding
+                //     height: scrollView.availableHeight
+                //     active: scrollView.ScrollBar.horizontal.active
+                // }
+                ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+
+                ListView{
+                    id: listView
+                    anchors{
+                        fill: parent
+                        rightMargin: 20
+                        leftMargin: 20
+                    }
+
+                    model: event.teams
+                    boundsBehavior: Flickable.StopAtBounds
+                    clip: true
+
+                    footer: Item{
+                        width: listView.width
+                        height: 50
+                        Button{
+                            anchors.fill: parent
+                            text: qsTr("Add new team")
+                            onClicked: {
+                                startEvent.event.createDetachedTeam()
+                                startStackView.push(
+                                            "AddTeam.qml",
+                                            {
+                                                event: startEvent.event,
+                                                team: startEvent.event.detachedTeam
+                                            }
+                                )
+                            }
                         }
                     }
+
+                    delegate: TeamDelegate{
+                        defaultHeight: 50
+                        width: listView.width
+                        teamObject: modelData
+                    }
+
+
                 }
-
-                delegate: TeamDelegate{
-                    defaultHeight: 50
-                    width: listView.width
-                    object: modelData
-                }
-
-
             }
         }
+
     }
 
     Item{

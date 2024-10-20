@@ -11,36 +11,46 @@ class Team : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString teamName READ getTeamName WRITE setTeamName NOTIFY teamNameChanged FINAL)
-    Q_PROPERTY(QList<Player *> players READ getPlayers WRITE setPlayers NOTIFY playersChanged FINAL)
+    Q_PROPERTY(PlayerList players READ getPlayers NOTIFY playersChanged FINAL)
     Q_PROPERTY(qsizetype playersCount READ getPlayersCount NOTIFY playersChanged FINAL)
+    Q_PROPERTY(Player * detachedPlayer READ getDetachedPlayer NOTIFY detachedPlayerChanged FINAL)
 
 public:
     explicit Team(QObject *parent = nullptr);
     ~Team();
-
-    QList<Player *> * const getPlayersPtr();
+    void clearPlayers();
+    void copyFromOtherTeam(const Team &team);
 
 public slots:
-    void addPlayer(const Player &player);
-    void removePlayer(qsizetype index);
+    void createDetachedPlayer();
+    void deleteDetachedPlayer();
+
+    void addPlayerUsingDetachedPlayer();
 
 public:
     QString getTeamName() const;
-    QList<Player *> getPlayers() const;
-    qsizetype getPlayersCount() const;
+
+    PlayerList getPlayers() const;
+    qsizetype getPlayersCount() const; // used by qml to extend list
+    Player *getDetachedPlayer() const;
 
     void setTeamName(const QString &teamName);
-    void setPlayers(const QList<Player *> &players);
-    // setPlayersCount
 
 signals:
     void teamNameChanged();
     void playersChanged();
+    void detachedPlayerChanged();
+
+    void detachedPlayerUsed();
 
 private:
     QString m_teamName;
 
-    QList<Player*> m_players;
+    PlayerList m_players;
+    Player *m_detachedPlayer;
 };
+
+typedef QList<Team*> TeamList;
+// typedef const TeamList &cTeamList;
 
 #endif // TEAM_H

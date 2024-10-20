@@ -2,6 +2,7 @@
 #define PLAYER_H
 
 #include <QObject>
+#include <QList>
 
 #include "cpp/support/Log.h"
 
@@ -13,7 +14,7 @@ class Player : public QObject
 public:
     explicit Player(QObject *parent = nullptr);
     // Player &operator = (const Player &player);
-    void fromOtherPlayer(const Player &player);
+    void copyFromOtherPlayer(const Player &player);
 
     QString getFname() const;
     QString getLname() const;
@@ -29,5 +30,8 @@ private:
     QString m_fname;
     QString m_lname;
 };
+
+typedef QList<Player*> PlayerList;
+// typedef const PlayerList &cPlayerList;
 
 #endif // PLAYER_H

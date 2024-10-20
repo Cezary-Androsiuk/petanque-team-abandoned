@@ -11,7 +11,7 @@ Player::Player(QObject *parent)
 //     return *this;
 // }
 
-void Player::fromOtherPlayer(const Player &player)
+void Player::copyFromOtherPlayer(const Player &player)
 {
     if(this == &player)
         return;

@@ -4,11 +4,13 @@ import QtQuick.Controls.Material
 import "../../delegates"
 
 Item {
+    id: addTeam
     Rectangle{
         anchors.fill: parent
         color: "#1c1b1f" // dark theme color
     }
 
+    required property var event
     required property var team
 
     Item{
@@ -27,54 +29,73 @@ Item {
 
         Rectangle{
             id: scrollViewBorder
-            anchors.fill: scrollView
+            anchors.fill: listLoader
             color: "transparent"
             border.color: Qt.rgba(1,1,1, 0.5)
             border.width: 1
         }
 
-        ScrollView{
-            id: scrollView
+        Loader{
+            id: listLoader
             anchors{
                 fill: parent
                 margins: 30
             }
-            clip: true
-            ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+            // I prefer hiding whole list than changing model to 0
+            // seems more natural while closing site
+            sourceComponent: team !== null ? listComponent : null
+        }
 
-            ListView{
-                id: listView
-                anchors{
-                    fill: parent
-                    rightMargin: 20
-                    leftMargin: 20
-                }
-
-                model: team.players
-                boundsBehavior: Flickable.StopAtBounds
+        Component{
+            id: listComponent
+            ScrollView{
+                id: scrollView
                 clip: true
+                ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
 
-                footer: Item{
-                    width: listView.width
-                    height: 50
-                    Button{
-                        anchors.fill: parent
-                        text: qsTr("Add new player")
-                        onClicked: {
-                            startStackView.push("AddPlayer.qml")
+                ListView{
+                    id: listView
+                    anchors{
+                        fill: parent
+                        rightMargin: 20
+                        leftMargin: 20
+                    }
+
+                    model: team.players
+                    boundsBehavior: Flickable.StopAtBounds
+                    clip: true
+
+                    footer: Item{
+                        width: listView.width
+                        height: 50
+                        Button{
+                            anchors.fill: parent
+                            text: qsTr("Add new player")
+                            onClicked: {
+                                addTeam.team.createDetachedPlayer();
+                                startStackView.push(
+                                            "AddPlayer.qml",
+                                            {
+                                                team: addTeam.team,
+                                                player: addTeam.team.detachedPlayer
+                                            }
+                                )
+                            }
                         }
                     }
+
+                    delegate: PlayerDelegate{
+                        defaultHeight: 50
+                        width: listView.width
+                        playerObject: modelData
+                    }
+
+
                 }
-
-                delegate: PlayerDelegate{
-                    defaultHeight: 50
-                    width: listView.width
-                    object: modelData
-                }
-
-
             }
         }
+
+
     }
 
     Item{
@@ -120,8 +141,8 @@ Item {
             text: "back"
 
             onClicked: {
-                Backend.removeLastTeam()
-                startStackView.pop()
+                startStackView.pop();
+                addTeam.event.deleteDetachedTeam();
             }
         }
     }
@@ -146,7 +167,8 @@ Item {
             text: "save team"
 
             onClicked: {
-                startStackView.pop()
+                startStackView.pop();
+                addTeam.event.addTeamUsingDetachedTeam();
             }
         }
     }

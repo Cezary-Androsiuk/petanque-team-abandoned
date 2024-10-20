@@ -35,6 +35,7 @@ qt_add_qml_module(appPetanqueTeam
     QML_FILES qml/event/Start/StartEvent.qml
     QML_FILES qml/event/Start/AddTeam.qml
     QML_FILES qml/event/Start/AddPlayer.qml
+    SOURCES cpp/objects/Event.h cpp/objects/Event.cpp
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
