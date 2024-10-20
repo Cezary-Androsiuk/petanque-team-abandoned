@@ -1,6 +1,22 @@
 import QtQuick 2.15
 import QtQuick.Controls.Material
 
-Item {
+Item{
+    id: playerDelegate
+
+    property double defaultHeight: 50
+    property var object
+
+    height: defaultHeight
+
+    Label{
+        anchors{
+            left: parent.left
+            top: parent.top
+            leftMargin: 10
+        }
+        height: defaultHeight
+        text: object.fname + " " + object.lname
+    }
 
 }

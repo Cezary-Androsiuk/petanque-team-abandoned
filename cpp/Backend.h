@@ -18,6 +18,10 @@ public:
     QList<Team *> getTeams() const;
     void setTeams(const QList<Team *> &teams);
 
+public slots:
+    Team *addEmptyTeam();
+    void removeLastTeam();
+
 signals:
 
     void teamsChanged();

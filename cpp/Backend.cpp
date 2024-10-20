@@ -36,3 +36,22 @@ QList<Team *> Backend::getTeams() const
 {
     return m_teams;
 }
+
+Team *Backend::addEmptyTeam()
+{
+    Team *team;
+    team = new Team(this);
+    team->setTeamName( QString::asprintf("Team %lld", m_teams.size()) );
+    m_teams.append(team);
+    emit this->teamsChanged();
+    return team;
+}
+
+void Backend::removeLastTeam()
+{
+    Team *team;
+    team = m_teams.last();
+    delete team;
+    m_teams.pop_back();
+    emit this->teamsChanged();
+}
