@@ -3,6 +3,7 @@
 Player::Player(QObject *parent)
     : QObject{parent}
     , m_age(0)
+    , m_isTeamLeader(false)
 {}
 
 // Player &Player::operator =(const Player &player)
@@ -22,7 +23,7 @@ void Player::copyFromOtherPlayer(const Player &player)
     this->setLicense(player.getLicense());
     this->setAge(player.getAge());
     this->setGender(player.getGender());
-    this->setIsTeamCaptain(player.getIsTeamCaptain());
+    this->setIsTeamLeader(player.getIsTeamLeader());
 }
 
 QString Player::getFname() const
@@ -50,9 +51,9 @@ Player::Genders Player::getGender() const
     return m_gender;
 }
 
-bool Player::getIsTeamCaptain() const
+bool Player::getIsTeamLeader() const
 {
-    return m_isTeamCaptain;
+    return m_isTeamLeader;
 }
 
 void Player::setFname(const QString &fname)
@@ -103,10 +104,10 @@ void Player::setGender(const Player::Genders &gender)
     emit genderChanged();
 }
 
-void Player::setIsTeamCaptain(bool isTeamCaptain)
+void Player::setIsTeamLeader(bool isTeamLeader)
 {
-    if (m_isTeamCaptain == isTeamCaptain)
+    if (m_isTeamLeader == isTeamLeader)
         return;
-    m_isTeamCaptain = isTeamCaptain;
-    emit isTeamCaptainChanged();
+    m_isTeamLeader = isTeamLeader;
+    emit isTeamLeaderChanged();
 }

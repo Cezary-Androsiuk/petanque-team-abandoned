@@ -22,7 +22,7 @@ private:
     Q_PROPERTY(QString license      READ getLicense         WRITE setLicense        NOTIFY licenseChanged       FINAL)
     Q_PROPERTY(QString age          READ getAge             WRITE setAge            NOTIFY ageChanged           FINAL)
     Q_PROPERTY(Genders gender       READ getGender          WRITE setGender         NOTIFY genderChanged        FINAL)
-    Q_PROPERTY(bool isTeamCaptain   READ getIsTeamCaptain   WRITE setIsTeamCaptain  NOTIFY isTeamCaptainChanged FINAL)
+    Q_PROPERTY(bool isTeamLeader    READ getIsTeamLeader    WRITE setIsTeamLeader   NOTIFY isTeamLeaderChanged  FINAL)
 public:
     explicit Player(QObject *parent = nullptr);
     // Player &operator = (const Player &player);
@@ -33,14 +33,14 @@ public:
     QString getLicense() const;
     QString getAge() const;
     Genders getGender() const;
-    bool getIsTeamCaptain() const;
+    bool getIsTeamLeader() const;
 
     void setFname(const QString &fname);
     void setLname(const QString &lname);
     void setLicense(const QString &license);
     void setAge(QString age);
     void setGender(const Genders &gender);
-    void setIsTeamCaptain(bool isTeamCaptain);
+    void setIsTeamLeader(bool isTeamLeader);
 
 signals:
     void fnameChanged();
@@ -48,7 +48,7 @@ signals:
     void licenseChanged();
     void ageChanged();
     void genderChanged();
-    void isTeamCaptainChanged();
+    void isTeamLeaderChanged();
 
 private:
     QString m_fname;
@@ -56,7 +56,7 @@ private:
     QString m_license;
     int m_age;
     Genders m_gender;
-    bool m_isTeamCaptain;
+    bool m_isTeamLeader;
 };
 
 typedef QList<Player*> PlayerList;

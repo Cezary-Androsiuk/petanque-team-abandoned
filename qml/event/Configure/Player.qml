@@ -110,27 +110,36 @@ Item {
             textRole: "text"
             valueRole: "value"
 
-            Component.onCompleted: currentIndex = indexOfValue((!player)?null: player.gender)
+            Component.onCompleted: {
+                var x = indexOfValue((!player)?null: player.gender)
+                console.log("setting gender as " + x)
+                currentIndex = x
+            }
+
             onCurrentValueChanged: {
-                player.gender = currentValue
+                if(player)
+                {
+                    console.log("setting gender as " + currentValue)
+                    player.gender = currentValue
+                }
             }
         }
 
         CheckBox{
-            id: isTeamCaptainCheckBox
+            id: isTeamLeaderCheckBox
             anchors{
                 top: genderComboBox.bottom
                 topMargin: 10
             }
-            checked: (!player)?null: player.isTeamCaptain
+            checked: (!player)?null: player.isTeamLeader
             onCheckedChanged: {
                 if(player)
                 {
-                    if(player.isTeamCaptain !== checked)
-                        player.isTeamCaptain = checked
+                    if(player.isTeamLeader !== checked)
+                        player.isTeamLeader = checked
                 }
             }
-            text: "Is Team Captain"
+            text: "Is Team Leader"
         }
 
 
