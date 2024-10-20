@@ -22,6 +22,7 @@ void Player::copyFromOtherPlayer(const Player &player)
     this->setLicense(player.getLicense());
     this->setAge(player.getAge());
     this->setGender(player.getGender());
+    this->setIsTeamCaptain(player.getIsTeamCaptain());
 }
 
 QString Player::getFname() const
@@ -47,6 +48,11 @@ QString Player::getAge() const
 Player::Genders Player::getGender() const
 {
     return m_gender;
+}
+
+bool Player::getIsTeamCaptain() const
+{
+    return m_isTeamCaptain;
 }
 
 void Player::setFname(const QString &fname)
@@ -95,4 +101,12 @@ void Player::setGender(const Player::Genders &gender)
         return;
     m_gender = gender;
     emit genderChanged();
+}
+
+void Player::setIsTeamCaptain(bool isTeamCaptain)
+{
+    if (m_isTeamCaptain == isTeamCaptain)
+        return;
+    m_isTeamCaptain = isTeamCaptain;
+    emit isTeamCaptainChanged();
 }

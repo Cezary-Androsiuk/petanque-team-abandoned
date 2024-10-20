@@ -109,7 +109,18 @@ Item {
             }
         }
 
-
+        CheckBox{
+            id: isTeamCaptainCheckBox
+            anchors{
+                top: genderComboBox.bottom
+                topMargin: 10
+            }
+            checked: false
+            onCheckedChanged: {
+                player.isTeamCaptain = checked
+            }
+            text: "Is Team Captain"
+        }
 
 
     }

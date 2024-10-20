@@ -3,7 +3,10 @@
 Team::Team(QObject *parent)
     : QObject{parent}
     , m_detachedPlayer(nullptr)
-{}
+{
+    QObject::connect(this, &Team::detachedPlayerUsed, this, &Team::deleteDetachedPlayer);
+
+}
 
 Team::~Team()
 {
@@ -19,8 +22,7 @@ void Team::clearPlayers()
 
 void Team::copyFromOtherTeam(const Team &team)
 {
-    I("Using other team as a reference")
-
+    // I("Using other Team as a reference")
     if(this == &team)
         return;
 
@@ -39,21 +41,19 @@ void Team::copyFromOtherTeam(const Team &team)
 
 void Team::createDetachedPlayer()
 {
-    I("Creating detached Player")
+    // I("Creating detached Player")
     if(m_detachedPlayer != nullptr)
     {
         W("Creating new detached Player, while old wasn't deleted")
     }
 
     m_detachedPlayer = new Player(this);
-    m_detachedPlayer->setFname("player f name");
-    m_detachedPlayer->setLname("player l name");
     emit this->detachedPlayerChanged();
 }
 
 void Team::deleteDetachedPlayer()
 {
-    I("Deleting detached Player")
+    // I("Deleting detached Player")
     if(m_detachedPlayer == nullptr)
     {
         E("trying to delete aleady deleted detached Player")
@@ -67,7 +67,7 @@ void Team::deleteDetachedPlayer()
 
 void Team::addPlayerUsingDetachedPlayer()
 {
-    I("Adding detached Player to Team")
+    // I("Adding detached Player to Team")
     Player *player = new Player(this);
 
     player->copyFromOtherPlayer(*m_detachedPlayer);

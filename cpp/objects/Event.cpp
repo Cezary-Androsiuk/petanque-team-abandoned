@@ -40,20 +40,19 @@ void Event::clearTeams()
 
 void Event::createDetachedTeam()
 {
-    I("Creating detached Team")
+    // I("Creating detached Team")
     if(m_detachedTeam != nullptr)
     {
         W("Creating new detached Team, while old wasn't deleted")
     }
 
     m_detachedTeam = new Team(this);
-    m_detachedTeam->setTeamName("team name");
     emit this->detachedTeamChanged();
 }
 
 void Event::deleteDetachedTeam()
 {
-    I("Deleting detached Team")
+    // I("Deleting detached Team")
     if(m_detachedTeam == nullptr)
     {
         E("trying to delete aleady deleted detached Team")
@@ -67,7 +66,7 @@ void Event::deleteDetachedTeam()
 
 void Event::addTeamUsingDetachedTeam()
 {
-    I("Adding detached Team to Event")
+    // I("Adding detached Team to Event")
     Team *team = new Team(this);
 
     team->copyFromOtherTeam(*m_detachedTeam);

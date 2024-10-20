@@ -51,6 +51,5 @@ private:
 };
 
 typedef QList<Team*> TeamList;
-// typedef const TeamList &cTeamList;
 
 #endif // TEAM_H

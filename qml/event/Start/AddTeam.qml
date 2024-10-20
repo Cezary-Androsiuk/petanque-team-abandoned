@@ -21,6 +21,7 @@ Item {
             bottom: footer.top
         }
         width: parent.width * 0.5
+
         Rectangle{
             anchors.fill: parent
             opacity: 0.2
