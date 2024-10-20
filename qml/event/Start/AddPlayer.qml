@@ -12,6 +12,109 @@ Item {
     required property var player
 
     Item{
+        id: playerInfoField
+        anchors{
+            top: header.bottom
+            left: parent.left
+            right: parent.right
+            bottom: footer.top
+        }
+
+        Rectangle{
+            anchors.fill: parent
+            opacity: 0.2
+            color: "Green"
+        }
+
+        TextField{
+            id: fnameTextField
+            anchors{
+                top: parent.top
+            }
+            height: 60
+            width: 230
+
+            placeholderText: qsTr("First Name")
+            onTextEdited: {
+                player.fname = text
+            }
+        }
+
+        TextField{
+            id: lnameTextField
+            anchors{
+                top: fnameTextField.bottom
+                topMargin: 10
+            }
+            height: 60
+            width: 230
+
+            placeholderText: qsTr("Last Name")
+            onTextEdited: {
+                player.lname = text
+            }
+        }
+
+        TextField{
+            id: licenseTextField
+            anchors{
+                top: lnameTextField.bottom
+                topMargin: 10
+            }
+            height: 60
+            width: 230
+
+            placeholderText: qsTr("License")
+            onTextEdited: {
+                player.license = text
+            }
+        }
+
+        TextField{
+            id: ageTextField
+            anchors{
+                top: licenseTextField.bottom
+                topMargin: 10
+            }
+            height: 60
+            width: 230
+
+            placeholderText: qsTr("Age")
+            validator: IntValidator{
+                bottom: 0
+                top: 200
+            }
+            onTextEdited: {
+                var t = text
+                if(t === "") t = "0"
+                player.age = t
+            }
+        }
+
+        ComboBox{
+            id: genderComboBox
+            anchors{
+                top: ageTextField.bottom
+                topMargin: 10
+            }
+            model: [
+                {value: 0, text: qsTr("Male")},
+                {value: 1, text: qsTr("Female")}
+            ]
+            textRole: "text"
+            valueRole: "value"
+
+            onCurrentValueChanged: {
+                player.gender = currentValue
+            }
+        }
+
+
+
+
+    }
+
+    Item{
         id: header
         anchors{
             left: parent.left
@@ -19,6 +122,7 @@ Item {
             top: parent.top
         }
         height: 70
+
         Rectangle{
             anchors.fill: parent
             opacity: 0.2
@@ -58,7 +162,7 @@ Item {
         Button{
             anchors.centerIn: parent
 
-            text: "save team"
+            text: "save player"
 
             onClicked: {
                 startStackView.pop();
