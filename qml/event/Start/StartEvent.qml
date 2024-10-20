@@ -8,6 +8,24 @@ Item {
 
     readonly property var event: Backend !== null ? Backend.event : null
 
+    Connections{
+        target: Backend
+        function onDataValidatedCorrectly(){
+            console.log("data are valid")
+
+            // confirm
+            Memory.save(); // this should be deleted from that method
+        }
+
+        function onDataValidationFailed(description){
+            console.log("data are NOT valid")
+        }
+
+    }
+
+    /////////////////// onEventStartConfirmed
+    // Memory.save();
+
     Item{
         id: listField
         anchors{
@@ -137,8 +155,9 @@ Item {
                 verticalCenter: parent.verticalCenter
             }
 
+            text: "start event"
             onClicked: {
-                Memory.save();
+                Backend.validateData()
             }
         }
     }

@@ -12,7 +12,6 @@ class Team : public QObject
     Q_OBJECT
     Q_PROPERTY(QString teamName READ getTeamName WRITE setTeamName NOTIFY teamNameChanged FINAL)
     Q_PROPERTY(PlayerList players READ getPlayers NOTIFY playersChanged FINAL)
-    Q_PROPERTY(qsizetype playersCount READ getPlayersCount NOTIFY playersChanged FINAL)
     Q_PROPERTY(Player * detachedPlayer READ getDetachedPlayer NOTIFY detachedPlayerChanged FINAL)
 
 public:
@@ -31,7 +30,7 @@ public:
     QString getTeamName() const;
 
     PlayerList getPlayers() const;
-    qsizetype getPlayersCount() const; // used by qml to extend list
+    Q_INVOKABLE qsizetype getPlayersCount() const; // used by qml to extend list
     Player *getDetachedPlayer() const;
 
     void setTeamName(const QString &teamName);

@@ -11,6 +11,7 @@ Item{
 
     property bool extended: false
 
+
     Loader{
         id: contentLoader
         // loader is here, not in list delegate, because i have some trouble
@@ -18,10 +19,23 @@ Item{
         anchors.fill: parent
         sourceComponent: teamObject !== null ? contentComponent : null
     }
+
     Component{
         id: contentComponent
 
         Item{
+
+            Rectangle{
+                id: contentBorder
+                anchors{
+                    fill: parent
+                    margins: 2
+                }
+                color: "transparent"
+                border.color: Qt.rgba(1,1,1, 0.5)
+                border.width: 1
+            }
+
             Item{
                 id: teamInfo
                 anchors{
@@ -30,6 +44,17 @@ Item{
                     right: parent.right
                 }
                 height: defaultHeight
+
+                Rectangle{
+                    id: teamInfoBorder
+                    anchors{
+                        fill: parent
+                        margins: 2
+                    }
+                    color: "transparent"
+                    border.color: Qt.rgba(1,1,1, 0.5)
+                    border.width: 1
+                }
 
                 Label{
                     anchors{
@@ -40,7 +65,6 @@ Item{
                     height: defaultHeight
                     text: teamObject.teamName
 
-                    horizontalAlignment: Text.AlignLeft
                     verticalAlignment: Text.AlignVCenter
                 }
 
@@ -73,7 +97,7 @@ Item{
                     right: parent.right
                     leftMargin: parent.width * 0.1
                 }
-                height: teamObject.playersCount * defaultHeight
+                height: teamObject.getPlayersCount() * defaultHeight
 
                 ListView{
                     anchors.fill: parent

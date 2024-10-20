@@ -18,8 +18,11 @@ public:
     Event *getEvent() const;
 
 public slots:
+    void validateData();
 
 signals:
+    void dataValidatedCorrectly();
+    void dataValidationFailed(QString description);
 
 private:
     Event *m_event;

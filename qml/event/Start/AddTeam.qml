@@ -112,6 +112,22 @@ Item {
             opacity: 0.2
             color: "Blue"
         }
+
+
+        TextField{
+            id: teamNameTextField
+            anchors{
+                top: parent.top
+            }
+            height: 60
+            width: 230
+
+            placeholderText: qsTr("Team Name")
+            onTextEdited: {
+                team.teamName = text
+            }
+        }
+
     }
 
 
