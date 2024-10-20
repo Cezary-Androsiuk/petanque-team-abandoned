@@ -2,7 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls.Material
 
 Item{
-    id: start
+    id: configure
     anchors.fill: parent
 
     readonly property int transitionTime: 200
@@ -28,15 +28,19 @@ Item{
         to: 0.0
     }
 
+    Component.onCompleted: {
+        configureStackView.replace("Configure/Event.qml", {parentStackView: configureStackView})
+    }
+
     StackView{
-        id: startStackView
+        id: configureStackView
         anchors.fill: parent
-        initialItem: "Start/StartEvent.qml"
+        // initialItem: "Configure/Event.qml" // idk how to parse arguments/properies
 
         pushEnter: Transition{
             LineAnimation {
                 property: "y";
-                from: -startStackView.height;
+                from: -configure.height;
                 to: 0
             }
             FadeIn{}
@@ -51,9 +55,11 @@ Item{
             LineAnimation {
                 property: "y";
                 from: 0
-                to: -startStackView.height;
+                to: -configure.height;
             }
             FadeOut{}
         }
+        replaceEnter: Transition{}
+        replaceExit: Transition{}
     }
 }

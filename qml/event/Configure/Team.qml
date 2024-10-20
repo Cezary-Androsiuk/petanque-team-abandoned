@@ -4,14 +4,16 @@ import QtQuick.Controls.Material
 import "../../delegates"
 
 Item {
-    id: addTeam
+    id: configureTeam
     Rectangle{
         anchors.fill: parent
         color: "#1c1b1f" // dark theme color
     }
 
-    required property var event
+    required property var parentStackView
+    property var event
     required property var team
+    property bool edit: false
 
     Item{
         id: playersListField
@@ -73,12 +75,13 @@ Item {
                             anchors.fill: parent
                             text: qsTr("Add new player")
                             onClicked: {
-                                addTeam.team.createDetachedPlayer();
-                                startStackView.push(
-                                            "AddPlayer.qml",
+                                configureTeam.team.createDetachedPlayer();
+                                parentStackView.push(
+                                            "Player.qml",
                                             {
-                                                team: addTeam.team,
-                                                player: addTeam.team.detachedPlayer
+                                                parentStackView: configureTeam.parentStackView,
+                                                team: configureTeam.team,
+                                                player: configureTeam.team.detachedPlayer
                                             }
                                 )
                             }
@@ -89,6 +92,7 @@ Item {
                         defaultHeight: 50
                         width: listView.width
                         playerObject: modelData
+                        parentStackView: configureTeam.parentStackView
                     }
 
 
@@ -123,6 +127,7 @@ Item {
             width: 230
 
             placeholderText: qsTr("Team Name")
+            text: (!team)?null: team.teamName
             onTextEdited: {
                 team.teamName = text
             }
@@ -157,9 +162,9 @@ Item {
 
             text: "back"
 
+            visible: configureTeam.edit
             onClicked: {
-                startStackView.pop();
-                addTeam.event.deleteDetachedTeam();
+                parentStackView.pop();
             }
         }
     }
@@ -178,14 +183,43 @@ Item {
             color: "Red"
         }
 
-        Button{
-            anchors.centerIn: parent
+        Item{
+            id: footerButtons
+            anchors.fill: parent
+            visible: !configureTeam.edit
 
-            text: "save team"
+            Button{
+                anchors{
+                    right: centerPoint.left
+                    verticalCenter: parent.verticalCenter
+                }
 
-            onClicked: {
-                startStackView.pop();
-                addTeam.event.addTeamUsingDetachedTeam();
+                text: "cancel"
+
+                onClicked: {
+                    parentStackView.pop();
+                    configureTeam.event.deleteDetachedTeam();
+                }
+            }
+
+            Item{
+                id: centerPoint
+                anchors.centerIn: parent
+                width: 20
+            }
+
+            Button{
+                anchors{
+                    left: centerPoint.right
+                    verticalCenter: parent.verticalCenter
+                }
+
+                text: "save team"
+
+                onClicked: {
+                    parentStackView.pop();
+                    configureTeam.event.addTeamUsingDetachedTeam();
+                }
             }
         }
     }

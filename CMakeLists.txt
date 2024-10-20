@@ -24,7 +24,7 @@ qt_add_qml_module(appPetanqueTeam
     QML_FILES qml/LoginForm.qml
     SOURCES cpp/Backend.h cpp/Backend.cpp
     QML_FILES qml/ApplicationIsAlreadyRunning.qml
-    QML_FILES qml/event/Start.qml
+    QML_FILES qml/event/Configure.qml
     QML_FILES qml/event/Continue.qml
     QML_FILES qml/event/Finish.qml
     SOURCES cpp/Memory.h cpp/Memory.cpp
@@ -32,9 +32,9 @@ qt_add_qml_module(appPetanqueTeam
     SOURCES cpp/objects/Team.h cpp/objects/Team.cpp
     QML_FILES qml/delegates/TeamDelegate.qml
     QML_FILES qml/delegates/PlayerDelegate.qml
-    QML_FILES qml/event/Start/StartEvent.qml
-    QML_FILES qml/event/Start/AddTeam.qml
-    QML_FILES qml/event/Start/AddPlayer.qml
+    QML_FILES qml/event/Configure/Event.qml
+    QML_FILES qml/event/Configure/Team.qml
+    QML_FILES qml/event/Configure/Player.qml
     SOURCES cpp/objects/Event.h cpp/objects/Event.cpp
 )
 

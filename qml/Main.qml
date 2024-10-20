@@ -50,7 +50,7 @@ ApplicationWindow {
             else
             {
                 console.log("start")
-                rootLoader.source = "event/Start.qml"
+                rootLoader.source = "event/Configure.qml"
             }
 
         }

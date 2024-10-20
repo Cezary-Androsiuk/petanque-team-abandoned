@@ -4,9 +4,10 @@ import QtQuick.Controls.Material
 import "../../delegates"
 
 Item {
-    id: startEvent
+    id: configureEvent
 
     readonly property var event: Backend !== null ? Backend.event : null
+    required property var parentStackView
 
     Connections{
         target: Backend
@@ -29,7 +30,7 @@ Item {
     Item{
         id: listField
         anchors{
-            top: parent.top
+            top: header.bottom
             left: parent.left
             bottom: footer.top
         }
@@ -94,12 +95,13 @@ Item {
                             anchors.fill: parent
                             text: qsTr("Add new team")
                             onClicked: {
-                                startEvent.event.createDetachedTeam()
-                                startStackView.push(
-                                            "AddTeam.qml",
+                                configureEvent.event.createDetachedTeam()
+                                parentStackView.push(
+                                            "Team.qml",
                                             {
-                                                event: startEvent.event,
-                                                team: startEvent.event.detachedTeam
+                                                parentStackView: configureEvent.parentStackView,
+                                                event: configureEvent.event,
+                                                team: configureEvent.event.detachedTeam
                                             }
                                 )
                             }
@@ -110,6 +112,7 @@ Item {
                         defaultHeight: 50
                         width: listView.width
                         teamObject: modelData
+                        parentStackView: configureEvent.parentStackView
                     }
 
 
@@ -122,7 +125,7 @@ Item {
     Item{
         id: eventInfoField
         anchors{
-            top: parent.top
+            top: header.bottom
             left: listField.right
             right: parent.right
             bottom: footer.top
@@ -131,6 +134,39 @@ Item {
             anchors.fill: parent
             opacity: 0.2
             color: "Blue"
+        }
+
+        TextField{
+            id: teamNameTextField
+            anchors{
+                top: parent.top
+            }
+            height: 60
+            width: 230
+
+            placeholderText: qsTr("Event data")
+            onTextEdited: {
+
+            }
+        }
+    }
+
+
+
+
+
+    Item{
+        id: header
+        anchors{
+            left: parent.left
+            right: parent.right
+            top: parent.top
+        }
+        height: 70
+        Rectangle{
+            anchors.fill: parent
+            opacity: 0.2
+            color: "Red"
         }
     }
 

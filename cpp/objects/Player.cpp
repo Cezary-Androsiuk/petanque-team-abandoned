@@ -2,7 +2,7 @@
 
 Player::Player(QObject *parent)
     : QObject{parent}
-    , m_age(-1)
+    , m_age(0)
 {}
 
 // Player &Player::operator =(const Player &player)

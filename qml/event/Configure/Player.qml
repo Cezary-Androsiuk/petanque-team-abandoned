@@ -2,14 +2,16 @@ import QtQuick 2.15
 import QtQuick.Controls.Material
 
 Item {
-    id: addPlayer
+    id: configurePlayer
     Rectangle{
         anchors.fill: parent
         color: "#1c1b1f" // dark theme color
     }
 
-    required property var team
+    required property var parentStackView
+    property var team
     required property var player
+    property bool edit: false
 
     Item{
         id: playerInfoField
@@ -35,6 +37,7 @@ Item {
             width: 230
 
             placeholderText: qsTr("First Name")
+            text: (!player)?null: player.fname
             onTextEdited: {
                 player.fname = text
             }
@@ -50,6 +53,7 @@ Item {
             width: 230
 
             placeholderText: qsTr("Last Name")
+            text: (!player)?null: player.lname
             onTextEdited: {
                 player.lname = text
             }
@@ -65,6 +69,7 @@ Item {
             width: 230
 
             placeholderText: qsTr("License")
+            text: (!player)?null: player.license
             onTextEdited: {
                 player.license = text
             }
@@ -84,6 +89,7 @@ Item {
                 bottom: 0
                 top: 200
             }
+            text: (!player)?null: player.age
             onTextEdited: {
                 var t = text
                 if(t === "") t = "0"
@@ -104,6 +110,7 @@ Item {
             textRole: "text"
             valueRole: "value"
 
+            Component.onCompleted: currentIndex = indexOfValue((!player)?null: player.gender)
             onCurrentValueChanged: {
                 player.gender = currentValue
             }
@@ -115,15 +122,24 @@ Item {
                 top: genderComboBox.bottom
                 topMargin: 10
             }
-            checked: false
+            checked: (!player)?null: player.isTeamCaptain
             onCheckedChanged: {
-                player.isTeamCaptain = checked
+                if(player)
+                {
+                    if(player.isTeamCaptain !== checked)
+                        player.isTeamCaptain = checked
+                }
             }
             text: "Is Team Captain"
         }
 
 
     }
+
+
+
+
+
 
     Item{
         id: header
@@ -149,9 +165,9 @@ Item {
 
             text: "back"
 
+            visible: configurePlayer.edit
             onClicked: {
-                startStackView.pop();
-                addPlayer.team.deleteDetachedPlayer();
+                parentStackView.pop();
             }
         }
     }
@@ -170,15 +186,45 @@ Item {
             color: "Red"
         }
 
-        Button{
-            anchors.centerIn: parent
+        Item{
+            id: footerButtons
+            anchors.fill: parent
+            visible: !configurePlayer.edit
 
-            text: "save player"
+            Button{
+                anchors{
+                    right: centerPoint.left
+                    verticalCenter: parent.verticalCenter
+                }
 
-            onClicked: {
-                startStackView.pop();
-                addPlayer.team.addPlayerUsingDetachedPlayer();
+                text: "cancel"
+
+                onClicked: {
+                    parentStackView.pop();
+                    configurePlayer.team.deleteDetachedPlayer();
+                }
+            }
+
+            Item{
+                id: centerPoint
+                anchors.centerIn: parent
+                width: 20
+            }
+
+            Button{
+                anchors{
+                    left: centerPoint.right
+                    verticalCenter: parent.verticalCenter
+                }
+
+                text: "save player"
+
+                onClicked: {
+                    parentStackView.pop();
+                    configurePlayer.team.addPlayerUsingDetachedPlayer();
+                }
             }
         }
+
     }
 }

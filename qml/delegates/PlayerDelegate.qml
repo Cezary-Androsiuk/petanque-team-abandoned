@@ -6,6 +6,8 @@ Item{
 
     property double defaultHeight: 50
     property var playerObject
+    property var parentStackView
+
     clip: true
 
     height: defaultHeight
@@ -41,6 +43,28 @@ Item{
                 verticalAlignment: Text.AlignVCenter
                 height: defaultHeight
                 text: playerObject.fname + " " + playerObject.lname
+            }
+
+            Button{
+                anchors{
+                    top: parent.top
+                    right: parent.right
+                }
+                height: defaultHeight
+                width: height * 2
+
+                text: "edit"
+
+                onClicked: {
+                    playerDelegate.parentStackView.push(
+                                "../event/Configure/Player.qml",
+                                {
+                                    edit: true,
+                                    parentStackView: playerDelegate.parentStackView,
+                                    player: playerDelegate.playerObject
+                                }
+                    )
+                }
             }
         }
 

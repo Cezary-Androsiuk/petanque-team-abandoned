@@ -6,6 +6,8 @@ Item{
 
     property double defaultHeight: 50
     property var teamObject
+    property var parentStackView
+
     height: defaultHeight
     clip: true
 
@@ -71,6 +73,29 @@ Item{
                 Button{
                     anchors{
                         top: parent.top
+                        right: extendButton.left
+                    }
+                    height: defaultHeight
+                    width: height * 2
+
+                    text: "edit"
+
+                    onClicked: {
+                        teamDelegate.parentStackView.push(
+                                    "../event/Configure/Team.qml",
+                                    {
+                                        edit: true,
+                                        parentStackView: teamDelegate.parentStackView,
+                                        team: teamDelegate.teamObject
+                                    }
+                        )
+                    }
+                }
+
+                Button{
+                    id: extendButton
+                    anchors{
+                        top: parent.top
                         right: parent.right
                     }
                     height: defaultHeight
@@ -110,6 +135,7 @@ Item{
                         defaultHeight: teamDelegate.defaultHeight
                         width: playersInfo.width
                         playerObject: modelData
+                        parentStackView: teamDelegate.parentStackView
                     }
                 }
             }
