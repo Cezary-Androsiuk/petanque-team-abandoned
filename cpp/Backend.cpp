@@ -4,7 +4,7 @@ Backend::Backend(QObject *parent)
     : QObject{parent}
     , m_event(new Event(this))
 {
-    this->createExampleData();
+    // this->createExampleData();
 }
 
 Backend::~Backend()

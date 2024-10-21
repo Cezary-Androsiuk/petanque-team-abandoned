@@ -32,6 +32,7 @@ ApplicationWindow {
         target: Memory
         function onMemoryLoaded(){
             rootLoader.source = "event/Continue.qml"
+            // rootLoader.source = "event/Configure.qml" // to display person data that was loaded
         }
 
         function onMemoryLoadError(message){

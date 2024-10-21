@@ -13,7 +13,7 @@ Item {
             console.log("data are valid")
 
             // confirm
-            Memory.save(Backend.event); // this should be deleted from that method
+            Memory.save(); // this should be deleted from that method
         }
 
         function onDataValidationFailed(description){

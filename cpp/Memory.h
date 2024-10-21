@@ -34,6 +34,7 @@ public slots:
 
 public:
     Q_INVOKABLE bool memoryFileExist() const;
+    void setBackendPtr(Backend *backend);
 
 private:
     void eventToJson(const Event *const event, QJsonObject &jsonObject) const;

@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
     Backend backend;
     Login login;
     Memory memory;
-
+    memory.setBackendPtr(&backend);
 
     engine.rootContext()->setContextProperty("Initializer", Initializer::getInstance());
     engine.rootContext()->setContextProperty("Backend", &backend);

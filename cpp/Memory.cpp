@@ -126,6 +126,11 @@ bool Memory::memoryFileExist() const
     return QFileInfo::exists( MEMORY_FILE );
 }
 
+void Memory::setBackendPtr(Backend *backend)
+{
+    m_backend = backend;
+}
+
 void Memory::eventToJson(const Event *const event, QJsonObject &jsonObject) const
 {
     int phase = event->getPhase();
@@ -162,21 +167,19 @@ void Memory::eventToJson(const Event *const event, QJsonObject &jsonObject) cons
     }
 }
 
-bool Memory::jsonToEvent(QJsonObject &jsonObject, Event * const event, QString &errorMessage) const
+bool Memory::jsonToEvent(QJsonObject &jsonObject, Event *const event, QString &errorMessage) const
 {
     int phase;
     if(jsonObject.contains("phase 2"))
     {
         phase = 2;
+        QJsonObject phase1 = jsonObject["phase 2"].toObject();
+        if(!this->jsonToPhase1(phase1, event, errorMessage))
+            return false;
     }
     else if(jsonObject.contains("phase 1"))
     {
         phase = 1;
-        if(!jsonObject["phase 1"].isObject())
-        {
-            errorMessage = "";
-            return false;
-        }
         QJsonObject phase1 = jsonObject["phase 1"].toObject();
         if(!this->jsonToPhase1(phase1, event, errorMessage))
             return false;
@@ -192,40 +195,14 @@ bool Memory::jsonToEvent(QJsonObject &jsonObject, Event * const event, QString &
     return true;
 }
 
-bool Memory::jsonToPhase1(QJsonObject &phase1, Event * const event, QString &errorMessage) const
+bool Memory::jsonToPhase1(QJsonObject &phase1, Event *const event, QString &errorMessage) const
 {
-    if(!phase1.contains("teams"))
-    {
-        errorMessage = "";
-        return false;
-    }
-    if(!phase1["teams"].isArray())
-    {
-        errorMessage = "";
-        return false;
-    }
     QJsonArray teams = phase1["teams"].toArray();
 
     for(auto _jTeam : teams)
     {
-
-        if(!_jTeam.isObject())
-        {
-            errorMessage = "";
-            return false;
-        }
         QJsonObject jTeam = _jTeam.toObject();
 
-        if(!jTeam.contains("team name"))
-        {
-            errorMessage = "";
-            return false;
-        }
-        if(!jTeam["team name"].isString())
-        {
-            errorMessage = "";
-            return false;
-        }
         event->createDetachedTeam();
         Team *team = event->getDetachedTeam();
         team->setTeamName( jTeam["team name"].toString() );
@@ -237,38 +214,27 @@ bool Memory::jsonToPhase1(QJsonObject &phase1, Event * const event, QString &err
         }
 
         event->addTeamUsingDetachedTeam();
-
     }
     return true;
 }
 
-bool Memory::jsonToPlayer(QJsonObject &jTeam, Team * const team, QString &errorMessage) const
+bool Memory::jsonToPlayer(QJsonObject &jTeam, Team *const team, QString &errorMessage) const
 {
-    if(!jTeam.contains("players"))
-    {
-        errorMessage = "";
-        return false;
-    }
-    if(!jTeam["players"].isArray())
-    {
-        errorMessage = "";
-        return false;
-    }
     QJsonArray players = jTeam["players"].toArray();
 
     for(auto _jPlayer : players)
     {
-        if(!_jPlayer.isObject())
-        {
-            errorMessage = "";
-            return false;
-        }
         QJsonObject jPlayer = _jPlayer.toObject();
-        ///
-        /// at this point memory leaks could occur!
-        ///
+
         team->createDetachedPlayer();
         Player *player = team->getDetachedPlayer();
+        player->setFname( jPlayer["fname"].toString() );
+        player->setLname( jPlayer["lname"].toString() );
+        player->setLicense( jPlayer["license"].toString() );
+        player->setAge( jPlayer["age"].toString() );
+        Player::Genders pg = jPlayer["gender"].toInt() ? Player::Genders::Female : Player::Genders::Male;
+        player->setGender( pg );
+        player->setIsTeamLeader( jPlayer["isTeamLeader"].toBool() );
 
         team->addPlayerUsingDetachedPlayer();
     }
