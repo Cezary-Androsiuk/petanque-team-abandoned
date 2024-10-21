@@ -30,8 +30,8 @@ qt_add_qml_module(appPetanqueTeam
     SOURCES cpp/Memory.h cpp/Memory.cpp
     SOURCES cpp/objects/Player.h cpp/objects/Player.cpp
     SOURCES cpp/objects/Team.h cpp/objects/Team.cpp
-    QML_FILES qml/delegates/TeamDelegate.qml
-    QML_FILES qml/delegates/PlayerDelegate.qml
+    QML_FILES qml/event/Configure/TeamDelegate.qml
+    QML_FILES qml/event/Configure/PlayerDelegate.qml
     QML_FILES qml/event/Configure/Event.qml
     QML_FILES qml/event/Configure/Team.qml
     QML_FILES qml/event/Configure/Player.qml
