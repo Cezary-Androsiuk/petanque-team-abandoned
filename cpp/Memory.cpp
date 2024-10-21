@@ -143,18 +143,20 @@ void Memory::eventToJson(const Event *const event, QJsonObject &jsonObject) cons
             for(Player *player : team->getPlayers())
             {
                 QJsonObject jPlayer;
+                jPlayer["playerID"] = static_cast<int>(player->getPlayerID());
                 jPlayer["fname"] = player->getFname();
                 jPlayer["lname"] = player->getLname();
                 jPlayer["license"] = player->getLicense();
                 jPlayer["age"] = player->getAge();
-                jPlayer["gender"] = player->getGender();
+                jPlayer["gender"] = static_cast<int>(player->getGender());
                 jPlayer["isTeamLeader"] = player->getIsTeamLeader();
 
                 players.append(jPlayer);
             }
 
             QJsonObject jTeam;
-            jTeam["team name"] = team->getTeamName();
+            jTeam["teamID"] = static_cast<int>(team->getTeamID());
+            jTeam["teamName"] = team->getTeamName();
             jTeam["players"] = players;
 
             teams.append(jTeam);
@@ -205,39 +207,28 @@ bool Memory::jsonToPhase1(QJsonObject &phase1, Event *const event, QString &erro
 
         event->createDetachedTeam();
         Team *team = event->getDetachedTeam();
-        team->setTeamName( jTeam["team name"].toString() );
+        team->setTeamName( jTeam["teamName"].toString() );
+        team->setTeamID( static_cast<uint>(jTeam["teamID"].toInt()) );
 
-        if(!this->jsonToPlayer(jTeam, team, errorMessage))
+        QJsonArray players = jTeam["players"].toArray();
+        for(auto _jPlayer : players)
         {
-            team->deleteDetachedPlayer();
-            return false;
+            QJsonObject jPlayer = _jPlayer.toObject();
+
+            team->createDetachedPlayer();
+            Player *player = team->getDetachedPlayer();
+            player->setPlayerID( static_cast<uint>(jPlayer["playerID"].toInt()) );
+            player->setFname( jPlayer["fname"].toString() );
+            player->setLname( jPlayer["lname"].toString() );
+            player->setLicense( jPlayer["license"].toString() );
+            player->setAge( jPlayer["age"].toString() );
+            player->setGender( static_cast<Player::Genders>(jPlayer["gender"].toInt()) );
+            player->setIsTeamLeader( jPlayer["isTeamLeader"].toBool() );
+
+            team->addPlayerUsingDetachedPlayer();
         }
 
         event->addTeamUsingDetachedTeam();
     }
-    return true;
-}
-
-bool Memory::jsonToPlayer(QJsonObject &jTeam, Team *const team, QString &errorMessage) const
-{
-    QJsonArray players = jTeam["players"].toArray();
-
-    for(auto _jPlayer : players)
-    {
-        QJsonObject jPlayer = _jPlayer.toObject();
-
-        team->createDetachedPlayer();
-        Player *player = team->getDetachedPlayer();
-        player->setFname( jPlayer["fname"].toString() );
-        player->setLname( jPlayer["lname"].toString() );
-        player->setLicense( jPlayer["license"].toString() );
-        player->setAge( jPlayer["age"].toString() );
-        Player::Genders pg = jPlayer["gender"].toInt() ? Player::Genders::Female : Player::Genders::Male;
-        player->setGender( pg );
-        player->setIsTeamLeader( jPlayer["isTeamLeader"].toBool() );
-
-        team->addPlayerUsingDetachedPlayer();
-    }
-
     return true;
 }

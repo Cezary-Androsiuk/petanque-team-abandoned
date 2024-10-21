@@ -2,6 +2,7 @@
 
 Team::Team(QObject *parent)
     : QObject{parent}
+    , m_teamID(0)
     , m_detachedPlayer(nullptr)
 {
     QObject::connect(this, &Team::detachedPlayerUsed, this, &Team::deleteDetachedPlayer);
@@ -26,6 +27,7 @@ void Team::copyFromOtherTeam(const Team &team)
     if(this == &team)
         return;
 
+    /// NOTE! THIS NOT COPY TEAM ID
     this->setTeamName(team.getTeamName());
 
     this->clearPlayers();
@@ -69,12 +71,53 @@ void Team::addPlayerUsingDetachedPlayer()
 {
     // I("Adding detached Player to Team")
     Player *player = new Player(this);
-
-    player->copyFromOtherPlayer(*m_detachedPlayer);
+    player->copyFromOtherPlayer( *m_detachedPlayer );
+    player->setPlayerID( this->generateUniquePlayerID() );
     emit this->detachedPlayerUsed();
 
     m_players.append(player);
     emit this->playersChanged();
+}
+
+uint Team::generateUniquePlayerID() const
+{
+    uint loopCounter = 0;
+    constexpr uint loopLimit = 10'000;
+
+    bool foundUnique = false;
+    uint rnd;
+    do
+    {
+        rnd = QRandomGenerator::global()->generate();
+
+        /// test if that ID in this team players exist
+        foundUnique = true; /// assume is unique
+        for(Player *p : m_players)
+        {
+            if(p->getPlayerID() == rnd)
+            {
+                /// found identical ID
+                foundUnique = false;
+                break;
+            }
+        }
+
+        if(++loopCounter > loopLimit)
+        {
+            W("Loop limit activated (" + QString::number(loopLimit) +
+              " iterations)! Random unique PlayerID might not be unique in this team")
+            break;
+        }
+    }
+    while(!foundUnique);
+
+    return rnd;
+}
+
+uint Team::getTeamID() const
+{
+    D("returnging ID: " + QString::asprintf("%u", m_teamID));
+    return m_teamID;
 }
 
 QString Team::getTeamName() const
@@ -95,6 +138,12 @@ qsizetype Team::getPlayersCount() const
 Player *Team::getDetachedPlayer() const
 {
     return m_detachedPlayer;
+}
+
+void Team::setTeamID(uint teamID)
+{
+    D("setting ID: " + QString::asprintf("%u", teamID));
+    m_teamID = teamID;
 }
 
 void Team::setTeamName(const QString &teamName)

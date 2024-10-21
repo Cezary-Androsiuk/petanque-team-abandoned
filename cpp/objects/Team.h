@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QList>
+#include <QRandomGenerator>
 
 #include "cpp/support/Log.h"
 #include "cpp/objects/Player.h"
@@ -26,14 +27,19 @@ public slots:
 
     void addPlayerUsingDetachedPlayer();
 
-public:
-    QString getTeamName() const;
+private:
+    uint generateUniquePlayerID() const;
 
+public:
+    uint getTeamID() const;
+    QString getTeamName() const;
     PlayerList getPlayers() const;
-    Q_INVOKABLE qsizetype getPlayersCount() const; // used by qml to extend list
+    Q_INVOKABLE qsizetype getPlayersCount() const; // used by qml to extend list // later i will try somehow in qml/js use getPlayers to count them
     Player *getDetachedPlayer() const;
 
+    void setTeamID(uint teamID);
     void setTeamName(const QString &teamName);
+
 
 signals:
     void teamNameChanged();
@@ -43,6 +49,7 @@ signals:
     void detachedPlayerUsed();
 
 private:
+    uint m_teamID; // unique in event
     QString m_teamName;
 
     PlayerList m_players;

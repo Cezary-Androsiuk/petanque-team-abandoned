@@ -2,6 +2,7 @@
 
 Player::Player(QObject *parent)
     : QObject{parent}
+    , m_playerID(0)
     , m_age(0)
     , m_isTeamLeader(false)
 {}
@@ -18,12 +19,19 @@ void Player::copyFromOtherPlayer(const Player &player)
     if(this == &player)
         return;
 
+    /// NOTE! THIS NOT COPY PLAYER ID
     this->setFname(player.getFname());
     this->setLname(player.getLname());
     this->setLicense(player.getLicense());
     this->setAge(player.getAge());
     this->setGender(player.getGender());
     this->setIsTeamLeader(player.getIsTeamLeader());
+}
+
+uint Player::getPlayerID() const
+{
+    D("returnging ID: " + QString::asprintf("%u %p", m_playerID, this));
+    return m_playerID;
 }
 
 QString Player::getFname() const
@@ -54,6 +62,12 @@ Player::Genders Player::getGender() const
 bool Player::getIsTeamLeader() const
 {
     return m_isTeamLeader;
+}
+
+void Player::setPlayerID(uint playerID)
+{
+    D("setting ID: " + QString::asprintf("%u %p", playerID, this));
+    m_playerID = playerID;
 }
 
 void Player::setFname(const QString &fname)

@@ -69,12 +69,52 @@ void Event::addTeamUsingDetachedTeam()
 {
     // I("Adding detached Team to Event")
     Team *team = new Team(this);
-
-    team->copyFromOtherTeam(*m_detachedTeam);
+    team->copyFromOtherTeam( *m_detachedTeam );
+    team->setTeamID( this->generateUniqueTeamID() );
     emit this->detachedTeamUsed();
 
     m_teams.append(team);
     emit this->teamsChanged();
+}
+
+uint Event::generateUniqueTeamID() const
+{
+    uint loopCounter = 0;
+    constexpr uint loopLimit = 10'000;
+
+    bool foundUnique = false;
+    uint rnd;
+    do
+    {
+        rnd = QRandomGenerator::global()->generate();
+
+        /// test if that ID in teams exist
+        foundUnique = true; /// assume is unique
+        for(Team *t : m_teams)
+        {
+            if(t->getTeamID() == rnd)
+            {
+                /// found identical ID
+                foundUnique = false;
+                break;
+            }
+        }
+
+        if(++loopCounter > loopLimit)
+        {
+            W("Loop limit activated (" + QString::number(loopLimit) +
+              " iterations)! Random unique TeamID might not be unique")
+            break;
+        }
+    }
+    while(!foundUnique);
+
+    return rnd;
+}
+
+int Event::getPhase() const
+{
+    return m_phase;
 }
 
 TeamList Event::getTeams() const
@@ -85,11 +125,6 @@ TeamList Event::getTeams() const
 Team *Event::getDetachedTeam() const
 {
     return m_detachedTeam;
-}
-
-int Event::getPhase() const
-{
-    return m_phase;
 }
 
 void Event::setPhase(int phase)

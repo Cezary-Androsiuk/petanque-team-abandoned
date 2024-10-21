@@ -40,7 +40,6 @@ private:
     void eventToJson(const Event *const event, QJsonObject &jsonObject) const;
     bool jsonToEvent(QJsonObject &jsonObject, Event *const event, QString &errorMessage) const;
     bool jsonToPhase1(QJsonObject &phase1, Event *const event, QString &errorMessage) const;
-    bool jsonToPlayer(QJsonObject &jTeam, Team *const team, QString &errorMessage) const;
 
 signals:
     void memorySaved();

@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QList>
+#include <QRandomGenerator>
 
 #include "cpp/support/Log.h"
 #include "cpp/objects/Team.h"
@@ -25,10 +26,13 @@ public slots:
 
     void addTeamUsingDetachedTeam();
 
+private:
+    uint generateUniqueTeamID() const;
+
 public:
+    int getPhase() const;
     TeamList getTeams() const;
     Team *getDetachedTeam() const;
-    int getPhase() const;
 
     void setPhase(int phase);
 
@@ -41,10 +45,10 @@ signals:
     void phaseChanged();
 
 private:
+    int m_phase;
+
     TeamList m_teams;
     Team *m_detachedTeam;
-
-    int m_phase;
 };
 
 #endif // EVENT_H

@@ -28,6 +28,7 @@ public:
     // Player &operator = (const Player &player);
     void copyFromOtherPlayer(const Player &player);
 
+    uint getPlayerID() const;
     QString getFname() const;
     QString getLname() const;
     QString getLicense() const;
@@ -35,12 +36,14 @@ public:
     Genders getGender() const;
     bool getIsTeamLeader() const;
 
+    void setPlayerID(uint playerID);
     void setFname(const QString &fname);
     void setLname(const QString &lname);
     void setLicense(const QString &license);
     void setAge(QString age);
     void setGender(const Genders &gender);
     void setIsTeamLeader(bool isTeamLeader);
+
 
 signals:
     void fnameChanged();
@@ -51,6 +54,7 @@ signals:
     void isTeamLeaderChanged();
 
 private:
+    uint m_playerID; // unique in team
     QString m_fname;
     QString m_lname;
     QString m_license;
