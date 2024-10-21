@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QList>
+#include <QVariant>
 
 #include "cpp/support/Log.h"
 #include "cpp/objects/Event.h"
@@ -16,6 +17,8 @@ public:
     explicit Backend(QObject *parent = nullptr);
     ~Backend();
     Event *getEvent() const;
+
+    void createExampleData();
 
 public slots:
     void validateData();

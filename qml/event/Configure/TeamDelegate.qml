@@ -82,7 +82,7 @@ Item{
 
                     onClicked: {
                         teamDelegate.parentStackView.push(
-                                    "../event/Configure/Team.qml",
+                                    "Team.qml",
                                     {
                                         edit: true,
                                         parentStackView: teamDelegate.parentStackView,

@@ -59,7 +59,7 @@ Item{
 
                 onClicked: {
                     playerDelegate.parentStackView.push(
-                                "../event/Configure/Player.qml",
+                                "Player.qml",
                                 {
                                     edit: true,
                                     parentStackView: playerDelegate.parentStackView,
