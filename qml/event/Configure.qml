@@ -30,6 +30,8 @@ Item{
 
     Component.onCompleted: {
         configureStackView.replace("Configure/Event.qml", {parentStackView: configureStackView})
+        rootWindow.minimumWidth = 500;
+        rootWindow.minimumHeight = 350;
     }
 
     StackView{

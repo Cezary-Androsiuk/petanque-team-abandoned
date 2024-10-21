@@ -12,10 +12,12 @@
 #include <QJsonArray>
 
 #include "cpp/support/Log.h"
+#include "cpp/Backend.h"
+#include "cpp/objects/Event.h"
 
 #define MEMORY_DIR "./memory"
 #define MEMORY_FILE "./memory/PetanqueMemory.json"
-#define DELETE_MEMORY_AT_START true
+#define DELETE_MEMORY_AT_START false
 #define PRINT_VALUES false // if true, prints values after loadPersonalization and before savePersonalization
 
 #define BOOL_TO_STR(x) ( (x) ? QString("true") : QString("false") )
@@ -33,10 +35,20 @@ public slots:
 public:
     Q_INVOKABLE bool memoryFileExist() const;
 
+private:
+    void eventToJson(const Event *const event, QJsonObject &jsonObject) const;
+    bool jsonToEvent(QJsonObject &jsonObject, Event *const event, QString &errorMessage) const;
+    bool jsonToPhase1(QJsonObject &phase1, Event *const event, QString &errorMessage) const;
+    bool jsonToPlayer(QJsonObject &jTeam, Team *const team, QString &errorMessage) const;
+
 signals:
     void memorySaved();
+    void memorySaveError(QString message);
     void memoryLoaded();
-    void memoryError(QString message);
+    void memoryLoadError(QString message);
+
+private:
+    Backend *m_backend;
 };
 
 #endif // MEMORY_H

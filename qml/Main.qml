@@ -8,6 +8,13 @@ ApplicationWindow {
     height: 720
     visible: false
 
+    // onWidthChanged: {
+    //     console.log("w:" + width + " h:" + height)
+    // }
+    // onHeightChanged: {
+    //     console.log("w:" + width + " h:" + height)
+    // }
+
     Material.theme: Material.Dark
 
     Connections{
@@ -27,13 +34,17 @@ ApplicationWindow {
             rootLoader.source = "event/Continue.qml"
         }
 
+        function onMemoryLoadError(message){
+            console.log("error occur while loading memory: " + message)
+        }
+
         function onMemorySaved(){
             console.log("memory saved");
             rootLoader.source = "event/Continue.qml"
         }
 
-        function onMemoryError(message){
-            console.log("error occur in memory: " + message)
+        function onMemorySaveError(message){
+            console.log("error occur while saving memory: " + message)
         }
     }
 

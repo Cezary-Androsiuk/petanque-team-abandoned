@@ -84,7 +84,7 @@ void Backend::createExampleData()
         QVariantMap( {{"fname", "Ava"}, {"lname", "Miller"}, {"license", "L7026"}, {"age", 37}, {"gender", 'F'}} ),
         QVariantMap( {{"fname", "Michael"}, {"lname", "Williams"}, {"license", "L7350"}, {"age", 35}, {"gender", 'F'}} ),
         QVariantMap( {{"fname", "Ava"}, {"lname", "Smith"}, {"license", "L8990"}, {"age", 34}, {"gender", 'M'}} ),
-        QVariantMap( {{"fname", "David"}, {"lname", "Johnson"}, {"license", "L1413"}, {"age", 38}, {"gender", 'F'}} ),
+        QVariantMap( {{"fname", "David"}, {"lname", "Johnson"}, {"license", "L1413"}, {"age", 38}, {"gender", 'M'}} ),
         QVariantMap( {{"fname", "Olivia"}, {"lname", "Thomas"}, {"license", "L4110"}, {"age", 46}, {"gender", 'F'}} ),
     };
 
@@ -107,6 +107,8 @@ void Backend::createExampleData()
             QChar g = players[h]["gender"].toChar();
             Player::Genders pg = g == 'M' ? Player::Genders::Male : Player::Genders::Female;
             dPlayer->setGender( pg );
+            if(j == 0)
+                dPlayer->setIsTeamLeader(true);
 
             dTeam->addPlayerUsingDetachedPlayer();
         }

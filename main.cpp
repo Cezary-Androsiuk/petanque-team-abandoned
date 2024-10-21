@@ -18,6 +18,7 @@ int main(int argc, char *argv[])
     Login login;
     Memory memory;
 
+
     engine.rootContext()->setContextProperty("Initializer", Initializer::getInstance());
     engine.rootContext()->setContextProperty("Backend", &backend);
     engine.rootContext()->setContextProperty("Login", &login);

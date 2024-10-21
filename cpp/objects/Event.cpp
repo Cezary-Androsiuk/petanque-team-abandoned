@@ -3,6 +3,7 @@
 Event::Event(QObject *parent)
     : QObject{parent}
     , m_detachedTeam(nullptr)
+    , m_phase(1)
 {
     QObject::connect(this, &Event::detachedTeamUsed, this, &Event::deleteDetachedTeam);
 
@@ -84,4 +85,17 @@ TeamList Event::getTeams() const
 Team *Event::getDetachedTeam() const
 {
     return m_detachedTeam;
+}
+
+int Event::getPhase() const
+{
+    return m_phase;
+}
+
+void Event::setPhase(int phase)
+{
+    if (m_phase == phase)
+        return;
+    m_phase = phase;
+    emit phaseChanged();
 }
