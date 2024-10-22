@@ -27,7 +27,7 @@ void Team::copyFromOtherTeam(const Team &team)
     if(this == &team)
         return;
 
-    /// NOTE! THIS NOT COPY TEAM ID
+    this->setTeamID(team.getTeamID());
     this->setTeamName(team.getTeamName());
 
     this->clearPlayers();
@@ -50,6 +50,7 @@ void Team::createDetachedPlayer()
     }
 
     m_detachedPlayer = new Player(this);
+    m_detachedPlayer->setPlayerID( this->generateUniquePlayerID() );
     emit this->detachedPlayerChanged();
 }
 
@@ -72,7 +73,9 @@ void Team::addPlayerUsingDetachedPlayer()
     // I("Adding detached Player to Team")
     Player *player = new Player(this);
     player->copyFromOtherPlayer( *m_detachedPlayer );
-    player->setPlayerID( this->generateUniquePlayerID() );
+    if(!this->isPlayerIDUniqueInPlayersList( player->getPlayerID() ))
+        W("In the meantime creating detached Player, playerID was changed to not unique (in relation to players list)");
+
     emit this->detachedPlayerUsed();
 
     m_players.append(player);
@@ -85,22 +88,13 @@ uint Team::generateUniquePlayerID() const
     constexpr uint loopLimit = 10'000;
 
     bool foundUnique = false;
-    uint rnd;
+    uint rndID;
     do
     {
-        rnd = QRandomGenerator::global()->generate();
+        rndID = QRandomGenerator::global()->generate() % 1'000'000;
 
         /// test if that ID in this team players exist
-        foundUnique = true; /// assume is unique
-        for(Player *p : m_players)
-        {
-            if(p->getPlayerID() == rnd)
-            {
-                /// found identical ID
-                foundUnique = false;
-                break;
-            }
-        }
+        foundUnique = this->isPlayerIDUniqueInPlayersList(rndID);
 
         if(++loopCounter > loopLimit)
         {
@@ -111,12 +105,24 @@ uint Team::generateUniquePlayerID() const
     }
     while(!foundUnique);
 
-    return rnd;
+    return rndID;
+}
+
+bool Team::isPlayerIDUniqueInPlayersList(uint id) const
+{
+    for(Player *p : m_players)
+    {
+        if(p->getPlayerID() == id)
+        {
+            /// found identical ID
+            return false;
+        }
+    }
+    return true;
 }
 
 uint Team::getTeamID() const
 {
-    D("returnging ID: " + QString::asprintf("%u", m_teamID));
     return m_teamID;
 }
 
@@ -142,7 +148,6 @@ Player *Team::getDetachedPlayer() const
 
 void Team::setTeamID(uint teamID)
 {
-    D("setting ID: " + QString::asprintf("%u", teamID));
     m_teamID = teamID;
 }
 

@@ -44,7 +44,6 @@ public:
     void setGender(const Genders &gender);
     void setIsTeamLeader(bool isTeamLeader);
 
-
 signals:
     void fnameChanged();
     void lnameChanged();

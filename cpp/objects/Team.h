@@ -29,6 +29,7 @@ public slots:
 
 private:
     uint generateUniquePlayerID() const;
+    bool isPlayerIDUniqueInPlayersList(uint id) const;
 
 public:
     uint getTeamID() const;
@@ -39,7 +40,6 @@ public:
 
     void setTeamID(uint teamID);
     void setTeamName(const QString &teamName);
-
 
 signals:
     void teamNameChanged();

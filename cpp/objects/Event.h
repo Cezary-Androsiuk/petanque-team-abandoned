@@ -28,6 +28,7 @@ public slots:
 
 private:
     uint generateUniqueTeamID() const;
+    bool isTeamIDUniqueInTeamssList(uint id) const;
 
 public:
     int getPhase() const;

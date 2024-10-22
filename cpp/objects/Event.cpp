@@ -48,6 +48,7 @@ void Event::createDetachedTeam()
     }
 
     m_detachedTeam = new Team(this);
+    m_detachedTeam->setTeamID( this->generateUniqueTeamID() );
     emit this->detachedTeamChanged();
 }
 
@@ -70,7 +71,9 @@ void Event::addTeamUsingDetachedTeam()
     // I("Adding detached Team to Event")
     Team *team = new Team(this);
     team->copyFromOtherTeam( *m_detachedTeam );
-    team->setTeamID( this->generateUniqueTeamID() );
+    if(!this->isTeamIDUniqueInTeamssList( team->getTeamID() ))
+        W("In the meantime creating detached Team, teamID was changed to not unique (in relation to teams list)");
+
     emit this->detachedTeamUsed();
 
     m_teams.append(team);
@@ -83,22 +86,13 @@ uint Event::generateUniqueTeamID() const
     constexpr uint loopLimit = 10'000;
 
     bool foundUnique = false;
-    uint rnd;
+    uint rndID;
     do
     {
-        rnd = QRandomGenerator::global()->generate();
+        rndID = QRandomGenerator::global()->generate() % 1'000'000;
 
         /// test if that ID in teams exist
-        foundUnique = true; /// assume is unique
-        for(Team *t : m_teams)
-        {
-            if(t->getTeamID() == rnd)
-            {
-                /// found identical ID
-                foundUnique = false;
-                break;
-            }
-        }
+        foundUnique = this->isTeamIDUniqueInTeamssList(rndID);
 
         if(++loopCounter > loopLimit)
         {
@@ -109,7 +103,20 @@ uint Event::generateUniqueTeamID() const
     }
     while(!foundUnique);
 
-    return rnd;
+    return rndID;
+}
+
+bool Event::isTeamIDUniqueInTeamssList(uint id) const
+{
+    for(Team *t : m_teams)
+    {
+        if(t->getTeamID() == id)
+        {
+            /// found identical ID
+            return false;
+        }
+    }
+    return true;
 }
 
 int Event::getPhase() const

@@ -19,7 +19,7 @@ void Player::copyFromOtherPlayer(const Player &player)
     if(this == &player)
         return;
 
-    /// NOTE! THIS NOT COPY PLAYER ID
+    this->setPlayerID(player.getPlayerID());
     this->setFname(player.getFname());
     this->setLname(player.getLname());
     this->setLicense(player.getLicense());
@@ -30,7 +30,6 @@ void Player::copyFromOtherPlayer(const Player &player)
 
 uint Player::getPlayerID() const
 {
-    D("returnging ID: " + QString::asprintf("%u %p", m_playerID, this));
     return m_playerID;
 }
 
@@ -66,7 +65,6 @@ bool Player::getIsTeamLeader() const
 
 void Player::setPlayerID(uint playerID)
 {
-    D("setting ID: " + QString::asprintf("%u %p", playerID, this));
     m_playerID = playerID;
 }
 
