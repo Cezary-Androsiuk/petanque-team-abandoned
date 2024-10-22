@@ -22,10 +22,22 @@
 
 
 //////////////////// NEW DEBUG ////////////////////
-#define I(x) Log::info    (__PRETTY_FUNCTION__, x);
-#define W(x) Log::warning (__PRETTY_FUNCTION__, x);
-#define E(x) Log::error   (__PRETTY_FUNCTION__, x);
-#define D(x) Log::debug   (__PRETTY_FUNCTION__, x);
+#define GET_MACRO(_1, _2, NAME, ...) NAME
+
+#define I_1(x) Log::info    (__PRETTY_FUNCTION__, (x));
+#define W_1(x) Log::warning (__PRETTY_FUNCTION__, (x));
+#define E_1(x) Log::error   (__PRETTY_FUNCTION__, (x));
+#define D_1(x) Log::debug   (__PRETTY_FUNCTION__, (x));
+
+#define I_2(x, a) Log::info    (__PRETTY_FUNCTION__, (x), Log::Action(a));
+#define W_2(x, a) Log::warning (__PRETTY_FUNCTION__, (x), Log::Action(a));
+#define E_2(x, a) Log::error   (__PRETTY_FUNCTION__, (x), Log::Action(a));
+#define D_2(x, a) Log::debug   (__PRETTY_FUNCTION__, (x), Log::Action(a));
+
+#define I(...) GET_MACRO(__VA_ARGS__, I_2, I_1)(__VA_ARGS__)
+#define W(...) GET_MACRO(__VA_ARGS__, W_2, W_1)(__VA_ARGS__)
+#define E(...) GET_MACRO(__VA_ARGS__, E_2, E_1)(__VA_ARGS__)
+#define D(...) GET_MACRO(__VA_ARGS__, D_2, D_1)(__VA_ARGS__)
 //////////////////////////////////////////////////
 
 
@@ -39,17 +51,27 @@
 class Log
 {
 public:
-    static void info(QString func, QString log);
-    static void warning(QString func, QString log);
-    static void error(QString func, QString log);
-    static void debug(QString func, QString log);
+    enum Action{
+        Save = 1 << 0,
+        Print = 1 << 1,
+        Sesion = 1 << 2,
+        SavePrint = Save | Print,
+        SaveSesion = Save | Sesion,
+        PrintSesion = Print | Sesion,
+        All = Save | Print | Sesion,
+    };
+
+    static void info(QString func, QString log, Action action = Action(Action::All));
+    static void warning(QString func, QString log, Action action = Action(Action::All));
+    static void error(QString func, QString log, Action action = Action(Action::All));
+    static void debug(QString func, QString log, Action action = Action(Action::All));
 
 private:
     static QString time();
     static QString buildPrefix(QString type, QString func);
     static QString buildStartPrefix();
 
-    static void log(QString content);
+    static void log(QString content, Action action);
     static void print(QString content);
     static void saveFile(QString content);
     static void addSession(QString content);

@@ -3,24 +3,24 @@
 bool Log::m_firstLog = true;
 QString Log::m_sessionLogs = QString();
 
-void Log::info(QString func, QString log)
+void Log::info(QString func, QString log, Log::Action action)
 {
-    Log::log( Log::buildPrefix("I", func) + log );
+    Log::log( Log::buildPrefix("I", func) + log, action);
 }
 
-void Log::warning(QString func, QString log)
+void Log::warning(QString func, QString log, Log::Action action)
 {
-    Log::log( Log::buildPrefix("W", func) + log );
+    Log::log( Log::buildPrefix("W", func) + log, action);
 }
 
-void Log::error(QString func, QString log)
+void Log::error(QString func, QString log, Log::Action action)
 {
-    Log::log( Log::buildPrefix("E", func) + log );
+    Log::log( Log::buildPrefix("E", func) + log, action);
 }
 
-void Log::debug(QString func, QString log)
+void Log::debug(QString func, QString log, Log::Action action)
 {
-    Log::log( Log::buildPrefix("D", func) + log );
+    Log::log( Log::buildPrefix("D", func) + log, action);
 }
 
 QString Log::time()
@@ -67,14 +67,19 @@ QString Log::buildStartPrefix()
     // set time
     prefix = "[" + Log::time() +  "]" + "   ";
 
-    return prefix + "      some text that i will fill later";
+    return prefix + "--- [APPLICATION STARTED] ---";
 }
 
-void Log::log(QString content)
+void Log::log(QString content, Log::Action action)
 {
-    Log::print(content);
-    Log::saveFile(content);
-    Log::addSession(content);
+    if(action & Action::Print)
+        Log::print(content);
+
+    if(action & Action::Save)
+        Log::saveFile(content);
+
+    if(action & Action::Sesion)
+        Log::addSession(content);
 }
 
 void Log::print(QString content)
