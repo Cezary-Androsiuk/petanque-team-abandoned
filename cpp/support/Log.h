@@ -52,6 +52,7 @@ class Log
 {
 public:
     enum Action{
+        None = 0,
         Save = 1 << 0,
         Print = 1 << 1,
         Sesion = 1 << 2,
@@ -60,6 +61,8 @@ public:
         PrintSesion = Print | Sesion,
         All = Save | Print | Sesion,
     };
+    static constexpr Action actionForceHighest = Action::All; // set highest ( will be compared with & sign )
+    static constexpr Action actionForceLowest = Action::None;  // set lowest ( will be compared with | sign )
 
     static void info(QString func, QString log, Action action = Action(Action::All));
     static void warning(QString func, QString log, Action action = Action(Action::All));

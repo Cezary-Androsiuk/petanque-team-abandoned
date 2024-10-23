@@ -72,13 +72,15 @@ QString Log::buildStartPrefix()
 
 void Log::log(QString content, Log::Action action)
 {
-    if(action & Action::Print)
+    Action limitedAction = Action( (action | Log::actionForceLowest) & Log::actionForceHighest );
+
+    if(limitedAction & Action::Print)
         Log::print(content);
 
-    if(action & Action::Save)
+    if(limitedAction & Action::Save)
         Log::saveFile(content);
 
-    if(action & Action::Sesion)
+    if(limitedAction & Action::Sesion)
         Log::addSession(content);
 }
 
