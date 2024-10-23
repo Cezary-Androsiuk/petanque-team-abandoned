@@ -11,9 +11,9 @@
 class Event : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(TeamList teams READ getTeams NOTIFY teamsChanged FINAL)
-    Q_PROPERTY(Team* detachedTeam READ getDetachedTeam NOTIFY detachedTeamChanged FINAL)
-    Q_PROPERTY(int phase READ getPhase WRITE setPhase NOTIFY phaseChanged FINAL)
+    Q_PROPERTY(TeamList teams       READ getTeams                           NOTIFY teamsChanged         FINAL)
+    Q_PROPERTY(Team* detachedTeam   READ getDetachedTeam                    NOTIFY detachedTeamChanged  FINAL)
+    Q_PROPERTY(int phase            READ getPhase           WRITE setPhase  NOTIFY phaseChanged         FINAL)
 
 public:
     explicit Event(QObject *parent = nullptr);

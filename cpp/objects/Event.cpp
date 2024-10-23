@@ -6,25 +6,6 @@ Event::Event(QObject *parent)
     , m_phase(1)
 {
     QObject::connect(this, &Event::detachedTeamUsed, this, &Event::deleteDetachedTeam);
-
-    // Team *team;
-    // Player *player;
-
-    // for(int i=0; i<5; i++)
-    // {
-    //     team = new Team(this);
-    //     team->setTeamName( QString::asprintf("Team %d", i+1) );
-
-    //     for(int j=0; j<3; j++)
-    //     {
-    //         player = new Player(team);
-    //         player->setFname( QString::asprintf("FirstName(%d %d)", i+1, j+1) );
-    //         player->setLname( QString::asprintf("LastName(%d %d)", i+1, j+1) );
-    //         team->addPlayer(*player);
-    //     }
-
-    //     m_teams.append(team);
-    // }
 }
 
 Event::~Event()

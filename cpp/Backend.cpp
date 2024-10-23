@@ -119,11 +119,79 @@ void Backend::createExampleData()
 
 void Backend::validateData()
 {
+    /// this should be called only after starting the event
+
+    /// check if 8 teams was registered
+    int teamsCount = m_event->getTeams().size();
+    if(teamsCount != REQUIRED_TEAMS_COUNT)
+    {
+        /// less or more than 8 teams
+        QString message = "";
+        I(message);
+        emit this->dataValidationFailed(message);
+    }
+
+    /// check data for teams:
+    for(Team *team : m_event->getTeams())
+    {
+        /// check if team has at least 6 players
+        int playersCount = team->getPlayers().size();
+        if(playersCount < REQUIRED_PLAYERS_COUNT)
+        {
+            /// team has least than 6 players
+            QString message = "";
+            I(message);
+            emit this->dataValidationFailed(message);
+        }
+
+        /// check if team has both genders
+        bool foundMale = false;
+        bool foundFemale = false;
+        for(Player *player : team->getPlayers())
+        {
+            if(player->getGender() == Player::Genders::Male)
+                foundMale = true;
+
+            if(player->getGender() == Player::Genders::Female)
+                foundFemale = true;
+        }
+        if(!foundMale || !foundFemale)
+        {
+            /// one gender is missing in team
+            QString message = "";
+            I(message);
+            emit this->dataValidationFailed(message);
+        }
+
+        /// check if team has one leader
+        int foundLeaders = 0;
+        for(Player *player : team->getPlayers())
+        {
+            if(player->getIsTeamLeader())
+                ++ foundLeaders;
+        }
+        if(foundLeaders == 0)
+        {
+            /// team missing leader
+            QString message = "";
+            I(message);
+            emit this->dataValidationFailed(message);
+        }
+        if(foundLeaders > 1)
+        {
+            /// team contains few leaders
+            QString message = "";
+            I(message);
+            emit this->dataValidationFailed(message);
+        }
+    }
+
+
     // check if both genders belong to each team
     // check if in each team, are at least 6 players
     // check if each team choosed captain
     // (additional) check if in each team, captain was choosed only once
-    // check if there are at least 8 teams (some of them could be checked as "not playing")
+    // check if there are at least 8 teams (some of them could be checked as "not playing", they will be automaticly filled as 0 points)
 
     emit this->dataValidatedCorrectly();
 }
