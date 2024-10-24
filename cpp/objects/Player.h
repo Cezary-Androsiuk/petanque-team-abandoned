@@ -28,6 +28,8 @@ public:
     // Player &operator = (const Player &player);
     void copyFromOtherPlayer(const Player &player);
 
+    Q_INVOKABLE QObject *getParent() const;
+
     uint getPlayerID() const;
     QString getFname() const;
     QString getLname() const;

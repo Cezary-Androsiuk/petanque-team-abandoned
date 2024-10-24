@@ -82,6 +82,29 @@ void Team::addPlayerUsingDetachedPlayer()
     emit this->playersChanged();
 }
 
+void Team::deletePlayer(const Player * const player)
+{
+    int index = -1;
+    for(int i=0; i<m_players.size(); i++)
+    {
+        if(player == m_players[i])
+        {
+            index = i;
+        }
+    }
+
+    if(index == -1)
+    {
+        W(QString::asprintf("Player to delete %p was not found!", player))
+        return;
+    }
+
+    delete m_players[index];
+    m_players.remove(index);
+
+    emit this->playersChanged();
+}
+
 uint Team::generateUniquePlayerID() const
 {
     uint loopCounter = 0;
@@ -134,11 +157,6 @@ QString Team::getTeamName() const
 PlayerList Team::getPlayers() const
 {
     return m_players;
-}
-
-qsizetype Team::getPlayersCount() const
-{
-    return m_players.size();
 }
 
 Player *Team::getDetachedPlayer() const

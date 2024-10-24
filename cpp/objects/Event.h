@@ -30,6 +30,7 @@ public slots:
     void deleteDetachedTeam();
 
     void addTeamUsingDetachedTeam();
+    void deleteTeam(const Team *const team);
 
 private:
     uint generateUniqueTeamID() const;

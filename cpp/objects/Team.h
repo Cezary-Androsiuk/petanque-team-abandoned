@@ -26,6 +26,7 @@ public slots:
     void deleteDetachedPlayer();
 
     void addPlayerUsingDetachedPlayer();
+    void deletePlayer(const Player *const player);
 
 private:
     uint generateUniquePlayerID() const;
@@ -35,7 +36,6 @@ public:
     uint getTeamID() const;
     QString getTeamName() const;
     PlayerList getPlayers() const;
-    Q_INVOKABLE qsizetype getPlayersCount() const; // used by qml to extend list // later i will try somehow in qml/js use getPlayers to count them
     Player *getDetachedPlayer() const;
 
     void setTeamID(uint teamID);

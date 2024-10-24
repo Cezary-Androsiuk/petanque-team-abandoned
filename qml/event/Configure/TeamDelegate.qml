@@ -71,6 +71,23 @@ Item{
                 }
 
                 Button{
+                    id: deleteTeamButton
+                    anchors{
+                        right: editTeamButton.left
+                        top: parent.top
+                    }
+                    height: defaultHeight
+                    width: height * 2
+
+                    text: "delete"
+
+                    onClicked:{
+                        Backend.event.deleteTeam(teamObject);
+                    }
+                }
+
+                Button{
+                    id: editTeamButton
                     anchors{
                         top: parent.top
                         right: extendButton.left
@@ -104,12 +121,13 @@ Item{
                     text: teamDelegate.extended ? "^" : "v"
 
                     onClicked: {
+                        teamDelegate.extended = !teamDelegate.extended
+
                         teamDelegate.height =
                                 teamDelegate.extended ?
-                                    defaultHeight :
-                                    teamDelegate.height + playersInfo.height
+                                    defaultHeight + playersInfo.height :
+                                    defaultHeight
 
-                        teamDelegate.extended = !teamDelegate.extended
                     }
                 }
             }
@@ -122,7 +140,17 @@ Item{
                     right: parent.right
                     leftMargin: parent.width * 0.1
                 }
-                height: teamObject.getPlayersCount() * defaultHeight
+                height: teamObject.players.length * defaultHeight
+
+                Connections{
+                    target: teamObject
+                    function onPlayersChanged() {
+                        // after any change of players, change also height
+                        teamDelegate.height = teamDelegate.extended ?
+                                    defaultHeight + playersInfo.height :
+                                    defaultHeight
+                    }
+                }
 
                 ListView{
                     anchors.fill: parent

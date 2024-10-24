@@ -28,6 +28,11 @@ void Player::copyFromOtherPlayer(const Player &player)
     this->setIsTeamLeader(player.getIsTeamLeader());
 }
 
+QObject *Player::getParent() const
+{
+    return this->parent();
+}
+
 uint Player::getPlayerID() const
 {
     return m_playerID;

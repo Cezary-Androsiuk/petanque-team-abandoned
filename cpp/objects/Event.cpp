@@ -65,6 +65,30 @@ void Event::addTeamUsingDetachedTeam()
     emit this->teamsChanged();
 }
 
+void Event::deleteTeam(const Team * const team)
+{
+    /// should be used only for phase 1
+    int index = -1;
+    for(int i=0; i<m_teams[Phase::First].size(); i++)
+    {
+        if(team == m_teams[Phase::First][i])
+        {
+            index = i;
+        }
+    }
+
+    if(index == -1)
+    {
+        W(QString::asprintf("Team to delete %p was not found!", team))
+        return;
+    }
+
+    delete m_teams[Phase::First][index];
+    m_teams[Phase::First].remove(index);
+
+    emit this->teamsChanged();
+}
+
 uint Event::generateUniqueTeamID() const
 {
     uint loopCounter = 0;

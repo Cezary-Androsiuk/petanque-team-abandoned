@@ -48,6 +48,24 @@ Item{
             }
 
             Button{
+                id: deletePlayerButton
+                anchors{
+                    right: editPlayerButton.left
+                    top: parent.top
+                }
+                height: defaultHeight
+                width: height * 2
+
+                text: "delete"
+
+                onClicked:{
+                    var team = playerObject.getParent();
+                    team.deletePlayer(playerObject);
+                }
+            }
+
+            Button{
+                id: editPlayerButton
                 anchors{
                     top: parent.top
                     right: parent.right
