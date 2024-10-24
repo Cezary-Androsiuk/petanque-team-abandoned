@@ -126,7 +126,7 @@ void Backend::validateData()
     if(teamsCount != REQUIRED_TEAMS_COUNT)
     {
         /// less or more than 8 teams
-        QString message = "";
+        QString message = tr("Event requires 8 teams");
         I(message);
         emit this->dataValidationFailed(message);
     }
@@ -139,7 +139,9 @@ void Backend::validateData()
         if(playersCount < REQUIRED_PLAYERS_COUNT)
         {
             /// team has least than 6 players
-            QString message = "";
+            QString message = tr("Team %1 has less than %2 players")
+                                  .arg(team->getTeamName())
+                                  .arg(REQUIRED_PLAYERS_COUNT);
             I(message);
             emit this->dataValidationFailed(message);
         }
@@ -158,7 +160,8 @@ void Backend::validateData()
         if(!foundMale || !foundFemale)
         {
             /// one gender is missing in team
-            QString message = "";
+            QString message = tr("Team %1 doesn't contain players of either gender")
+                                  .arg(team->getTeamName());
             I(message);
             emit this->dataValidationFailed(message);
         }
@@ -173,25 +176,21 @@ void Backend::validateData()
         if(foundLeaders == 0)
         {
             /// team missing leader
-            QString message = "";
+            QString message = tr("In team %1, no leader was selected")
+                                  .arg(team->getTeamName());
             I(message);
             emit this->dataValidationFailed(message);
         }
         if(foundLeaders > 1)
         {
             /// team contains few leaders
-            QString message = "";
+            QString message = tr("Team %1 has few leaders")
+                                  .arg(team->getTeamName());
             I(message);
             emit this->dataValidationFailed(message);
         }
     }
 
-
-    // check if both genders belong to each team
-    // check if in each team, are at least 6 players
-    // check if each team choosed captain
-    // (additional) check if in each team, captain was choosed only once
-    // check if there are at least 8 teams (some of them could be checked as "not playing", they will be automaticly filled as 0 points)
 
     emit this->dataValidatedCorrectly();
 }
