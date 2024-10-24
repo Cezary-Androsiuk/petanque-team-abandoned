@@ -194,6 +194,17 @@ Item {
                 Backend.validateData()
             }
         }
+
+        Button{
+            id: setExampleData
+            anchors{
+                left: parent.left
+            }
+            text: "create example data"
+            onClicked:{
+                Backend.createExampleData()
+            }
+        }
     }
 
 

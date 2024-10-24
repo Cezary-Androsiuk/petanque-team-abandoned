@@ -133,8 +133,8 @@ void Memory::setBackendPtr(Backend *backend)
 
 void Memory::eventToJson(const Event *const event, QJsonObject &jsonObject) const
 {
-    int phase = event->getPhase();
-    if(phase == 1)
+    Event::Phase phase = event->getPhase();
+    if(phase == Event::Phase::First)
     {
         QJsonArray teams;
         for(Team *team : event->getTeams())
@@ -165,30 +165,30 @@ void Memory::eventToJson(const Event *const event, QJsonObject &jsonObject) cons
         QJsonObject phase1;
         phase1["teams"] = teams;
 
-        jsonObject["phase 1"] = phase1;
+        jsonObject["phase first"] = phase1;
     }
 }
 
 bool Memory::jsonToEvent(QJsonObject &jsonObject, Event *const event, QString &errorMessage) const
 {
-    int phase;
-    if(jsonObject.contains("phase 2"))
+    Event::Phase phase;
+    if(jsonObject.contains("phase second"))
     {
-        phase = 2;
-        QJsonObject phase1 = jsonObject["phase 2"].toObject();
-        if(!this->jsonToPhase1(phase1, event, errorMessage))
-            return false;
+        phase = Event::Phase::Second;
+        // QJsonObject phase2 = jsonObject["phase second"].toObject();
+        // if(!this->jsonToPhase2(phase2, event, errorMessage))
+        //     return false;
     }
-    else if(jsonObject.contains("phase 1"))
+    else if(jsonObject.contains("phase first"))
     {
-        phase = 1;
-        QJsonObject phase1 = jsonObject["phase 1"].toObject();
+        phase = Event::Phase::First;
+        QJsonObject phase1 = jsonObject["phase first"].toObject();
         if(!this->jsonToPhase1(phase1, event, errorMessage))
             return false;
     }
     else
     {
-        errorMessage = "";
+        errorMessage = "No phase was found";
         return false;
     }
 

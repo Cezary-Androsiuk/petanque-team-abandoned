@@ -21,7 +21,7 @@ public:
     ~Backend();
     Event *getEvent() const;
 
-    void createExampleData();
+    Q_INVOKABLE void createExampleData();
 
 public slots:
     void validateData();

@@ -3,7 +3,7 @@
 Event::Event(QObject *parent)
     : QObject{parent}
     , m_detachedTeam(nullptr)
-    , m_phase(1)
+    , m_phase(Phase::First)
 {
     QObject::connect(this, &Event::detachedTeamUsed, this, &Event::deleteDetachedTeam);
 }
@@ -15,9 +15,13 @@ Event::~Event()
 
 void Event::clearTeams()
 {
-    for(Team *team : m_teams)
+    for(Team *team : m_teams[Phase::First])
         delete team;
-    m_teams.clear();
+    m_teams[Phase::First].clear();
+
+    for(Team *team : m_teams[Phase::Second])
+        delete team;
+    m_teams[Phase::Second].clear();
 }
 
 void Event::createDetachedTeam()
@@ -57,7 +61,7 @@ void Event::addTeamUsingDetachedTeam()
 
     emit this->detachedTeamUsed();
 
-    m_teams.append(team);
+    m_teams[m_phase].append(team);
     emit this->teamsChanged();
 }
 
@@ -89,7 +93,7 @@ uint Event::generateUniqueTeamID() const
 
 bool Event::isTeamIDUniqueInTeamssList(uint id) const
 {
-    for(Team *t : m_teams)
+    for(Team *t : m_teams[m_phase])
     {
         if(t->getTeamID() == id)
         {
@@ -100,14 +104,14 @@ bool Event::isTeamIDUniqueInTeamssList(uint id) const
     return true;
 }
 
-int Event::getPhase() const
+Event::Phase Event::getPhase() const
 {
     return m_phase;
 }
 
 TeamList Event::getTeams() const
 {
-    return m_teams;
+    return m_teams[m_phase];
 }
 
 Team *Event::getDetachedTeam() const
@@ -115,7 +119,7 @@ Team *Event::getDetachedTeam() const
     return m_detachedTeam;
 }
 
-void Event::setPhase(int phase)
+void Event::setPhase(Phase phase)
 {
     if (m_phase == phase)
         return;

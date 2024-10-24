@@ -13,12 +13,17 @@ class Event : public QObject
     Q_OBJECT
     Q_PROPERTY(TeamList teams       READ getTeams                           NOTIFY teamsChanged         FINAL)
     Q_PROPERTY(Team* detachedTeam   READ getDetachedTeam                    NOTIFY detachedTeamChanged  FINAL)
-    Q_PROPERTY(int phase            READ getPhase           WRITE setPhase  NOTIFY phaseChanged         FINAL)
+    Q_PROPERTY(Phase phase          READ getPhase           WRITE setPhase  NOTIFY phaseChanged         FINAL)
 
 public:
     explicit Event(QObject *parent = nullptr);
     ~Event();
     void clearTeams();
+
+    enum Phase{
+        First = 0,
+        Second = 1,
+    };
 
 public slots:
     void createDetachedTeam();
@@ -31,11 +36,11 @@ private:
     bool isTeamIDUniqueInTeamssList(uint id) const;
 
 public:
-    int getPhase() const;
+    Phase getPhase() const;
     TeamList getTeams() const;
     Team *getDetachedTeam() const;
 
-    void setPhase(int phase);
+    void setPhase(Phase phase);
 
 signals:
     void teamsChanged();
@@ -46,9 +51,9 @@ signals:
     void phaseChanged();
 
 private:
-    int m_phase;
+    Phase m_phase;
 
-    TeamList m_teams;
+    TeamList m_teams[2];
     Team *m_detachedTeam;
 };
 

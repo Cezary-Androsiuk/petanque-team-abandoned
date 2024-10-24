@@ -129,6 +129,7 @@ void Backend::validateData()
         QString message = tr("Event requires 8 teams");
         I(message);
         emit this->dataValidationFailed(message);
+        return;
     }
 
     /// check data for teams:
@@ -144,6 +145,7 @@ void Backend::validateData()
                                   .arg(REQUIRED_PLAYERS_COUNT);
             I(message);
             emit this->dataValidationFailed(message);
+            return;
         }
 
         /// check if team has both genders
@@ -164,6 +166,7 @@ void Backend::validateData()
                                   .arg(team->getTeamName());
             I(message);
             emit this->dataValidationFailed(message);
+            return;
         }
 
         /// check if team has one leader
@@ -180,6 +183,7 @@ void Backend::validateData()
                                   .arg(team->getTeamName());
             I(message);
             emit this->dataValidationFailed(message);
+            return;
         }
         if(foundLeaders > 1)
         {
@@ -188,6 +192,7 @@ void Backend::validateData()
                                   .arg(team->getTeamName());
             I(message);
             emit this->dataValidationFailed(message);
+            return;
         }
     }
 
