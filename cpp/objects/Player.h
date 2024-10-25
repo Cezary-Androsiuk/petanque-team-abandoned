@@ -25,7 +25,6 @@ private:
     Q_PROPERTY(bool isTeamLeader    READ getIsTeamLeader    WRITE setIsTeamLeader   NOTIFY isTeamLeaderChanged  FINAL)
 public:
     explicit Player(QObject *parent = nullptr);
-    // Player &operator = (const Player &player);
     void copyFromOtherPlayer(const Player &player);
 
     Q_INVOKABLE QObject *getParent() const;

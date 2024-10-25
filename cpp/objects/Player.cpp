@@ -7,25 +7,25 @@ Player::Player(QObject *parent)
     , m_isTeamLeader(false)
 {}
 
-// Player &Player::operator =(const Player &player)
-// {
-//     if(this == &player)
-//         return *this;
-//     return *this;
-// }
-
-void Player::copyFromOtherPlayer(const Player &player)
+void Player::copyFromOtherPlayer(const Player &sourcePlayer)
 {
-    if(this == &player)
+    if(this == &sourcePlayer)
         return;
 
-    this->setPlayerID(player.getPlayerID());
-    this->setFname(player.getFname());
-    this->setLname(player.getLname());
-    this->setLicense(player.getLicense());
-    this->setAge(player.getAge());
-    this->setGender(player.getGender());
-    this->setIsTeamLeader(player.getIsTeamLeader());
+    m_playerID = sourcePlayer.m_playerID;
+    m_fname = sourcePlayer.m_fname;
+    m_lname = sourcePlayer.m_lname;
+    m_license = sourcePlayer.m_license;
+    m_age = sourcePlayer.m_age;
+    m_gender = sourcePlayer.m_gender;
+    m_isTeamLeader = sourcePlayer.m_isTeamLeader;
+
+    emit this->fnameChanged();
+    emit this->lnameChanged();
+    emit this->licenseChanged();
+    emit this->ageChanged();
+    emit this->genderChanged();
+    emit this->isTeamLeaderChanged();
 }
 
 QObject *Player::getParent() const
@@ -70,6 +70,9 @@ bool Player::getIsTeamLeader() const
 
 void Player::setPlayerID(uint playerID)
 {
+    if(m_playerID == playerID)
+        return;
+
     m_playerID = playerID;
 }
 

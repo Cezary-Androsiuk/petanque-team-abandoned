@@ -21,22 +21,24 @@ void Team::clearPlayers()
     m_players.clear();
 }
 
-void Team::copyFromOtherTeam(const Team &team)
+void Team::copyFromOtherTeam(const Team &sourceTeam)
 {
     // I("Using other Team as a reference")
-    if(this == &team)
+    if(this == &sourceTeam)
         return;
 
-    this->setTeamID(team.getTeamID());
-    this->setTeamName(team.getTeamName());
+    m_teamID = sourceTeam.m_teamID;
+    m_teamName = sourceTeam.m_teamName;
 
     this->clearPlayers();
-    for(Player *player : team.getPlayers())
+    for(Player *player : sourceTeam.getPlayers())
     {
         Player *newPlayer = new Player(this);
         newPlayer->copyFromOtherPlayer(*player);
         m_players.append(newPlayer);
     }
+
+    emit this->teamNameChanged();
     emit this->playersChanged();
 
 }
@@ -78,7 +80,7 @@ void Team::addPlayerUsingDetachedPlayer()
 
     emit this->detachedPlayerUsed();
 
-    m_players.append(player);
+    m_players.append(player); // that line slows down entire process
     emit this->playersChanged();
 }
 
