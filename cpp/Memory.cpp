@@ -28,14 +28,7 @@ void Memory::load()
         return;
     }
 
-    if(m_backend->getEvent() == nullptr)
-    {
-        QString message("Event value is NULL!");
-        E(message);
-        emit this->memoryLoadError(message);
-        return;
-    }
-
+    m_backend->getEvent()->clearEvent();
 
     QFile file( MEMORY_FILE );
     if(!file.open(QIODevice::OpenModeFlag::ReadOnly | QIODevice::OpenModeFlag::Text))

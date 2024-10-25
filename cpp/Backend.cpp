@@ -19,6 +19,7 @@ Event *Backend::getEvent() const
 
 void Backend::createExampleData()
 {
+    m_event->clearEvent();
 
     QVariantMap teamNames[8] = {
         QVariantMap( {{"team name", "team 1"}} ),
@@ -90,6 +91,8 @@ void Backend::createExampleData()
 
     for(int i=0; i<8; i++)
     {
+
+        D("3." + QString::number(i))
         m_event->createDetachedTeam();
         Team *dTeam = m_event->getDetachedTeam();
         dTeam->setTeamName( teamNames[i]["team name"].toString() );

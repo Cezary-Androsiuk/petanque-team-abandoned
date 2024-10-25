@@ -125,7 +125,7 @@ Item{
 
                         teamDelegate.height =
                                 teamDelegate.extended ?
-                                    defaultHeight + playersInfo.height :
+                                    defaultHeight * 1.5 + playersInfo.height :
                                     defaultHeight
 
                     }
@@ -147,7 +147,7 @@ Item{
                     function onPlayersChanged() {
                         // after any change of players, change also height
                         teamDelegate.height = teamDelegate.extended ?
-                                    defaultHeight + playersInfo.height :
+                                    defaultHeight * 1.5 + playersInfo.height :
                                     defaultHeight
                     }
                 }

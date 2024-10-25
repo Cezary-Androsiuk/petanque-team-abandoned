@@ -45,7 +45,7 @@ ApplicationWindow {
 
         function onMemorySaved(){
             console.log("memory saved");
-            rootLoader.source = "event/Continue.qml"
+            Memory.load()
         }
 
         function onMemorySaveError(message){
@@ -59,6 +59,9 @@ ApplicationWindow {
             console.log("onAuthenticated")
 
             Memory.load()
+        }
+        function onAuthenticationFailed(){
+            console.log("onAuthenticationFailed")
         }
     }
 

@@ -19,6 +19,7 @@ public:
     explicit Event(QObject *parent = nullptr);
     ~Event();
     void clearTeams();
+    void clearEvent();
 
     enum Phase{
         First = 0,

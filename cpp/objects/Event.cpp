@@ -22,6 +22,14 @@ void Event::clearTeams()
     for(Team *team : m_teams[Phase::Second])
         delete team;
     m_teams[Phase::Second].clear();
+
+    emit this->teamsChanged();
+}
+
+void Event::clearEvent()
+{
+    this->clearTeams();
+    this->setPhase(Event::Phase::First);
 }
 
 void Event::createDetachedTeam()

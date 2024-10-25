@@ -12,8 +12,8 @@ Item {
         function onDataValidatedCorrectly(){
             console.log("data are valid")
 
-            // confirm
-            Memory.save(); // this should be deleted from that method
+            // confirm popup
+            onConfirmed()
         }
 
         function onDataValidationFailed(description){
@@ -24,6 +24,9 @@ Item {
 
     /////////////////// onEventStartConfirmed
     // Memory.save();
+    function onConfirmed(){
+        Memory.save(); // handled in Main.qml
+    }
 
     Item{
         id: listField
