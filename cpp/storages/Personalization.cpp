@@ -5,11 +5,12 @@ Personalization::Personalization(QObject *parent)
     : QObject{parent}
 {
     this->setDefault();
+    this->ifNotExistSaveDefault();
+    this->load();
 }
 
 Personalization::~Personalization()
 {
-    this->save();
 }
 
 void Personalization::printValues() const
@@ -33,8 +34,7 @@ Personalization *const Personalization::getInstance() noexcept
 
 void Personalization::setDefault()
 {
-    setDarkTheme(DEFAULT_DARK_THEME);
-    /// --- ADD NEW HERE ---
+
 }
 
 void Personalization::load()
@@ -77,8 +77,8 @@ void Personalization::load()
 
     // try to load data, but if key is missing then, notify and leave default value
 
-    key = KEY_DARK_THEME;
-    if(jp.contains(key)) this->setDarkTheme(jp[key].toBool());
+    key = KEY_EXAMPLE_DATA;
+    if(jp.contains(key)) m_exampleData = jp[key].toObject();
     else KEY_NOT_FOUND_MESSAGE;
 
     /// --- ADD NEW HERE ---
@@ -89,13 +89,20 @@ void Personalization::load()
     emit this->loaded();
 }
 
+void Personalization::ifNotExistSaveDefault()
+{
+    if(QFileInfo::exists(JSON_FILE))
+        return;
+    this->save();
+}
+
 void Personalization::save()
 {
     // I("save personalization starting");
 
     QJsonObject jsonObject;
     jsonObject[KEY_NOTE] = QString(DEFAULT_NOTE);
-    jsonObject[KEY_DARK_THEME] = this->getDarkTheme();
+    // jsonObject[KEY_EXAMPLE_DATA] = this->getExampleData();
     /// --- ADD NEW HERE ---
 
     QJsonDocument jsonData(jsonObject);
@@ -116,13 +123,7 @@ void Personalization::save()
     emit this->saved();
 }
 
-const bool &Personalization::getDarkTheme() const
+const QJsonObject &Personalization::getExampleData() const
 {
-    return m_darkTheme;
-}
-
-void Personalization::setDarkTheme(const bool &darkTheme)
-{
-    m_darkTheme = darkTheme;
-    emit this->darkThemeChanged();
+    return m_exampleData;
 }

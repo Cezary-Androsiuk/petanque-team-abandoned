@@ -13,6 +13,7 @@ Memory::Memory(QObject *parent)
 
 void Memory::load()
 {
+    I("Loading memory")
     if(!QFileInfo::exists( MEMORY_FILE ))
     {
         I("Memory file not exist");
@@ -28,7 +29,6 @@ void Memory::load()
         return;
     }
 
-    m_backend->getEvent()->clearEvent();
 
     QFile file( MEMORY_FILE );
     if(!file.open(QIODevice::OpenModeFlag::ReadOnly | QIODevice::OpenModeFlag::Text))
@@ -73,7 +73,7 @@ void Memory::load()
 
 void Memory::save()
 {
-
+    I("Saving memory")
     if(m_backend == nullptr)
     {
         QString message("Backend value is NULL!");
@@ -112,6 +112,7 @@ void Memory::save()
     file.write(QJsonDocument(jsonObject).toJson());
     file.close();
 
+    m_backend->getEvent()->clearEvent();
     emit this->memorySaved();
 }
 

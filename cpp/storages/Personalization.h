@@ -9,10 +9,11 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QFileInfo>
 
 #include "cpp/support/Log.h"
 
-#define JSON_FILE "Personalization.json"
+#define JSON_FILE "personalization.json"
 #define PRINT_VALUES false // if true, prints values after loadPersonalization and before savePersonalization
 #define KEY_NOT_FOUND_MESSAGE W(JSON_FILE " file not contains value related with key: " + key); // requires key variable
 #define MARK_ERROR(x) {auto error = (x); W(error); this->addError(error);}
@@ -21,17 +22,15 @@
 
 /// DEFAULT VALUES
 #define DEFAULT_NOTE "### Any change to the contents of this file, may lead to unexpected results ###"
-#define DEFAULT_DARK_THEME true
 
 /// KEYS FOR VALUES
 #define KEY_NOTE "!NOTE"
-#define KEY_DARK_THEME "dark theme"
+#define KEY_EXAMPLE_DATA "example data"
 
 // Singleton
 class Personalization : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(const bool &darkTheme READ getDarkTheme NOTIFY darkThemeChanged FINAL)
 
 private:
     explicit Personalization(QObject *parent = nullptr);
@@ -50,15 +49,15 @@ public:
 
     void setDefault();
     void load();
+private:
+    void ifNotExistSaveDefault();
     void save();
+public:
     const QString &getErrors() const;
 
 public:
     /// Getters
-    const bool &getDarkTheme() const;
-
-    /// Setters
-    void setDarkTheme(const bool &darkTheme);
+    const QJsonObject &getExampleData() const;
 
 signals:
     void loaded();
@@ -66,10 +65,8 @@ signals:
     void loadFailed();
     void saveFailed();
 
-    void darkThemeChanged();
-
 private:
-    bool m_darkTheme;
+    QJsonObject m_exampleData;
 
     QString m_errors;
 };

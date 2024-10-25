@@ -7,6 +7,7 @@
 
 #include "cpp/support/Log.h"
 #include "cpp/objects/Event.h"
+#include "cpp/storages/Personalization.h"
 
 #define REQUIRED_TEAMS_COUNT 8
 #define REQUIRED_PLAYERS_COUNT 6

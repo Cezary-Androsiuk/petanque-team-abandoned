@@ -65,7 +65,9 @@ void Event::addTeamUsingDetachedTeam()
     Team *team = new Team(this);
     team->copyFromOtherTeam( *m_detachedTeam );
     if(!this->isTeamIDUniqueInTeamssList( team->getTeamID() ))
-        W("In the meantime creating detached Team, teamID was changed to not unique (in relation to teams list)");
+        W("In the meantime creating detached Team, teamID{" +
+          QString::number(team->getTeamID()) +
+          "} was changed to not unique (in relation to teams list)");
 
     emit this->detachedTeamUsed();
 
