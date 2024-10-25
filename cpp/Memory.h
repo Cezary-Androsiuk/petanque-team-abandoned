@@ -33,7 +33,6 @@ public slots:
     void save();
 
 public:
-    Q_INVOKABLE bool memoryFileExist() const;
     void setBackendPtr(Backend *backend);
 
 private:
@@ -42,6 +41,7 @@ private:
     bool jsonToPhase1(QJsonObject &phase1, Event *const event, QString &errorMessage) const;
 
 signals:
+    void memoryFileNotExist();
     void memorySaved();
     void memorySaveError(QString message);
     void memoryLoaded();

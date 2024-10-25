@@ -30,6 +30,10 @@ ApplicationWindow {
 
     Connections{
         target: Memory
+        function onMemoryFileNotExist(){
+            rootLoader.source = "event/Configure.qml"
+        }
+
         function onMemoryLoaded(){
             rootLoader.source = "event/Continue.qml"
             // rootLoader.source = "event/Configure.qml" // to display person data that was loaded
@@ -54,17 +58,7 @@ ApplicationWindow {
         function onAuthenticated(){
             console.log("onAuthenticated")
 
-            if(Memory.memoryFileExist())
-            {
-                console.log("load")
-                Memory.load()
-            }
-            else
-            {
-                console.log("start")
-                rootLoader.source = "event/Configure.qml"
-            }
-
+            Memory.load()
         }
     }
 

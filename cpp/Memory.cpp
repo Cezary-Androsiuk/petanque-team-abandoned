@@ -13,6 +13,13 @@ Memory::Memory(QObject *parent)
 
 void Memory::load()
 {
+    if(!QFileInfo::exists( MEMORY_FILE ))
+    {
+        I("Memory file not exist");
+        emit this->memoryFileNotExist();
+        return;
+    }
+
     if(m_backend == nullptr)
     {
         QString message("Backend value is NULL!");
@@ -20,6 +27,7 @@ void Memory::load()
         emit this->memoryLoadError(message);
         return;
     }
+
     if(m_backend->getEvent() == nullptr)
     {
         QString message("Event value is NULL!");
@@ -28,13 +36,6 @@ void Memory::load()
         return;
     }
 
-    if(!QFile( MEMORY_FILE ).exists())
-    {
-        QString message("Memory file not exist");
-        E(message);
-        emit this->memoryLoadError(message);
-        return;
-    }
 
     QFile file( MEMORY_FILE );
     if(!file.open(QIODevice::OpenModeFlag::ReadOnly | QIODevice::OpenModeFlag::Text))
@@ -119,11 +120,6 @@ void Memory::save()
     file.close();
 
     emit this->memorySaved();
-}
-
-bool Memory::memoryFileExist() const
-{
-    return QFileInfo::exists( MEMORY_FILE );
 }
 
 void Memory::setBackendPtr(Backend *backend)
