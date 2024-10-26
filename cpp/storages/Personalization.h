@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
+#include <QVariantMap>
 
 #include <QFile>
 #include <QJsonDocument>
@@ -12,11 +13,12 @@
 #include <QFileInfo>
 
 #include "cpp/support/Log.h"
+#include "cpp/storages/DefaultPersonalizationData.h"
 
 #define JSON_FILE "personalization.json"
 #define PRINT_VALUES false // if true, prints values after loadPersonalization and before savePersonalization
 #define KEY_NOT_FOUND_MESSAGE W(JSON_FILE " file not contains value related with key: " + key); // requires key variable
-#define MARK_ERROR(x) {auto error = (x); W(error); this->addError(error);}
+#define MARK_ERROR(x) {auto error = (x); W(error);}
 
 #define BOOL_TO_STR(x) ( (x) ? QString("true") : QString("false") )
 
@@ -26,6 +28,10 @@
 /// KEYS FOR VALUES
 #define KEY_NOTE "!NOTE"
 #define KEY_EXAMPLE_DATA "example data"
+#define KEY_MINIMUM_PLAYERS_IN_TEA "minimum players in team"
+#define KEY_REQUIRED_TEAMS_COUNT "required teams count"
+#define KEY_REQUIRED_JUNIORS "requires juniors"
+#define KEY_PLAYER_TYPES "player types"
 
 // Singleton
 class Personalization : public QObject
@@ -40,23 +46,21 @@ private:
     Personalization& operator=(      Personalization &&) = delete; // rm move operator (y = std::move(x))
     ~Personalization();
 
-private:
-    void printValues() const;
-    void addError(const QString &error);
-
 public:
     static Personalization *const getInstance() noexcept;
 
     void setDefault();
     void load();
+
 private:
     void ifNotExistSaveDefault();
-    void save();
-public:
-    const QString &getErrors() const;
 
 public:
     /// Getters
+    int getMinimumPlayersInTeam() const;
+    int getRequiredTeamsCount() const;
+    bool getRequiresJuniors() const;
+    const QJsonObject &getPlayerTypes() const;
     const QJsonObject &getExampleData() const;
 
 signals:
@@ -67,8 +71,10 @@ signals:
 
 private:
     QJsonObject m_exampleData;
-
-    QString m_errors;
+    int m_minimumPlayersInTeam;
+    int m_requiredTeamsCount;
+    bool m_requiresJuniors;
+    QJsonObject m_playerTypes;
 };
 
 #endif // PERSONALIZATION_H

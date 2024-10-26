@@ -13,19 +13,6 @@ Personalization::~Personalization()
 {
 }
 
-void Personalization::printValues() const
-{
-#if PRINT_VALUES
-    I("  " KEY_DARK_THEME + QString(" = ") + BOOL_TO_STR(m_darkTheme));
-    /// --- ADD NEW HERE ---
-#endif
-}
-
-void Personalization::addError(const QString &error)
-{
-    m_errors += error;
-}
-
 Personalization *const Personalization::getInstance() noexcept
 {
     static Personalization p;
@@ -34,7 +21,11 @@ Personalization *const Personalization::getInstance() noexcept
 
 void Personalization::setDefault()
 {
-
+    m_requiredTeamsCount = defaultRequiredTeamsCount;
+    m_minimumPlayersInTeam = defaultMinimumPlayersInTeam;
+    m_requiresJuniors = defaultRequiresJuniors;
+    m_playerTypes = QJsonDocument::fromJson(defaultPlayerTypes).object();
+    m_exampleData = QJsonDocument::fromJson(defaultExampleData).object();
 }
 
 void Personalization::load()
@@ -76,14 +67,26 @@ void Personalization::load()
     QString key;
 
     // try to load data, but if key is missing then, notify and leave default value
+    key = KEY_MINIMUM_PLAYERS_IN_TEA;
+    if(jp.contains(key)) m_minimumPlayersInTeam = jp[key].toInt();
+    else KEY_NOT_FOUND_MESSAGE;
+
+    key = KEY_REQUIRED_TEAMS_COUNT;
+    if(jp.contains(key)) m_requiredTeamsCount = jp[key].toInt();
+    else KEY_NOT_FOUND_MESSAGE;
+
+    key = KEY_REQUIRED_JUNIORS;
+    if(jp.contains(key)) m_requiresJuniors = jp[key].toBool();
+    else KEY_NOT_FOUND_MESSAGE;
+
+    key = KEY_PLAYER_TYPES;
+    if(jp.contains(key)) m_playerTypes = jp[key].toObject();
+    else KEY_NOT_FOUND_MESSAGE;
 
     key = KEY_EXAMPLE_DATA;
     if(jp.contains(key)) m_exampleData = jp[key].toObject();
     else KEY_NOT_FOUND_MESSAGE;
 
-    /// --- ADD NEW HERE ---
-
-    this->printValues();
     I("personalization data loaded");
 
     emit this->loaded();
@@ -93,17 +96,15 @@ void Personalization::ifNotExistSaveDefault()
 {
     if(QFileInfo::exists(JSON_FILE))
         return;
-    this->save();
-}
-
-void Personalization::save()
-{
-    // I("save personalization starting");
+    I("personalization file not exist, creating file with the default one")
 
     QJsonObject jsonObject;
     jsonObject[KEY_NOTE] = QString(DEFAULT_NOTE);
-    // jsonObject[KEY_EXAMPLE_DATA] = this->getExampleData();
-    /// --- ADD NEW HERE ---
+    jsonObject[KEY_MINIMUM_PLAYERS_IN_TEA] = this->getMinimumPlayersInTeam();
+    jsonObject[KEY_REQUIRED_TEAMS_COUNT] = this->getRequiredTeamsCount();
+    jsonObject[KEY_REQUIRED_JUNIORS] = this->getRequiresJuniors();
+    jsonObject[KEY_PLAYER_TYPES] = this->getPlayerTypes();
+    jsonObject[KEY_EXAMPLE_DATA] = this->getExampleData();
 
     QJsonDocument jsonData(jsonObject);
 
@@ -117,13 +118,34 @@ void Personalization::save()
     file.write(jsonData.toJson());
     file.close();
 
-    this->printValues();
     I("personalization data saved");
 
     emit this->saved();
+}
+
+
+int Personalization::getMinimumPlayersInTeam() const
+{
+    return m_minimumPlayersInTeam;
+}
+
+int Personalization::getRequiredTeamsCount() const
+{
+    return m_requiredTeamsCount;
+}
+
+bool Personalization::getRequiresJuniors() const
+{
+    return m_requiresJuniors;
+}
+
+const QJsonObject &Personalization::getPlayerTypes() const
+{
+    return m_playerTypes;
 }
 
 const QJsonObject &Personalization::getExampleData() const
 {
     return m_exampleData;
 }
+
