@@ -59,12 +59,14 @@ void Backend::validateData()
 {
     /// this should be called only after starting the event
 
+    Personalization *p = Personalization::getInstance();
+
     /// check if 8 teams was registered
     int teamsCount = m_event->getTeams().size();
-    if(teamsCount != REQUIRED_TEAMS_COUNT)
+    if(teamsCount != p->getRequiredTeamsCount())
     {
         /// less or more than 8 teams
-        QString message = tr("Event requires 8 teams");
+        QString message = tr("Event requires %1 teams").arg(p->getRequiredTeamsCount());
         I(message);
         emit this->dataValidationFailed(message);
         return;
@@ -75,12 +77,12 @@ void Backend::validateData()
     {
         /// check if team has at least 6 players
         int playersCount = team->getPlayers().size();
-        if(playersCount < REQUIRED_PLAYERS_COUNT)
+        if(playersCount < p->getMinimumPlayersInTeam())
         {
             /// team has least than 6 players
             QString message = tr("Team %1 has less than %2 players")
                                   .arg(team->getTeamName())
-                                  .arg(REQUIRED_PLAYERS_COUNT);
+                                  .arg(p->getMinimumPlayersInTeam());
             I(message);
             emit this->dataValidationFailed(message);
             return;
@@ -106,6 +108,44 @@ void Backend::validateData()
             emit this->dataValidationFailed(message);
             return;
         }
+
+        /// check if team has junior
+        // if(p->getRequiresJuniors())
+        // {
+        //     bool foundJunior = false;
+        //     for(Player *player : team->getPlayers())
+        //     {
+        //         QDate playerBirthDate(player->getBirthDate());
+        //         QDate currentDate = QDate::currentDate();
+        //         int ageInDays = playerBirthDate.daysTo(currentDate);
+        //         int age = ageInDays/365.25;
+        //         playerBirthDate = playerBirthDate.addYears(age);
+        //         if(currentDate < playerBirthDate)
+        //             age--;
+
+
+        //         QJsonObject juniorType = p->getPlayerTypes()["junior"].toObject();
+        //         QString gender = player->getGender() == Player::Genders::Male ? "male" : "female";
+        //         int min = juniorType[gender].toObject()["min"].toInt();
+        //         int max = juniorType[gender].toObject()["max"].toInt();
+
+        //         if(age >= min && age < max)
+        //         {
+        //             foundJunior = true;
+        //             break;
+        //         }
+        //     }
+
+        //     if(!foundJunior)
+        //     {
+        //         /// junior player is missing in team
+        //         QString message = tr("Team %1 doesn't contain any junior player")
+        //                               .arg(team->getTeamName());
+        //         I(message);
+        //         emit this->dataValidationFailed(message);
+        //         return;
+        //     }
+        // }
 
         /// check if team has one leader
         int foundLeaders = 0;
