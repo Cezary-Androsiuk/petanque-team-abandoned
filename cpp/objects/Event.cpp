@@ -138,11 +138,6 @@ bool Event::isTeamIDUniqueInTeamssList(uint id) const
     return true;
 }
 
-Event::Phase Event::getPhase() const
-{
-    return m_phase;
-}
-
 TeamList Event::getTeams() const
 {
     return m_teams[m_phase];
@@ -153,10 +148,119 @@ Team *Event::getDetachedTeam() const
     return m_detachedTeam;
 }
 
+Event::Phase Event::getPhase() const
+{
+    return m_phase;
+}
+
+QString Event::getName() const
+{
+    return m_name;
+}
+
+QString Event::getFirstPhaseDate() const
+{
+    return m_firstPhaseDate;
+}
+
+QString Event::getSecondPhaseDate() const
+{
+    return m_secondPhaseDate;
+}
+
+QString Event::getCompetitionOrganizer() const
+{
+    return m_competitionOrganizer;
+}
+
+QString Event::getFirstPhasePlace() const
+{
+    return m_firstPhasePlace;
+}
+
+QString Event::getSecondPhasePlace() const
+{
+    return m_secondPhasePlace;
+}
+
+QStringList Event::getJudges() const
+{
+    return m_judges;
+}
+
+QString Event::getUnionDelegate() const
+{
+    return m_unionDelegate;
+}
+
 void Event::setPhase(Phase phase)
 {
     if (m_phase == phase)
         return;
     m_phase = phase;
     emit phaseChanged();
+}
+
+void Event::setName(const QString &name)
+{
+    if (m_name == name)
+        return;
+    m_name = name;
+    emit nameChanged();
+}
+
+void Event::setFirstPhaseDate(const QString &firstPhaseDate)
+{
+    if (m_firstPhaseDate == firstPhaseDate)
+        return;
+    m_firstPhaseDate = firstPhaseDate;
+    emit firstPhaseDateChanged();
+}
+
+void Event::setSecondPhaseDate(const QString &secondPhaseDate)
+{
+    if (m_secondPhaseDate == secondPhaseDate)
+        return;
+    m_secondPhaseDate = secondPhaseDate;
+    emit secondPhaseDateChanged();
+}
+
+void Event::setCompetitionOrganizer(const QString &competitionOrganizer)
+{
+    if (m_competitionOrganizer == competitionOrganizer)
+        return;
+    m_competitionOrganizer = competitionOrganizer;
+    emit competitionOrganizerChanged();
+}
+
+void Event::setFirstPhasePlace(const QString &firstPhasePlace)
+{
+    if (m_firstPhasePlace == firstPhasePlace)
+        return;
+    m_firstPhasePlace = firstPhasePlace;
+    emit firstPhasePlaceChanged();
+}
+
+void Event::setSecondPhasePlace(const QString &secondPhasePlace)
+{
+    if (m_secondPhasePlace == secondPhasePlace)
+        return;
+    m_secondPhasePlace = secondPhasePlace;
+    emit secondPhasePlaceChanged();
+}
+
+void Event::setJudges(const QStringList &judges)
+{
+    if (m_judges == judges)
+        return;
+    m_judges = judges;
+    emit judgesChanged();
+}
+
+void Event::setUnionDelegate(const QString &unionDelegate)
+{
+    if (m_unionDelegate == unionDelegate)
+        return;
+    m_unionDelegate = unionDelegate;
+    emit unionDelegateChanged();
 }

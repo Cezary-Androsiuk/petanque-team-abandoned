@@ -13,7 +13,16 @@ class Event : public QObject
     Q_OBJECT
     Q_PROPERTY(TeamList teams       READ getTeams                           NOTIFY teamsChanged         FINAL)
     Q_PROPERTY(Team* detachedTeam   READ getDetachedTeam                    NOTIFY detachedTeamChanged  FINAL)
-    Q_PROPERTY(Phase phase          READ getPhase           WRITE setPhase  NOTIFY phaseChanged         FINAL)
+
+    Q_PROPERTY(Phase phase                  READ getPhase                   WRITE setPhase                  NOTIFY phaseChanged                 FINAL)
+    Q_PROPERTY(QString name                 READ getName                    WRITE setName                   NOTIFY nameChanged                  FINAL)
+    Q_PROPERTY(QString firstPhaseDate       READ getFirstPhaseDate          WRITE setFirstPhaseDate         NOTIFY firstPhaseDateChanged        FINAL)
+    Q_PROPERTY(QString secondPhaseDate      READ getSecondPhaseDate         WRITE setSecondPhaseDate        NOTIFY secondPhaseDateChanged       FINAL)
+    Q_PROPERTY(QString competitionOrganizer READ getCompetitionOrganizer    WRITE setCompetitionOrganizer   NOTIFY competitionOrganizerChanged  FINAL)
+    Q_PROPERTY(QString firstPhasePlace      READ getFirstPhasePlace         WRITE setFirstPhasePlace        NOTIFY firstPhasePlaceChanged       FINAL)
+    Q_PROPERTY(QString secondPhasePlace     READ getSecondPhasePlace        WRITE setSecondPhasePlace       NOTIFY secondPhasePlaceChanged      FINAL)
+    Q_PROPERTY(QStringList judges           READ getJudges                  WRITE setJudges                 NOTIFY judgesChanged                FINAL)
+    Q_PROPERTY(QString unionDelegate        READ getUnionDelegate           WRITE setUnionDelegate          NOTIFY unionDelegateChanged         FINAL)
 
 public:
     explicit Event(QObject *parent = nullptr);
@@ -38,11 +47,28 @@ private:
     bool isTeamIDUniqueInTeamssList(uint id) const;
 
 public:
-    Phase getPhase() const;
     TeamList getTeams() const;
     Team *getDetachedTeam() const;
 
+    Phase getPhase() const;
+    QString getName() const;
+    QString getFirstPhaseDate() const;
+    QString getSecondPhaseDate() const;
+    QString getCompetitionOrganizer() const;
+    QString getFirstPhasePlace() const;
+    QString getSecondPhasePlace() const;
+    QStringList getJudges() const;
+    QString getUnionDelegate() const;
+
     void setPhase(Phase phase);
+    void setName(const QString &name);
+    void setFirstPhaseDate(const QString &firstPhaseDate);
+    void setSecondPhaseDate(const QString &secondPhaseDate);
+    void setCompetitionOrganizer(const QString &competitionOrganizer);
+    void setFirstPhasePlace(const QString &firstPhasePlace);
+    void setSecondPhasePlace(const QString &secondPhasePlace);
+    void setJudges(const QStringList &judges);
+    void setUnionDelegate(const QString &unionDelegate);
 
 signals:
     void teamsChanged();
@@ -51,12 +77,29 @@ signals:
     void detachedTeamUsed();
 
     void phaseChanged();
+    void nameChanged();
+    void firstPhaseDateChanged();
+    void secondPhaseDateChanged();
+    void competitionOrganizerChanged();
+    void firstPhasePlaceChanged();
+    void secondPhasePlaceChanged();
+    void judgesChanged();
+    void unionDelegateChanged();
 
 private:
-    Phase m_phase;
 
     TeamList m_teams[2];
     Team *m_detachedTeam;
+
+    Phase m_phase;
+    QString m_name;
+    QString m_firstPhaseDate;
+    QString m_secondPhaseDate;
+    QString m_competitionOrganizer;
+    QString m_firstPhasePlace;
+    QString m_secondPhasePlace;
+    QStringList m_judges;
+    QString m_unionDelegate;
 };
 
 #endif // EVENT_H
