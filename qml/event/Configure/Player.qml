@@ -84,16 +84,10 @@ Item {
             height: 60
             width: 230
 
-            placeholderText: qsTr("Age")
-            validator: IntValidator{
-                bottom: 0
-                top: 200
-            }
+            placeholderText: qsTr("Age YYYY-MM-DD")
             text: (!player)?null: player.age
             onTextEdited: {
-                var t = text
-                if(t === "") t = "0"
-                player.age = t
+                player.age = text
             }
         }
 
@@ -229,6 +223,19 @@ Item {
                 text: "save player"
 
                 onClicked: {
+                    var birthDateIsValid = (!player) ? 4 : player.birthDateIsValid()
+                    if(birthDateIsValid)
+                    {
+                        console.log("birth date is not valid!")
+                        if(birthDateIsValid === 1)
+                            console.log("value not match regex YYYY-MM-DD")
+                        else if (birthDateIsValid === 2)
+                            console.log("value is not a valid date")
+                        else if (birthDateIsValid === 3)
+                            console.log("date is not realistic age (cannot be less than 0 and greater than 200)")
+                        return;
+                    }
+
                     parentStackView.pop();
                     configurePlayer.team.addPlayerUsingDetachedPlayer();
                 }

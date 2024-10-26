@@ -42,7 +42,7 @@ void Backend::createExampleData()
             dPlayer->setFname( player["fname"].toString() );
             dPlayer->setLname( player["lname"].toString() );
             dPlayer->setLicense( player["license"].toString() );
-            dPlayer->setAge( player["age"].toString() );
+            dPlayer->setBirthDate( player["age"].toString() );
             QChar g = player["gender"].toString()[0];
             Player::Genders pg = g == 'M' ? Player::Genders::Male : Player::Genders::Female;
             dPlayer->setGender( pg );
@@ -110,42 +110,35 @@ void Backend::validateData()
         }
 
         /// check if team has junior
-        // if(p->getRequiresJuniors())
-        // {
-        //     bool foundJunior = false;
-        //     for(Player *player : team->getPlayers())
-        //     {
-        //         QDate playerBirthDate(player->getBirthDate());
-        //         QDate currentDate = QDate::currentDate();
-        //         int ageInDays = playerBirthDate.daysTo(currentDate);
-        //         int age = ageInDays/365.25;
-        //         playerBirthDate = playerBirthDate.addYears(age);
-        //         if(currentDate < playerBirthDate)
-        //             age--;
+        if(p->getRequiresJuniors())
+        {
+            bool foundJunior = false;
+            for(Player *player : team->getPlayers())
+            {
+                int age = player->getAgeInYears();
 
+                QJsonObject juniorType = p->getPlayerTypes()["junior"].toObject();
+                QString gender = player->getGender() == Player::Genders::Male ? "male" : "female";
+                int min = juniorType[gender].toObject()["min"].toInt();
+                int max = juniorType[gender].toObject()["max"].toInt();
 
-        //         QJsonObject juniorType = p->getPlayerTypes()["junior"].toObject();
-        //         QString gender = player->getGender() == Player::Genders::Male ? "male" : "female";
-        //         int min = juniorType[gender].toObject()["min"].toInt();
-        //         int max = juniorType[gender].toObject()["max"].toInt();
+                if(age >= min && age < max)
+                {
+                    foundJunior = true;
+                    break;
+                }
+            }
 
-        //         if(age >= min && age < max)
-        //         {
-        //             foundJunior = true;
-        //             break;
-        //         }
-        //     }
-
-        //     if(!foundJunior)
-        //     {
-        //         /// junior player is missing in team
-        //         QString message = tr("Team %1 doesn't contain any junior player")
-        //                               .arg(team->getTeamName());
-        //         I(message);
-        //         emit this->dataValidationFailed(message);
-        //         return;
-        //     }
-        // }
+            if(!foundJunior)
+            {
+                /// junior player is missing in team
+                QString message = tr("Team %1 doesn't contain any junior player")
+                                      .arg(team->getTeamName());
+                I(message);
+                emit this->dataValidationFailed(message);
+                return;
+            }
+        }
 
         /// check if team has one leader
         int foundLeaders = 0;

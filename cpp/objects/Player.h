@@ -3,6 +3,8 @@
 
 #include <QObject>
 #include <QList>
+#include <QRegularExpression>
+#include <QDate>
 
 #include "cpp/support/Log.h"
 
@@ -20,7 +22,7 @@ private:
     Q_PROPERTY(QString fname        READ getFname           WRITE setFname          NOTIFY fnameChanged         FINAL)
     Q_PROPERTY(QString lname        READ getLname           WRITE setLname          NOTIFY lnameChanged         FINAL)
     Q_PROPERTY(QString license      READ getLicense         WRITE setLicense        NOTIFY licenseChanged       FINAL)
-    Q_PROPERTY(QString age          READ getAge             WRITE setAge            NOTIFY ageChanged           FINAL)
+    Q_PROPERTY(QString age          READ getBirthDate       WRITE setBirthDate      NOTIFY birthDateChanged     FINAL)
     Q_PROPERTY(Genders gender       READ getGender          WRITE setGender         NOTIFY genderChanged        FINAL)
     Q_PROPERTY(bool isTeamLeader    READ getIsTeamLeader    WRITE setIsTeamLeader   NOTIFY isTeamLeaderChanged  FINAL)
 public:
@@ -28,12 +30,15 @@ public:
     void copyFromOtherPlayer(const Player &player);
 
     Q_INVOKABLE QObject *getParent() const;
+    Q_INVOKABLE int birthDateIsValid() const;
+    QDate getBirthDateAsDate() const;
+    int getAgeInYears() const;
 
     uint getPlayerID() const;
     QString getFname() const;
     QString getLname() const;
     QString getLicense() const;
-    QString getAge() const;
+    QString getBirthDate() const;
     Genders getGender() const;
     bool getIsTeamLeader() const;
 
@@ -41,7 +46,7 @@ public:
     void setFname(const QString &fname);
     void setLname(const QString &lname);
     void setLicense(const QString &license);
-    void setAge(QString age);
+    void setBirthDate(QString birthDate);
     void setGender(const Genders &gender);
     void setIsTeamLeader(bool isTeamLeader);
 
@@ -49,7 +54,7 @@ signals:
     void fnameChanged();
     void lnameChanged();
     void licenseChanged();
-    void ageChanged();
+    void birthDateChanged();
     void genderChanged();
     void isTeamLeaderChanged();
 
@@ -58,9 +63,11 @@ private:
     QString m_fname;
     QString m_lname;
     QString m_license;
-    int m_age;
+    QString m_birthDate;
     Genders m_gender;
     bool m_isTeamLeader;
+
+    static const QRegularExpression m_birthDateRegex;
 };
 
 typedef QList<Player*> PlayerList;
