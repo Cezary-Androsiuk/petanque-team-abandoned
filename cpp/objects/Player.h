@@ -32,7 +32,7 @@ public:
     Q_INVOKABLE QObject *getParent() const;
     Q_INVOKABLE int birthDateIsValid() const;
     QDate getBirthDateAsDate() const;
-    int getAgeInYears() const;
+    Q_INVOKABLE int getAgeInYears() const;
 
     uint getPlayerID() const;
     QString getFname() const;

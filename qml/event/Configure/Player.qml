@@ -76,7 +76,7 @@ Item {
         }
 
         TextField{
-            id: ageTextField
+            id: birthDateTextField
             anchors{
                 top: licenseTextField.bottom
                 topMargin: 10
@@ -90,11 +90,33 @@ Item {
                 player.age = text
             }
         }
+        // Label{
+        //     id: ageValueLabel;
+        //     anchors{
+        //         top: birthDateTextField.top
+        //         left: birthDateTextField.right
+        //         bottom: birthDateTextField.bottom
+        //         leftMargin: 10
+        //     }
+        //     verticalAlignment: Text.AlignVCenter
+        //     text: {
+        //         if(!player) {
+        //             ""
+        //         }
+        //         else{
+        //             var birthDateIsValid = (!player) ? 4 : player.birthDateIsValid()
+        //             if(!birthDateTextField)
+        //                 "ok"//player.getAgeInYears()
+        //             else
+        //                 "---"
+        //         }
+        //     }
+        // }
 
         ComboBox{
             id: genderComboBox
             anchors{
-                top: ageTextField.bottom
+                top: birthDateTextField.bottom
                 topMargin: 10
             }
             model: [
