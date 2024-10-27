@@ -32,6 +32,8 @@
 #define KEY_REQUIRED_TEAMS_COUNT "required teams count"
 #define KEY_REQUIRED_JUNIORS "requires juniors"
 #define KEY_PLAYER_TYPES "player types"
+#define KEY_ROUND_MATCHES "rounds matches"
+
 
 // Singleton
 class Personalization : public QObject
@@ -53,7 +55,7 @@ public:
     void load();
 
 private:
-    void ifNotExistSaveDefault();
+    void save();
 
 public:
     /// Getters
@@ -61,6 +63,7 @@ public:
     int getRequiredTeamsCount() const;
     bool getRequiresJuniors() const;
     const QJsonObject &getPlayerTypes() const;
+    const QJsonObject &getRoundsMatches() const;
     const QJsonObject &getExampleData() const;
 
 signals:
@@ -70,11 +73,12 @@ signals:
     void saveFailed();
 
 private:
-    QJsonObject m_exampleData;
     int m_minimumPlayersInTeam;
     int m_requiredTeamsCount;
     bool m_requiresJuniors;
     QJsonObject m_playerTypes;
+    QJsonObject m_roundsMatches;
+    QJsonObject m_exampleData;
 };
 
 #endif // PERSONALIZATION_H

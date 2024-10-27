@@ -24,6 +24,9 @@ class Event : public QObject
     Q_PROPERTY(QStringList judges           READ getJudges                  WRITE setJudges                 NOTIFY judgesChanged                FINAL)
     Q_PROPERTY(QString unionDelegate        READ getUnionDelegate           WRITE setUnionDelegate          NOTIFY unionDelegateChanged         FINAL)
 
+    Q_PROPERTY(int round        READ getRound       WRITE setRound      NOTIFY roundChanged         FINAL)
+    Q_PROPERTY(int roundStage   READ getRoundStage  WRITE setRoundStage NOTIFY roundStageChanged    FINAL)
+
 public:
     explicit Event(QObject *parent = nullptr);
     ~Event();
@@ -64,6 +67,9 @@ public:
     QStringList getJudges() const;
     QString getUnionDelegate() const;
 
+    int getRound() const;
+    int getRoundStage() const;
+
     void setPhase(Phase phase);
     void setName(const QString &name);
     void setFirstPhaseDate(const QString &firstPhaseDate);
@@ -73,6 +79,9 @@ public:
     void setSecondPhasePlace(const QString &secondPhasePlace);
     void setJudges(const QStringList &judges);
     void setUnionDelegate(const QString &unionDelegate);
+
+    void setRound(int round);
+    void setRoundStage(int roundStage);
 
 signals:
     void teamsChanged();
@@ -90,6 +99,9 @@ signals:
     void judgesChanged();
     void unionDelegateChanged();
 
+    void roundChanged();
+    void roundStageChanged();
+
 private:
 
     TeamList m_teams[2];
@@ -104,6 +116,9 @@ private:
     QString m_secondPhasePlace;
     QStringList m_judges;
     QString m_unionDelegate;
+
+    int m_round;
+    int m_roundStage;
 };
 
 #endif // EVENT_H

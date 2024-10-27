@@ -4,6 +4,8 @@ Event::Event(QObject *parent)
     : QObject{parent}
     , m_detachedTeam(nullptr)
     , m_phase(Phase::First)
+    , m_round(1)
+    , m_roundStage(0)
 {
     QObject::connect(this, &Event::detachedTeamUsed, this, &Event::deleteDetachedTeam);
 }
@@ -224,6 +226,16 @@ QString Event::getUnionDelegate() const
     return m_unionDelegate;
 }
 
+int Event::getRound() const
+{
+    return m_round;
+}
+
+int Event::getRoundStage() const
+{
+    return m_roundStage;
+}
+
 void Event::setPhase(Phase phase)
 {
     if (m_phase == phase)
@@ -294,4 +306,20 @@ void Event::setUnionDelegate(const QString &unionDelegate)
         return;
     m_unionDelegate = unionDelegate;
     emit unionDelegateChanged();
+}
+
+void Event::setRound(int round)
+{
+    if (m_round == round)
+        return;
+    m_round = round;
+    emit roundChanged();
+}
+
+void Event::setRoundStage(int roundStage)
+{
+    if (m_roundStage == roundStage)
+        return;
+    m_roundStage = roundStage;
+    emit roundStageChanged();
 }

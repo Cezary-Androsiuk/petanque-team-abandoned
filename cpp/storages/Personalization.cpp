@@ -5,12 +5,12 @@ Personalization::Personalization(QObject *parent)
     : QObject{parent}
 {
     this->setDefault();
-    this->ifNotExistSaveDefault();
     this->load();
 }
 
 Personalization::~Personalization()
 {
+    this->save();
 }
 
 Personalization *const Personalization::getInstance() noexcept
@@ -25,6 +25,7 @@ void Personalization::setDefault()
     m_minimumPlayersInTeam = defaultMinimumPlayersInTeam;
     m_requiresJuniors = defaultRequiresJuniors;
     m_playerTypes = QJsonDocument::fromJson(defaultPlayerTypes).object();
+    m_roundsMatches = QJsonDocument::fromJson(defaultRoundsMatches).object();
     m_exampleData = QJsonDocument::fromJson(defaultExampleData).object();
 }
 
@@ -83,6 +84,10 @@ void Personalization::load()
     if(jp.contains(key)) m_playerTypes = jp[key].toObject();
     else KEY_NOT_FOUND_MESSAGE;
 
+    key = KEY_ROUND_MATCHES;
+    if(jp.contains(key)) m_roundsMatches = jp[key].toObject();
+    else KEY_NOT_FOUND_MESSAGE;
+
     key = KEY_EXAMPLE_DATA;
     if(jp.contains(key)) m_exampleData = jp[key].toObject();
     else KEY_NOT_FOUND_MESSAGE;
@@ -92,18 +97,15 @@ void Personalization::load()
     emit this->loaded();
 }
 
-void Personalization::ifNotExistSaveDefault()
+void Personalization::save()
 {
-    if(QFileInfo::exists(JSON_FILE))
-        return;
-    I("personalization file not exist, creating file with the default one")
-
     QJsonObject jsonObject;
     jsonObject[KEY_NOTE] = QString(DEFAULT_NOTE);
     jsonObject[KEY_MINIMUM_PLAYERS_IN_TEA] = this->getMinimumPlayersInTeam();
     jsonObject[KEY_REQUIRED_TEAMS_COUNT] = this->getRequiredTeamsCount();
     jsonObject[KEY_REQUIRED_JUNIORS] = this->getRequiresJuniors();
     jsonObject[KEY_PLAYER_TYPES] = this->getPlayerTypes();
+    jsonObject[KEY_ROUND_MATCHES] = this->getRoundsMatches();
     jsonObject[KEY_EXAMPLE_DATA] = this->getExampleData();
 
     QJsonDocument jsonData(jsonObject);
@@ -142,6 +144,11 @@ bool Personalization::getRequiresJuniors() const
 const QJsonObject &Personalization::getPlayerTypes() const
 {
     return m_playerTypes;
+}
+
+const QJsonObject &Personalization::getRoundsMatches() const
+{
+    return m_roundsMatches;
 }
 
 const QJsonObject &Personalization::getExampleData() const
