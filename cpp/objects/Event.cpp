@@ -84,6 +84,7 @@ void Event::deleteTeam(const Team * const team)
         if(team == m_teams[Phase::First][i])
         {
             index = i;
+            break;
         }
     }
 
@@ -102,11 +103,6 @@ void Event::deleteTeam(const Team * const team)
 void Event::addJudge()
 {
     m_judges.append("");
-
-    I("judges:");
-    for(const auto &judge : m_judges)
-        I(judge);
-
     emit this->judgesChanged();
 }
 

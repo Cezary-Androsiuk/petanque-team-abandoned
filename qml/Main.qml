@@ -56,7 +56,6 @@ ApplicationWindow {
     Connections{
         target: Login
         function onAuthenticated(){
-            console.log("onAuthenticated")
 
             Memory.load()
         }
