@@ -42,6 +42,10 @@ public slots:
     void addTeamUsingDetachedTeam();
     void deleteTeam(const Team *const team);
 
+    void addJudge();
+    void deleteJudge(int index);
+    void setJudge(int index, QString judge);
+
 private:
     uint generateUniqueTeamID() const;
     bool isTeamIDUniqueInTeamssList(uint id) const;

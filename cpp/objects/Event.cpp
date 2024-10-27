@@ -99,6 +99,41 @@ void Event::deleteTeam(const Team * const team)
     emit this->teamsChanged();
 }
 
+void Event::addJudge()
+{
+    m_judges.append("");
+
+    I("judges:");
+    for(const auto &judge : m_judges)
+        I(judge);
+
+    emit this->judgesChanged();
+}
+
+void Event::deleteJudge(int index)
+{
+    if(index >= m_judges.size())
+    {
+        W("trying to delete not existing judge")
+        return;
+    }
+
+    m_judges.remove(index);
+    emit this->judgesChanged();
+}
+
+void Event::setJudge(int index, QString judge)
+{
+    if(index >= m_judges.size())
+    {
+        W("trying to acces not existing judge")
+        return;
+    }
+
+    m_judges[index] = judge;
+    emit this->judgesChanged();
+}
+
 uint Event::generateUniqueTeamID() const
 {
     uint loopCounter = 0;

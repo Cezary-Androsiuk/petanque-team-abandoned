@@ -123,13 +123,6 @@ Item {
 
     }
 
-
-    // property var judgesModel: ["", "", ""]
-    ListModel{
-        id: judgesModel
-        ListElement{ judgeName: "" }
-    }
-
     Item{
         id: eventInfoField
         anchors{
@@ -276,47 +269,74 @@ Item {
                 top: secondPhasePlaceTextField.bottom
                 topMargin: 10
             }
-            height: 240//(judgesModel.length+1) * 60
+            height: ((!event)?1: (event.judges.length+1)) * judgesItem.judgeHeight
             width: 230
+
+            readonly property int judgeHeight: 80
+
+            Rectangle{
+                anchors.fill: parent
+                color: "transparent"
+                border.color: Qt.rgba(1,1,1, 0.5)
+                border.width: 1
+            }
 
             ListView{
                 id: judgesListView
-                anchors.fill: parent
+                anchors{
+                    fill: parent
+                    margins: 10
+                }
                 boundsBehavior: Flickable.StopAtBounds
-                model: configureEvent.judgesModel
+                model: (!event)?null: event.judges
 
                 footer: Item{
                     width: judgesListView.width
-                    height: 60
+                    height: judgesItem.judgeHeight
                     Button{
                         id: addJudgeButton
-                        anchors.fill: parent
-                        text: qsTr("Add judge button")
+                        anchors{
+                            fill: parent
+                            margins: 15
+                        }
+                        text: qsTr("Add judge")
                         onClicked: {
-                            configureEvent.judgesModel.append({judgeName: ""})
-
-                            for(var judge2 of configureEvent.judgesModel)
-                                console.log("judge: " + judge2.judgeName)
+                            event.addJudge();
                         }
                     }
                 }
 
                 delegate: Item{
-                    Rectangle{
-                        anchors.fill: parent
-                        color: "red"
-                        opacity: 0.6
-                    }
-
                     width: judgesListView.width
-                    height: 60
+                    height: judgesItem.judgeHeight
                     TextField{
                         id: judgeTextField
-                        anchors.fill: parent
-                        placeholderText: qsTr("Judge")
-                        text: modelData.judgeName
-                        onTextEdited: {
-                            modelData.judgeName = text
+                        anchors{
+                            left: parent.left
+                            top: parent.top
+                            right: deleteJudgeButton.left
+                            bottom: parent.bottom
+                            margins: 5
+                        }
+                        placeholderText: qsTr("Judge " + index)
+                        text: modelData
+                        onEditingFinished: {
+                            event.setJudge(index, text);
+                        }
+                    }
+
+                    Button{
+                        id: deleteJudgeButton
+                        anchors{
+                            top: parent.top
+                            right: parent.right
+                            bottom: parent.bottom
+                            margins: 15
+                        }
+                        width: height
+                        text: "X"
+                        onClicked: {
+                            event.deleteJudge(index);
                         }
                     }
                 }
@@ -383,8 +403,6 @@ Item {
 
             text: "start event"
             onClicked: {
-                for(var judge2 of judgesModel)
-                    console.log("judge: " + judge2)
                 Backend.validateData()
             }
         }
