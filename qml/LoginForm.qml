@@ -112,5 +112,21 @@ Item {
                 Login.authenticate(login, password)
             }
         }
+
+    }
+
+    Button{
+        id: debugDeleteMemoryButton
+        anchors{
+            bottom: parent.bottom
+            bottomMargin: 20
+            horizontalCenter: parent.horizontalCenter
+        }
+        visible: (!Backend)?false: Backend.debugMemoryFileExist()
+        text: "Delete memory - Exist"
+        onClicked: {
+            Backend.debugDeleteMemory();
+            visible = Backend.debugMemoryFileExist();
+        }
     }
 }

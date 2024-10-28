@@ -121,9 +121,9 @@ Item {
             }
             enabled: (!Backend)?false: Backend.event.roundStage !== 4
             onClicked: {
-                Memory.save()
                 if(Backend.event.roundStage !== 4)
                     Backend.event.roundStage += 1
+                Memory.save()
             }
         }
     }

@@ -23,6 +23,8 @@ public:
 
 public slots:
     void validateData();
+    bool debugMemoryFileExist();
+    void debugDeleteMemory();
 
 signals:
     void dataValidatedCorrectly();

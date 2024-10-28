@@ -170,3 +170,15 @@ void Backend::validateData()
 
     emit this->dataValidatedCorrectly();
 }
+
+bool Backend::debugMemoryFileExist()
+{
+    QString memoryFile("./memory/PetanqueMemory.json");
+    return QFileInfo::exists(memoryFile);
+}
+
+void Backend::debugDeleteMemory()
+{
+    QString memoryFile("./memory/PetanqueMemory.json");
+    QFile::remove(memoryFile);
+}

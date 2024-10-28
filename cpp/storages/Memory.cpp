@@ -29,6 +29,7 @@ void Memory::load()
         return;
     }
 
+    m_backend->getEvent()->clearEvent();
 
     QFile file( MEMORY_FILE );
     if(!file.open(QIODevice::OpenModeFlag::ReadOnly | QIODevice::OpenModeFlag::Text))
@@ -112,7 +113,7 @@ void Memory::save()
     file.write(QJsonDocument(jsonObject).toJson());
     file.close();
 
-    m_backend->getEvent()->clearEvent();
+    // m_backend->getEvent()->clearEvent();
     emit this->memorySaved();
 }
 
@@ -143,6 +144,7 @@ void Memory::eventToJson(const Event *const event, QJsonObject &jsonObject) cons
 
                 players.append(jPlayer);
             }
+            // D("saved " + QString::number(players.size()) + " players")
 
             QJsonObject jTeam;
             jTeam["teamID"] = static_cast<int>(team->getTeamID());
@@ -151,6 +153,7 @@ void Memory::eventToJson(const Event *const event, QJsonObject &jsonObject) cons
 
             teams.append(jTeam);
         }
+        D("saved " + QString::number(teams.size()) + " teams")
 
         QJsonObject phase1;
         phase1["teams"] = teams;
@@ -169,26 +172,16 @@ void Memory::eventToJson(const Event *const event, QJsonObject &jsonObject) cons
         jsonObject["union delegate"] = event->getUnionDelegate();
         jsonObject["round"] = event->getRound();
         jsonObject["round stage"] = event->getRoundStage();
+
+        D("saved phase " + QString::number(jsonObject["phase first"].toInt()))
+        D("saved " + QString::number(judges.size()) + " judges")
+        D("saved round " + QString::number(jsonObject["round"].toInt()))
+        D("saved round stage " + QString::number(jsonObject["round stage"].toInt()))
     }
 }
 
 bool Memory::jsonToEvent(QJsonObject &jsonObject, Event *const event, QString &errorMessage) const
 {
-    event->setName( jsonObject["name"].toString() );
-    event->setFirstPhaseDate( jsonObject["first phhase date"].toString() );
-    event->setSecondPhaseDate( jsonObject["second phase date"].toString() );
-    event->setCompetitionOrganizer( jsonObject["competition organizer"].toString() );
-    event->setFirstPhasePlace( jsonObject["first phase place"].toString() );
-    event->setSecondPhasePlace( jsonObject["second phase place"].toString() );
-    QJsonArray jsonJudges = jsonObject["judges"].toArray();
-    QStringList judges;
-    for(auto jJudge : jsonJudges)
-        judges.append( jJudge.toString() );
-    event->setJudges( judges );
-    event->setUnionDelegate( jsonObject["union delegate"].toString() );
-    event->setRound( jsonObject["round"].toInt() );
-    event->setRoundStage( jsonObject["round stage"].toInt() );
-
     Event::Phase phase;
     if(jsonObject.contains("phase second"))
     {
@@ -211,6 +204,27 @@ bool Memory::jsonToEvent(QJsonObject &jsonObject, Event *const event, QString &e
     }
 
     event->setPhase(phase);
+
+    event->setName( jsonObject["name"].toString() );
+    event->setFirstPhaseDate( jsonObject["first phhase date"].toString() );
+    event->setSecondPhaseDate( jsonObject["second phase date"].toString() );
+    event->setCompetitionOrganizer( jsonObject["competition organizer"].toString() );
+    event->setFirstPhasePlace( jsonObject["first phase place"].toString() );
+    event->setSecondPhasePlace( jsonObject["second phase place"].toString() );
+    QJsonArray jsonJudges = jsonObject["judges"].toArray();
+    QStringList judges;
+    for(auto jJudge : jsonJudges)
+        judges.append( jJudge.toString() );
+    event->setJudges( judges );
+    event->setUnionDelegate( jsonObject["union delegate"].toString() );
+    event->setRound( jsonObject["round"].toInt() );
+    event->setRoundStage( jsonObject["round stage"].toInt() );
+
+
+    D("loaded phase " + QString::number(event->getPhase()))
+    D("loaded " + QString::number(judges.size()) + " judges")
+    D("loaded round " + QString::number(event->getRound()))
+    D("loaded round stage " + QString::number(event->getRoundStage()))
 
     return true;
 }
@@ -245,8 +259,10 @@ bool Memory::jsonToPhase1(QJsonObject &phase1, Event *const event, QString &erro
 
             team->addPlayerUsingDetachedPlayer();
         }
+        // D("loaded " + QString::number(team->getPlayers().size()) + " players")
 
         event->addTeamUsingDetachedTeam();
     }
+    D("loaded " + QString::number(event->getTeams().size()) + " teams")
     return true;
 }
