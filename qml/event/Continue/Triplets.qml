@@ -49,55 +49,56 @@ Item {
                     Rectangle{
                         width: parent.width
                         height: 100
-                        opacity: 0.8
+                        opacity: 0.3
                         color: "red"
                     }
                     Rectangle{
                         width: parent.width
                         height: 100
-                        opacity: 0.8
+                        opacity: 0.3
                         color: "green"
                     }
                     Rectangle{
                         width: parent.width
                         height: 100
-                        opacity: 0.8
+                        opacity: 0.3
                         color: "blue"
                     }
                     Rectangle{
                         width: parent.width
                         height: 100
-                        opacity: 0.8
+                        opacity: 0.3
                         color: "red"
                     }
                     Rectangle{
                         width: parent.width
                         height: 100
-                        opacity: 0.8
+                        opacity: 0.3
                         color: "green"
                     }
                     Rectangle{
                         width: parent.width
                         height: 100
-                        opacity: 0.8
+                        opacity: 0.3
                         color: "blue"
                     }
                     Rectangle{
                         width: parent.width
                         height: 100
-                        opacity: 0.8
+                        opacity: 0.3
                         color: "red"
                     }
                     Rectangle{
                         width: parent.width
                         height: 100
-                        opacity: 0.8
+                        opacity: 0.3
                         color: "green"
                     }
                 }
 
             }
         }
+
 
 
     }

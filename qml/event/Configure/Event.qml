@@ -69,6 +69,9 @@ Item {
         }
     }
 
+
+
+
     Item{
         id: eventInfoField
         anchors{

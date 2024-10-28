@@ -7,7 +7,7 @@
 #include "cpp/Initializer.h"
 #include "cpp/Backend.h"
 #include "cpp/Login.h"
-#include "cpp/Memory.h"
+#include "cpp/storages/Memory.h"
 
 int main(int argc, char *argv[])
 {

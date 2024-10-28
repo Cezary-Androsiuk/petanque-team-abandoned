@@ -56,5 +56,76 @@ Item {
         opacity: 0.2
     }
 
+    Loader{
+        id: continueLoader
+        anchors{
+            top: header.bottom
+            left: parent.left
+            right: parent.right
+            bottom: footer.top
+        }
+        source: {
+            if(roundStage === 0)
+                "Continue/Selection.qml";
+            else if(roundStage === 1)
+                "Continue/Triplets.qml";
+            else if(roundStage === 2)
+                "Continue/Dublets.qml";
+            else if(roundStage === 3)
+                "Continue/Singiels.qml";
+            else if(roundStage === 4)
+                "Continue/Confirm.qml";
+            else{
+                console.log("Error: received roundStage=" + roundStage + " in Continue.qml");
+                "";
+            }
+        }
+    }
+
+    Item{
+        id: footer
+        anchors{
+            left: parent.left
+            right: parent.right
+            bottom: parent.bottom
+        }
+        height: 70
+
+        Item{
+            id: centerItem
+            anchors{
+                centerIn: parent
+            }
+        }
+
+        Button{
+            id: backButton
+            anchors{
+                right: centerItem.left
+                rightMargin: 5
+                verticalCenter: parent.verticalCenter
+            }
+            enabled: (!Backend)?false: Backend.event.roundStage !== 0
+            onClicked: {
+                if(Backend.event.roundStage !== 0)
+                    Backend.event.roundStage -= 1
+            }
+        }
+
+        Button{
+            id: nextButton
+            anchors{
+                left: centerItem.right
+                leftMargin: 5
+                verticalCenter: parent.verticalCenter
+            }
+            enabled: (!Backend)?false: Backend.event.roundStage !== 4
+            onClicked: {
+                Memory.save()
+                if(Backend.event.roundStage !== 4)
+                    Backend.event.roundStage += 1
+            }
+        }
+    }
 
 }
