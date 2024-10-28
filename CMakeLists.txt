@@ -18,7 +18,6 @@ qt_add_qml_module(appPetanqueTeam
     QML_FILES qml/Main.qml
     SOURCES cpp/Initializer.h cpp/Initializer.cpp
     SOURCES cpp/storages/Personalization.h cpp/storages/Personalization.cpp
-    SOURCES cpp/storages/Database.h cpp/storages/Database.cpp
     SOURCES cpp/support/Log.h cpp/support/Log.cpp
     SOURCES cpp/Login.h cpp/Login.cpp
     QML_FILES qml/LoginForm.qml
@@ -27,7 +26,7 @@ qt_add_qml_module(appPetanqueTeam
     QML_FILES qml/event/Configure.qml
     QML_FILES qml/event/Continue.qml
     QML_FILES qml/event/Finish.qml
-    SOURCES cpp/Memory.h cpp/Memory.cpp
+    SOURCES cpp/storages/Memory.h cpp/storages/Memory.cpp
     SOURCES cpp/objects/Player.h cpp/objects/Player.cpp
     SOURCES cpp/objects/Team.h cpp/objects/Team.cpp
     QML_FILES qml/event/Configure/TeamDelegate.qml
@@ -39,6 +38,8 @@ qt_add_qml_module(appPetanqueTeam
     SOURCES cpp/objects/Match.h cpp/objects/Match.cpp
     SOURCES cpp/storages/DefaultPersonalizationData.h cpp/storages/DefaultPersonalizationData.cpp
     QML_FILES qml/event/Continue/Selection.qml
+    QML_FILES qml/event/Configure/Event/InfoField.qml
+    QML_FILES qml/event/Configure/Event/TeamsList.qml
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
