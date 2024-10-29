@@ -43,7 +43,7 @@ Item{
                 verticalAlignment: Text.AlignVCenter
                 height: defaultHeight
                 text: playerObject.fname + " " + playerObject.lname +
-                      "    [" + playerObject.license + "] ("+ playerObject.getAgeInYears() +") " + (playerObject.gender ? "F" : "M") +
+                      "    [" + playerObject.license + "] ("+ playerObject.ageGroup +") " + (playerObject.gender ? "F" : "M") +
                       (playerObject.isTeamLeader ? " 👑" : "")
             }
 

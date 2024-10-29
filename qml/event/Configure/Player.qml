@@ -75,68 +75,36 @@ Item {
             }
         }
 
-        TextField{
-            id: birthDateTextField
+        ComboBox{
+            id: ageGroupComboBox
             anchors{
                 top: licenseTextField.bottom
                 topMargin: 10
             }
-            height: 60
-            width: 230
+            model: ["Junior", "Youth", "Senior", "Veteran"]
+            currentIndex: (!player)?currentIndex: player.ageGroup
 
-            placeholderText: qsTr("Age YYYY-MM-DD")
-            text: (!player)?null: player.age
-            onTextEdited: {
-                player.age = text
+            onCurrentIndexChanged: {
+                if(player)
+                {
+                    player.ageGroup = currentIndex
+                }
             }
         }
-        // Label{
-        //     id: ageValueLabel;
-        //     anchors{
-        //         top: birthDateTextField.top
-        //         left: birthDateTextField.right
-        //         bottom: birthDateTextField.bottom
-        //         leftMargin: 10
-        //     }
-        //     verticalAlignment: Text.AlignVCenter
-        //     text: {
-        //         if(!player) {
-        //             ""
-        //         }
-        //         else{
-        //             var birthDateIsValid = (!player) ? 4 : player.birthDateIsValid()
-        //             if(!birthDateTextField)
-        //                 "ok"//player.getAgeInYears()
-        //             else
-        //                 "---"
-        //         }
-        //     }
-        // }
 
         ComboBox{
             id: genderComboBox
             anchors{
-                top: birthDateTextField.bottom
+                top: ageGroupComboBox.bottom
                 topMargin: 10
             }
-            model: [
-                {value: 0, text: qsTr("Male")},
-                {value: 1, text: qsTr("Female")}
-            ]
-            textRole: "text"
-            valueRole: "value"
+            model: ["Male", "Female"]
+            currentIndex: (!player)?currentIndex: player.gender
 
-            Component.onCompleted: {
-                var x = indexOfValue((!player)?null: player.gender)
-                console.log("setting gender as " + x)
-                currentIndex = x
-            }
-
-            onCurrentValueChanged: {
+            onCurrentIndexChanged: {
                 if(player)
                 {
-                    console.log("setting gender as " + currentValue)
-                    player.gender = currentValue
+                    player.gender = currentIndex
                 }
             }
         }
@@ -147,7 +115,7 @@ Item {
                 top: genderComboBox.bottom
                 topMargin: 10
             }
-            checked: (!player)?null: player.isTeamLeader
+            checked: (!player)?checked: player.isTeamLeader
             onCheckedChanged: {
                 if(player)
                 {
@@ -245,19 +213,6 @@ Item {
                 text: "save player"
 
                 onClicked: {
-                    var birthDateIsValid = (!player) ? 4 : player.birthDateIsValid()
-                    if(birthDateIsValid)
-                    {
-                        console.log("birth date is not valid!")
-                        if(birthDateIsValid === 1)
-                            console.log("value not match regex YYYY-MM-DD")
-                        else if (birthDateIsValid === 2)
-                            console.log("value is not a valid date")
-                        else if (birthDateIsValid === 3)
-                            console.log("date is not realistic age (cannot be less than 0 and greater than 200)")
-                        return;
-                    }
-
                     parentStackView.pop();
                     configurePlayer.team.addPlayerUsingDetachedPlayer();
                 }

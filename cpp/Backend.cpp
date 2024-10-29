@@ -42,10 +42,8 @@ void Backend::createExampleData()
             dPlayer->setFname( player["fname"].toString() );
             dPlayer->setLname( player["lname"].toString() );
             dPlayer->setLicense( player["license"].toString() );
-            dPlayer->setBirthDate( player["age"].toString() );
-            QChar g = player["gender"].toString()[0];
-            Player::Genders pg = g == 'M' ? Player::Genders::Male : Player::Genders::Female;
-            dPlayer->setGender( pg );
+            dPlayer->setAgeGroup( player["age group"].toInt() );
+            dPlayer->setGender( player["gender"].toInt() );
             dPlayer->setIsTeamLeader( player["isTeamLeader"].toBool() );
 
             dTeam->addPlayerUsingDetachedPlayer();
@@ -93,10 +91,10 @@ void Backend::validateData()
         bool foundFemale = false;
         for(Player *player : team->getPlayers())
         {
-            if(player->getGender() == Player::Genders::Male)
+            if(player->getGender() == Player::Gender::Male)
                 foundMale = true;
 
-            if(player->getGender() == Player::Genders::Female)
+            if(player->getGender() == Player::Gender::Female)
                 foundFemale = true;
         }
         if(!foundMale || !foundFemale)
@@ -115,14 +113,7 @@ void Backend::validateData()
             bool foundJunior = false;
             for(Player *player : team->getPlayers())
             {
-                int age = player->getAgeInYears();
-
-                QJsonObject juniorType = p->getPlayerTypes()["junior"].toObject();
-                QString gender = player->getGender() == Player::Genders::Male ? "male" : "female";
-                int min = juniorType[gender].toObject()["min"].toInt();
-                int max = juniorType[gender].toObject()["max"].toInt();
-
-                if(age >= min && age < max)
+                if(player->getAgeGroup() == Player::AgeGroup::Junior)
                 {
                     foundJunior = true;
                     break;

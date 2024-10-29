@@ -1,7 +1,5 @@
 #include "Player.h"
 
-const QRegularExpression Player::m_birthDateRegex(R"(\d{4}-\d{2}-\d{2})");
-
 Player::Player(QObject *parent)
     : QObject{parent}
     , m_playerID(0)
@@ -17,14 +15,14 @@ void Player::copyFromOtherPlayer(const Player &sourcePlayer)
     m_fname = sourcePlayer.m_fname;
     m_lname = sourcePlayer.m_lname;
     m_license = sourcePlayer.m_license;
-    m_birthDate = sourcePlayer.m_birthDate;
+    m_ageGroup = sourcePlayer.m_ageGroup;
     m_gender = sourcePlayer.m_gender;
     m_isTeamLeader = sourcePlayer.m_isTeamLeader;
 
     emit this->fnameChanged();
     emit this->lnameChanged();
     emit this->licenseChanged();
-    emit this->birthDateChanged();
+    emit this->ageGroupChanged();
     emit this->genderChanged();
     emit this->isTeamLeaderChanged();
 }
@@ -32,48 +30,6 @@ void Player::copyFromOtherPlayer(const Player &sourcePlayer)
 QObject *Player::getParent() const
 {
     return this->parent();
-}
-
-int Player::birthDateIsValid() const
-{
-    QRegularExpressionMatch rMatch = m_birthDateRegex.match(m_birthDate);
-    bool matchLength = rMatch.capturedLength() == m_birthDate.length();
-    bool match = rMatch.hasMatch() && matchLength;
-    if(!match)
-        return 1;
-
-    QDate date = this->getBirthDateAsDate();
-    if(!date.isValid())
-        return 2;
-
-    if(date >= QDate::currentDate() || date < QDate(1800, 01, 01))
-        return 3;
-
-    return 0;
-}
-
-QDate Player::getBirthDateAsDate() const
-{
-    QStringList timeValues = m_birthDate.split('-');
-    int year = timeValues[0].toInt();
-    int month = timeValues[1].toInt();
-    int day = timeValues[2].toInt();
-    return QDate(year, month, day);
-}
-
-int Player::getAgeInYears() const
-{
-    QDate birthDate = this->getBirthDateAsDate();
-    QDate currentDate = QDate::currentDate();
-    int age = currentDate.year() - birthDate.year();
-
-    /// the "birthday this year has not happened yet" case
-    bool beforeMonth = currentDate.month() < birthDate.month();
-    bool beforeDay = currentDate.month() == birthDate.month() && currentDate.day() < birthDate.day();
-    if(beforeMonth || beforeDay)
-        age --;
-
-    return age;
 }
 
 uint Player::getPlayerID() const
@@ -96,12 +52,12 @@ QString Player::getLicense() const
     return m_license;
 }
 
-QString Player::getBirthDate() const
+int Player::getAgeGroup() const
 {
-    return m_birthDate;
+    return m_ageGroup;
 }
 
-Player::Genders Player::getGender() const
+int Player::getGender() const
 {
     return m_gender;
 }
@@ -143,15 +99,15 @@ void Player::setLicense(const QString &license)
     emit licenseChanged();
 }
 
-void Player::setBirthDate(QString birthDate)
+void Player::setAgeGroup(int ageGroup)
 {
-    if (m_birthDate == birthDate)
+    if (m_ageGroup == ageGroup)
         return;
-    m_birthDate = birthDate;
-    emit birthDateChanged();
+    m_ageGroup = ageGroup;
+    emit ageGroupChanged();
 }
 
-void Player::setGender(const Player::Genders &gender)
+void Player::setGender(const int &gender)
 {
     if (m_gender == gender)
         return;

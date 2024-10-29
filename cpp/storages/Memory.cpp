@@ -138,8 +138,8 @@ void Memory::eventToJson(const Event *const event, QJsonObject &jsonObject) cons
                 jPlayer["fname"] = player->getFname();
                 jPlayer["lname"] = player->getLname();
                 jPlayer["license"] = player->getLicense();
-                jPlayer["age"] = player->getBirthDate();
-                jPlayer["gender"] = static_cast<int>(player->getGender());
+                jPlayer["age group"] = player->getAgeGroup();
+                jPlayer["gender"] = player->getGender();
                 jPlayer["isTeamLeader"] = player->getIsTeamLeader();
 
                 players.append(jPlayer);
@@ -253,8 +253,8 @@ bool Memory::jsonToPhase1(QJsonObject &phase1, Event *const event, QString &erro
             player->setFname( jPlayer["fname"].toString() );
             player->setLname( jPlayer["lname"].toString() );
             player->setLicense( jPlayer["license"].toString() );
-            player->setBirthDate( jPlayer["age"].toString() );
-            player->setGender( static_cast<Player::Genders>(jPlayer["gender"].toInt()) );
+            player->setAgeGroup( jPlayer["age group"].toInt() );
+            player->setGender( jPlayer["gender"].toInt() );
             player->setIsTeamLeader( jPlayer["isTeamLeader"].toBool() );
 
             team->addPlayerUsingDetachedPlayer();

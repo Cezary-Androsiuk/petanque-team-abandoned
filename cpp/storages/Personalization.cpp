@@ -24,7 +24,6 @@ void Personalization::setDefault()
     m_requiredTeamsCount = defaultRequiredTeamsCount;
     m_minimumPlayersInTeam = defaultMinimumPlayersInTeam;
     m_requiresJuniors = defaultRequiresJuniors;
-    m_playerTypes = QJsonDocument::fromJson(defaultPlayerTypes).object();
     m_roundsMatches = QJsonDocument::fromJson(defaultRoundsMatches).object();
     m_exampleData = QJsonDocument::fromJson(defaultExampleData).object();
 }
@@ -80,10 +79,6 @@ void Personalization::load()
     if(jp.contains(key)) m_requiresJuniors = jp[key].toBool();
     else KEY_NOT_FOUND_MESSAGE;
 
-    key = KEY_PLAYER_TYPES;
-    if(jp.contains(key)) m_playerTypes = jp[key].toObject();
-    else KEY_NOT_FOUND_MESSAGE;
-
     key = KEY_ROUND_MATCHES;
     if(jp.contains(key)) m_roundsMatches = jp[key].toObject();
     else KEY_NOT_FOUND_MESSAGE;
@@ -104,7 +99,6 @@ void Personalization::save()
     jsonObject[KEY_MINIMUM_PLAYERS_IN_TEA] = this->getMinimumPlayersInTeam();
     jsonObject[KEY_REQUIRED_TEAMS_COUNT] = this->getRequiredTeamsCount();
     jsonObject[KEY_REQUIRED_JUNIORS] = this->getRequiresJuniors();
-    jsonObject[KEY_PLAYER_TYPES] = this->getPlayerTypes();
     jsonObject[KEY_ROUND_MATCHES] = this->getRoundsMatches();
     jsonObject[KEY_EXAMPLE_DATA] = this->getExampleData();
 
@@ -139,11 +133,6 @@ int Personalization::getRequiredTeamsCount() const
 bool Personalization::getRequiresJuniors() const
 {
     return m_requiresJuniors;
-}
-
-const QJsonObject &Personalization::getPlayerTypes() const
-{
-    return m_playerTypes;
 }
 
 const QJsonObject &Personalization::getRoundsMatches() const
