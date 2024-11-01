@@ -14,15 +14,15 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
     QQmlApplicationEngine engine;
 
-    Backend backend;
-    Login login;
-    Memory memory;
-    memory.setBackendPtr(&backend);
+    Backend *backend = new Backend(&app);
+    Login *login = new Login(&app);
+    Memory *memory = new Memory(&app);
+    memory->setBackendPtr(backend);
 
     engine.rootContext()->setContextProperty("Initializer", Initializer::getInstance());
-    engine.rootContext()->setContextProperty("Backend", &backend);
-    engine.rootContext()->setContextProperty("Login", &login);
-    engine.rootContext()->setContextProperty("Memory", &memory);
+    engine.rootContext()->setContextProperty("Backend", backend);
+    engine.rootContext()->setContextProperty("Login", login);
+    engine.rootContext()->setContextProperty("Memory", memory);
 
     const QUrl url(QStringLiteral("qrc:/PetanqueTeam/qml/Main.qml"));
     QObject::connect(
