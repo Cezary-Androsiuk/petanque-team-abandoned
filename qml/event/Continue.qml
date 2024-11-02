@@ -128,4 +128,8 @@ Item {
         }
     }
 
+    Component.onDestruction: {
+        Memory.save();
+    }
+
 }
