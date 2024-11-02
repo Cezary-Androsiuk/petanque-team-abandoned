@@ -37,10 +37,13 @@ Item {
             delegate: Item{
                 width: listView.width - 40
                 anchors.horizontalCenter: parent.horizontalCenter
-                height: ml1.height + tgs.height + dgs.height + sgs.height + 50
+                height: teamNameField.height +
+                        tripletsGroupSelection.height +
+                        dubletsGroupSelection.height +
+                        singielsGroupSelection.height + 50
 
                 Item{
-                    id: ml1
+                    id: teamNameField
                     anchors{
                         top: parent.top
                         left: parent.left
@@ -56,38 +59,42 @@ Item {
                     }
                 }
 
-                TripletsGroupSelection{
-                    id: tgs
+                GroupSelection{
+                    id: tripletsGroupSelection
                     anchors{
-                        top: ml1.bottom
+                        top: teamNameField.bottom
                         left: parent.left
                         right: parent.right
                         margins: 10
                     }
                     team: event.teams[index]
+                    groupSize: 3
                 }
 
-                DubletsGroupSelection{
-                    id: dgs
+                GroupSelection{
+                    id: dubletsGroupSelection
                     anchors{
-                        top: tgs.bottom
+                        top: tripletsGroupSelection.bottom
                         left: parent.left
                         right: parent.right
                         margins: 10
                     }
                     team: event.teams[index]
+                    groupSize: 2
                 }
 
-                SingielsGroupSelection{
-                    id: sgs
+                GroupSelection{
+                    id: singielsGroupSelection
                     anchors{
-                        top: dgs.bottom
+                        top: dubletsGroupSelection.bottom
                         left: parent.left
                         right: parent.right
                         margins: 10
                     }
                     team: event.teams[index]
+                    groupSize: 1
                 }
+
                 Rectangle{
                     anchors.fill: parent
                     color: "transparent"
@@ -107,263 +114,6 @@ Item {
 
         }
 
-        /*
-        Flickable{
-            id: selectionFlickable
-            anchors.fill: parent
-            contentWidth: parent.width
-            contentHeight: selectionField.height
-            boundsBehavior: Flickable.StopAtBounds
-
-            ScrollBar.vertical: ScrollBar{
-                policy: ScrollBar.AsNeeded
-            }
-
-            Item{
-                id: selectionField
-                width: parent.width - 40
-                x: 20
-                y: 10
-                height: 500
-
-                Rectangle{
-                    anchors{
-                        top: parent.top
-                        left: parent.left
-                        right: parent.right
-                    }
-                    height: parent.height/2
-                    opacity: 0.8
-                    color: "blue"
-                }
-
-                Rectangle{
-                    anchors{
-                        bottom: parent.bottom
-                        left: parent.left
-                        right: parent.right
-                    }
-                    height: parent.height/2
-                    opacity: 0.8
-                    color: "green"
-                }
-                // ListView{
-                //     id: listView
-                //     anchors{
-                //         fill: parent
-                //         rightMargin: 20
-                //         leftMargin: 20
-                //     }
-
-                //     onHeightChanged: {
-                //         console.log("height: " + height)
-                //     }
-
-                //     model: (!event)?null:event.teams.length
-                //     boundsBehavior: Flickable.StopAtBounds
-                //     clip: true
-
-                //     footer: Item{
-                //         width: listView.width
-                //         height: 50
-
-                //         Rectangle{
-                //             anchors.fill: parent
-                //             opacity: 0.8
-                //             color: "white"
-                //         }
-                //     }
-
-                //     delegate: Item{
-                //         width: listView.width
-                //         height: tgs.height + dgs.height + sgs.height + 10
-
-                //         TripletsGroupSelection{
-                //             id: tgs
-                //             anchors{
-                //                 top: parent.top
-                //                 left: parent.left
-                //                 right: parent.right
-                //             }
-                //         }
-
-                //         DubletsGroupSelection{
-                //             id: dgs
-                //             anchors{
-                //                 top: tgs.bottom
-                //                 left: parent.left
-                //                 right: parent.right
-                //             }
-                //         }
-
-                //         SingielsGroupSelection{
-                //             id: sgs
-                //             anchors{
-                //                 top: dgs.bottom
-                //                 left: parent.left
-                //                 right: parent.right
-                //             }
-                //         }
-
-                //     }
-
-                // }
-            }
-        }
-        */
-
-        /*
-        ScrollView{
-            id: scrollView
-            clip: true
-            anchors.fill: parent
-
-            // // left hand side scrollBar
-            // ScrollBar.vertical: ScrollBar{
-            //     parent: scrollView
-            //     x: 0
-            //     y: scrollView.topPadding
-            //     height: scrollView.availableHeight
-            //     active: scrollView.ScrollBar.horizontal.active
-            // }
-            ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
-
-            ListView{
-                id: listView
-                anchors{
-                    fill: parent
-                    rightMargin: 20
-                    leftMargin: 20
-                }
-
-                model: (!event)?null:event.teams.length
-                boundsBehavior: Flickable.StopAtBounds
-                clip: true
-
-                footer: Item{
-                    width: listView.width
-                    height: 50
-
-                    Rectangle{
-                        anchors.fill: parent
-                        opacity: 0.8
-                        color: "white"
-                    }
-                }
-
-                delegate: Item{
-                    width: listView.width
-                    height: tgs.height + dgs.height + sgs.height + 10
-
-                    TripletsGroupSelection{
-                        id: tgs
-                        anchors{
-                            top: parent.top
-                            left: parent.left
-                            right: parent.right
-                        }
-                    }
-
-                    DubletsGroupSelection{
-                        id: dgs
-                        anchors{
-                            top: tgs.bottom
-                            left: parent.left
-                            right: parent.right
-                        }
-                    }
-
-                    SingielsGroupSelection{
-                        id: sgs
-                        anchors{
-                            top: dgs.bottom
-                            left: parent.left
-                            right: parent.right
-                        }
-                    }
-
-                }
-
-            }
-        }
-        */
-
-        /*
-        Flickable{
-            id: selectionFlickable
-            anchors.fill: parent
-            contentWidth: parent.width
-            contentHeight: selectionField.height
-            boundsBehavior: Flickable.StopAtBounds
-
-            ScrollBar.vertical: ScrollBar{
-                policy: ScrollBar.AsNeeded
-            }
-
-            Item{
-                id: selectionField
-                width: parent.width - 40
-                x: 20
-                y: 10
-                height: 890
-
-                Column{
-                    id: col
-                    anchors.fill: parent
-                    spacing: 10
-                    Rectangle{
-                        width: parent.width
-                        height: 100
-                        opacity: 0.8
-                        color: "red"
-                    }
-                    Rectangle{
-                        width: parent.width
-                        height: 100
-                        opacity: 0.8
-                        color: "green"
-                    }
-                    Rectangle{
-                        width: parent.width
-                        height: 100
-                        opacity: 0.8
-                        color: "blue"
-                    }
-                    Rectangle{
-                        width: parent.width
-                        height: 100
-                        opacity: 0.8
-                        color: "red"
-                    }
-                    Rectangle{
-                        width: parent.width
-                        height: 100
-                        opacity: 0.8
-                        color: "green"
-                    }
-                    Rectangle{
-                        width: parent.width
-                        height: 100
-                        opacity: 0.8
-                        color: "blue"
-                    }
-                    Rectangle{
-                        width: parent.width
-                        height: 100
-                        opacity: 0.8
-                        color: "red"
-                    }
-                    Rectangle{
-                        width: parent.width
-                        height: 100
-                        opacity: 0.8
-                        color: "green"
-                    }
-                }
-
-            }
-        }
-        */
 
     }
 
