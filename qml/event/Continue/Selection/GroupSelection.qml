@@ -201,18 +201,42 @@ Item {
                     horizontalAlignment: Text.AlignLeft
                     verticalAlignment: Text.AlignVCenter
                     // pixelSize is 14
-                    text: modelData.fname + " " + modelData.lname // set here new created for this purpose player delegate
+                    text: modelData.fname + " " + modelData.lname
                 }
                 Repeater{
+                    id: radioButtons
                     model: groupSelection.groupsCount
                     RadioButton{
-                        id: rb1
+                        id: radioButton
                         width: 140
                         height: parent.height
                         // text: "group " + (row.parentIndex+1) +  "" + (index+1)
                         onCheckedChanged: {
                             listOfSelected[row.parentIndex][index+1] = checked
                         }
+                    }
+                }
+                Item{
+                    height: parent.height
+                    width: 2*height
+                    Button{
+                        anchors.fill: parent
+                        // text: "clear"
+                        padding: 0
+                        onClicked: {
+                            for (let i = 0; i <  groupSelection.groupsCount; i++) {
+                                listOfSelected[row.parentIndex][i+1] = false;
+                                radioButtons.itemAt(i).checked = false;
+                            }
+                        }
+                    }
+
+                    Label{
+                        anchors.fill: parent
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        font.pixelSize: 12
+                        text: "clear"
                     }
                 }
             }
