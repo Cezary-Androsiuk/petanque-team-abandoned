@@ -5,9 +5,12 @@ Item {
     id: selection
     anchors.fill: parent
 
-    Component.onCompleted: {
-        console.log("height: " + height)
+    function verifyData(){
+
+        verifiedData();
     }
+
+    signal verifiedData();
 
     Item{
         anchors{

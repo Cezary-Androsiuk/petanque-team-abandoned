@@ -257,34 +257,20 @@ Item {
                         width: 140
                         height: parent.height
                         // text: "group " + (row.parentIndex+1) +  "" + (index+1)
+
+                        // uncheck mechanic
+                        property bool wasCheckedWhilePressing: false
+                        onPressed: {
+                            wasCheckedWhilePressing = checked
+                        }
+                        onClicked: {
+                            if(wasCheckedWhilePressing)
+                                checked = false
+                        }
+
                         onCheckedChanged: {
                             listOfSelected[row.parentIndex][index+1] = checked
                         }
-                    }
-                }
-                Item{
-                    id: clearPlayerAssignmentField
-                    height: parent.height
-                    width: 2*height
-                    Button{
-                        id: clearPlayerAssignmentButton
-                        anchors.fill: parent
-                        // text: "clear"
-                        onClicked: {
-                            for (let i = 0; i <  groupSelection.groupsCount; i++) {
-                                listOfSelected[row.parentIndex][i+1] = false;
-                                radioButtons.itemAt(i).checked = false;
-                            }
-                        }
-                    }
-
-                    Label{
-                        id: clearPlayerAssignmentButtonText
-                        anchors.fill: parent
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                        font.pixelSize: 12
-                        text: "Clear"
                     }
                 }
             }
