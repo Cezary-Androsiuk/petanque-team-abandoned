@@ -174,58 +174,91 @@ void Backend::debugDeleteMemory()
     QFile::remove(memoryFile);
 }
 
-bool Backend::isTripletsDataValid(QVariantList data)
+QString Backend::isSelectionDataValid(QVariantList data, int groupSize, int groupsCount)
 {
     int rowIndex = 0;
-    constexpr int countOfGroups = 2;
-    int playersCountInGroups[countOfGroups] = {0};
+    constexpr int maxGroupsCount = 6;
+    int playersCountInGroups[maxGroupsCount] = {0};
+    QString messageError("");
+
     for(const QVariant &qv : data)
     {
-        /// assign values to variable
-        int dataRow[countOfGroups];
+        /// assign values from data to variable local
         int containsTrueCount = 0;
         QVariantMap qvmap = qv.toMap();
-        for(int i=0; i<countOfGroups; i++)
+        for(int i=0; i<groupsCount; i++)
         {
-            dataRow[i] = qvmap[ QString::number(i+1) ].toBool() ?1:0;
+            int dataRow = qvmap[ QString::number(i+1) ].toBool() ?1:0;
             /// and add to row counter
-            containsTrueCount += dataRow[i];
+            containsTrueCount += dataRow;
             /// add values to column counter
-            playersCountInGroups[i] += dataRow[i];
+            playersCountInGroups[i] += dataRow;
         }
 
         /// i don't trust qml
         /// test if in each row, has 0 or 1 radio buttons selected
         if(containsTrueCount > 1)
         {
-            W("To much radio buttons selected in " + QString::number(rowIndex++) + " row index")
-            return false;
+            messageError = "To much radio buttons selected in " + QString::number(rowIndex++) + " row index";
+            W(messageError)
+            return messageError;
         }
     }
 
-    /// test if in each column, 3 or 4 players were selected
-    constexpr int requiredPlayers = 3;
-    for(int i=0; i<countOfGroups; i++)
+    /// test if each column contains required count of choosed players
+    if(groupSize == 3)
     {
-        int playersCountInGroup = playersCountInGroups[i];
-        if(playersCountInGroup == requiredPlayers || playersCountInGroup == requiredPlayers+1)
-            continue;
+        /// test if in each column, 3 or 4 players were selected for triplets
+        constexpr int requiredPlayers = 3;
+        for(int i=0; i<groupsCount; i++)
+        {
+            int playersCountInGroup = playersCountInGroups[i];
+            if(playersCountInGroup == requiredPlayers || playersCountInGroup == requiredPlayers+1)
+                continue;
 
-        I("in group " + QString::number(i+1) + ", " + QString::number(playersCountInGroup) +
-          " players where selected, but " + QString::number(requiredPlayers) + " or " +
-          QString::number(requiredPlayers+1) + " were expected")
-        return false;
+            messageError = "in group " + QString::number(i+1) + ", " + QString::number(playersCountInGroup) +
+                           " players where selected, but " + QString::number(requiredPlayers) + " or " +
+                           QString::number(requiredPlayers+1) + " were expected";
+            I(messageError);
+            return messageError;
+        }
+    }
+    else
+    if(groupSize == 2)
+    {
+        /// test if in each column, 2 or 3 players were selected for triplets
+        constexpr int requiredPlayers = 2;
+        for(int i=0; i<groupsCount; i++)
+        {
+            int playersCountInGroup = playersCountInGroups[i];
+            if(playersCountInGroup == requiredPlayers || playersCountInGroup == requiredPlayers+1)
+                continue;
+
+            messageError = "in group " + QString::number(i+1) + ", " + QString::number(playersCountInGroup) +
+                           " players where selected, but " + QString::number(requiredPlayers) + " or " +
+                           QString::number(requiredPlayers+1) + " were expected";
+            I(messageError);
+            return messageError;
+        }
+    }
+    else
+    // groupSize == 1
+    {
+        /// test if in each column, 1 player was selected for singiels
+        constexpr int requiredPlayers = 1;
+        for(int i=0; i<groupsCount; i++)
+        {
+            int playersCountInGroup = playersCountInGroups[i];
+            if(playersCountInGroup == requiredPlayers)
+                continue;
+
+            messageError = "in group " + QString::number(i+1) + ", " +
+                           QString::number(playersCountInGroup) +
+                           " players where selected, but 1 was expected";
+            I(messageError);
+            return messageError;
+        }
     }
 
-    return true;
-}
-
-bool Backend::isDubletsDataValid(QVariantList data)
-{
-    return true;
-}
-
-bool Backend::isSingielsDataValid(QVariantList data)
-{
-    return true;
+    return messageError;
 }

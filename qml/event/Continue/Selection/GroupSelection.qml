@@ -17,29 +17,55 @@ Item {
         else if(groupSize === 2)    3;
         else /* groupSize === 1 */  6;
     }
-    readonly property int delegateHeight: 30;
-    readonly property var listOfSelected: []
-
-    function inputDataAreValid(){
-        console.log("verifyData - groupSelection")
-        let isValid;
-        if(groupSize === 3)         isValid = Backend.isTripletsDataValid(listOfSelected)
-        else if(groupSize === 2)    isValid = Backend.isDubletsDataValid(listOfSelected)
-        else /* groupSize === 1 */  isValid = Backend.isSingielsDataValid(listOfSelected)
-        return isValid;
+    readonly property string groupsSelectionName: {
+        if(groupSize === 3)         "Triplets";
+        else if(groupSize === 2)    "Dublets";
+        else /* groupSize === 1 */  "Singiels";
     }
 
-    height:((!team)?0: (team.players.length +2/*header and footer*/) * delegateHeight)
+    readonly property int delegateHeight: 30;
+    readonly property int headerHeight: 60;
+    readonly property int footerHeight: 30;
+    readonly property int playersCount: (!team)?0: team.players.length
+    readonly property int groupSelectionHeight: playersCount * delegateHeight + headerHeight + footerHeight
+    readonly property var listOfSelected: []
+
+    height: groupSelectionHeight
+
+    function inputDataAreValid(){ // called by Selection.qml
+        // console.log("verifyData - groupSelection")
+        let messageError = Backend.isSelectionDataValid(listOfSelected, groupSize, groupsCount);
+
+        if(messageError !== "")
+        {
+            console.log("error occur in team "+team.teamName+" in " + groupsSelectionName)
+            console.log("message: " + messageError) // popup
+            return false;
+        }
+        else
+            return true;
+    }
 
     Component.onCompleted: {
         // create list for checked
-        let groupPattern;
-        if(groupSize === 3)         groupPattern = {1: false, 2: false};
-        else if(groupSize === 2)    groupPattern = {1: false, 2: false, 3: false};
-        else /* groupSize === 1 */  groupPattern = {1: false, 2: false, 3: false, 4: false, 5: false, 6: false};
+        if(groupSize === 3)
+        {
+            for(let i=0; i<playersCount; i++)
+                listOfSelected.push({1: false, 2: false});
+        }
+        else
+        if(groupSize === 2)
+        {
+            for(let i=0; i<playersCount; i++)
+                listOfSelected.push({1: false, 2: false, 3: false});
+        }
+        else
+        // groupSize === 1
+        {
+            for(let i=0; i<playersCount; i++)
+                listOfSelected.push({1: false, 2: false, 3: false, 4: false, 5: false, 6: false});
+        }
 
-        for(let i=0; i<team.players.length; i++)
-            listOfSelected.push(groupPattern);
     }
 
     Component.onDestruction: {
@@ -77,15 +103,45 @@ Item {
 
         footer: Item{
             width: listView.width
-            height: delegateHeight
+            height: footerHeight
         }
 
         header: Item{
             width: listView.width
-            height: delegateHeight
+            height: headerHeight
+
+            Item{
+                id: groupsSelectionNameTitle
+                anchors{
+                    top: parent.top
+                    left: parent.left
+                    right: parent.right
+                }
+                height: parent.height/2
+
+                Label{
+                    anchors.fill: parent
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    font.pixelSize: 18 // default is 14
+                    text: groupsSelectionName
+                }
+                Rectangle{
+                    anchors.fill: parent
+                    color: "transparent"
+                    border.color: Qt.rgba(1,1,1, 0.4)
+                    border.width: 1
+                }
+            }
 
             Row{
-                anchors.fill: parent
+                anchors{
+                    top: groupsSelectionNameTitle.bottom
+                    left: parent.left
+                    right: parent.right
+                    bottom: parent.bottom
+                }
+
                 spacing: 0
 
                 Label{
@@ -153,10 +209,9 @@ Item {
                         id: rb1
                         width: 140
                         height: parent.height
-                        text: "group " + (row.parentIndex+1) +  "" + (index+1)
+                        // text: "group " + (row.parentIndex+1) +  "" + (index+1)
                         onCheckedChanged: {
                             listOfSelected[row.parentIndex][index+1] = checked
-                            console.log(row.parentIndex + " " +index+1 + " set to " + checked)
                         }
                     }
                 }

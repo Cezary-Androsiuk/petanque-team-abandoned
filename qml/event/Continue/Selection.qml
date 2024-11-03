@@ -10,7 +10,7 @@ Item {
     readonly property var event: Backend !== null ? Backend.event : null
 
     function verifyData(){
-        console.log("verifyData - selection")
+        // console.log("verifyData - selection")
         for(let i=0; i<listView.count; i++)
         {
             let delegate = listView.itemAtIndex(i);
@@ -19,24 +19,15 @@ Item {
                 let valid
                 valid = delegate.itemTripletsGroupSelection.inputDataAreValid()
                 if(!valid)
-                {
-                    console.log("found error in team: " + i + " triplets")
                     return;
-                }
 
                 valid = delegate.itemDubletsGroupSelection.inputDataAreValid()
                 if(!valid)
-                {
-                    console.log("found error in team: " + i + " dublets")
                     return;
-                }
 
                 valid = delegate.itemSingielsGroupSelection.inputDataAreValid()
                 if(!valid)
-                {
-                    console.log("found error in team: " + i + " singiels")
                     return;
-                }
             }
             else{
                 console.log("item at index " + i + " not found")
