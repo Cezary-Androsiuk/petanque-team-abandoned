@@ -46,6 +46,22 @@ Item {
             return true;
     }
 
+    function setExampleData(){
+        var i,j,h;
+
+        for(i=0; i<groupSize; i++)
+        {
+            for(j=0; j<groupsCount; j++)
+            {
+                h = i + j*groupSize;
+                // set Group j
+                listOfSelected[h][j+1] = true;
+                listView.itemAtIndex(h).radioButtonsAlias.itemAt(j).checked = true
+
+            }
+        }
+    }
+
     Component.onCompleted: {
         // create list for checked
         if(groupSize === 3)
@@ -126,6 +142,34 @@ Item {
                     font.pixelSize: 18 // default is 14
                     text: groupsSelectionName
                 }
+                Item{
+                    id: exampleSelectionButtonField
+                    anchors{
+                        top: parent.top
+                        left: parent.left
+                        bottom: parent.bottom
+                    }
+                    width: 3* height
+
+                    Button{
+                        id: exampleSelectionButton
+                        anchors.fill: parent
+                        onClicked: {
+                            setExampleData();
+                        }
+                    }
+
+                    Label{
+                        id: exampleSelectionButtonText
+                        anchors.fill: parent
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        font.pixelSize: 14
+                        text: "Set Example"
+                    }
+
+                }
+
                 Rectangle{
                     anchors.fill: parent
                     color: "transparent"
@@ -187,6 +231,8 @@ Item {
             width: listView.width
             height: delegateHeight
 
+            property alias radioButtonsAlias: radioButtons;
+
             Row{
                 id: row
                 anchors.fill: parent
@@ -217,12 +263,13 @@ Item {
                     }
                 }
                 Item{
+                    id: clearPlayerAssignmentField
                     height: parent.height
                     width: 2*height
                     Button{
+                        id: clearPlayerAssignmentButton
                         anchors.fill: parent
                         // text: "clear"
-                        padding: 0
                         onClicked: {
                             for (let i = 0; i <  groupSelection.groupsCount; i++) {
                                 listOfSelected[row.parentIndex][i+1] = false;
@@ -232,11 +279,12 @@ Item {
                     }
 
                     Label{
+                        id: clearPlayerAssignmentButtonText
                         anchors.fill: parent
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                         font.pixelSize: 12
-                        text: "clear"
+                        text: "Clear"
                     }
                 }
             }

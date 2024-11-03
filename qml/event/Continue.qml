@@ -88,6 +88,9 @@ Item {
 
     function internalDataAreVerified(){
         console.log("verified")
+        if(Backend.event.roundStage !== 4)
+            Backend.event.roundStage += 1
+        Memory.save()
     }
 
     Item{
@@ -114,6 +117,7 @@ Item {
                 verticalCenter: parent.verticalCenter
             }
             enabled: (!Backend)?false: Backend.event.roundStage !== 0
+            text: "left"
             onClicked: {
                 if(Backend.event.roundStage !== 0)
                     Backend.event.roundStage -= 1
@@ -128,12 +132,22 @@ Item {
                 verticalCenter: parent.verticalCenter
             }
             enabled: (!Backend)?false: Backend.event.roundStage !== 4
+            text: "right"
             onClicked: {
-                // if(Backend.event.roundStage !== 4)
-                //     Backend.event.roundStage += 1
-                // Memory.save()
-                console.log("right")
                 continueLoader.item.verifyData();
+            }
+        }
+
+        Button{
+            id: exampleDataButton
+            anchors{
+                left: nextButton.right
+                leftMargin: 30
+                verticalCenter: parent.verticalCenter
+            }
+            text: "Set Example Data"
+            onClicked:{
+                continueLoader.item.setExampleData()
             }
         }
     }

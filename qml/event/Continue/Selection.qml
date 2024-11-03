@@ -9,6 +9,22 @@ Item {
 
     readonly property var event: Backend !== null ? Backend.event : null
 
+    function setExampleData(){
+        for(let i=0; i<listView.count; i++)
+        {
+            let delegate = listView.itemAtIndex(i);
+            if(delegate)
+            {
+                delegate.itemTripletsGroupSelection.setExampleData();
+                delegate.itemDubletsGroupSelection.setExampleData();
+                delegate.itemSingielsGroupSelection.setExampleData();
+            }
+            else{
+                console.log("item at index " + i + " not found")
+            }
+        }
+    }
+
     function verifyData(){
         // console.log("verifyData - selection")
         for(let i=0; i<listView.count; i++)
