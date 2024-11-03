@@ -20,6 +20,15 @@ Item {
     readonly property int delegateHeight: 30;
     readonly property var listOfSelected: []
 
+    function inputDataAreValid(){
+        console.log("verifyData - groupSelection")
+        let isValid;
+        if(groupSize === 3)         isValid = Backend.isTripletsDataValid(listOfSelected)
+        else if(groupSize === 2)    isValid = Backend.isDubletsDataValid(listOfSelected)
+        else /* groupSize === 1 */  isValid = Backend.isSingielsDataValid(listOfSelected)
+        return isValid;
+    }
+
     height:((!team)?0: (team.players.length +2/*header and footer*/) * delegateHeight)
 
     Component.onCompleted: {
@@ -147,6 +156,7 @@ Item {
                         text: "group " + (row.parentIndex+1) +  "" + (index+1)
                         onCheckedChanged: {
                             listOfSelected[row.parentIndex][index+1] = checked
+                            console.log(row.parentIndex + " " +index+1 + " set to " + checked)
                         }
                     }
                 }

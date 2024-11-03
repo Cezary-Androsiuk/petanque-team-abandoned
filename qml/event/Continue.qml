@@ -80,6 +80,14 @@ Item {
                 "";
             }
         }
+        onLoaded:{
+            if(continueLoader.item)
+                continueLoader.item.verifiedData.connect(internalDataAreVerified)
+        }
+    }
+
+    function internalDataAreVerified(){
+        console.log("verified")
     }
 
     Item{
@@ -121,9 +129,11 @@ Item {
             }
             enabled: (!Backend)?false: Backend.event.roundStage !== 4
             onClicked: {
-                if(Backend.event.roundStage !== 4)
-                    Backend.event.roundStage += 1
-                Memory.save()
+                // if(Backend.event.roundStage !== 4)
+                //     Backend.event.roundStage += 1
+                // Memory.save()
+                console.log("right")
+                continueLoader.item.verifyData();
             }
         }
     }

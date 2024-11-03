@@ -173,3 +173,59 @@ void Backend::debugDeleteMemory()
     QString memoryFile("./memory/PetanqueMemory.json");
     QFile::remove(memoryFile);
 }
+
+bool Backend::isTripletsDataValid(QVariantList data)
+{
+    int rowIndex = 0;
+    constexpr int countOfGroups = 2;
+    int playersCountInGroups[countOfGroups] = {0};
+    for(const QVariant &qv : data)
+    {
+        /// assign values to variable
+        int dataRow[countOfGroups];
+        int containsTrueCount = 0;
+        QVariantMap qvmap = qv.toMap();
+        for(int i=0; i<countOfGroups; i++)
+        {
+            dataRow[i] = qvmap[ QString::number(i+1) ].toBool() ?1:0;
+            /// and add to row counter
+            containsTrueCount += dataRow[i];
+            /// add values to column counter
+            playersCountInGroups[i] += dataRow[i];
+        }
+
+        /// i don't trust qml
+        /// test if in each row, has 0 or 1 radio buttons selected
+        if(containsTrueCount > 1)
+        {
+            W("To much radio buttons selected in " + QString::number(rowIndex++) + " row index")
+            return false;
+        }
+    }
+
+    /// test if in each column, 3 or 4 players were selected
+    constexpr int requiredPlayers = 3;
+    for(int i=0; i<countOfGroups; i++)
+    {
+        int playersCountInGroup = playersCountInGroups[i];
+        if(playersCountInGroup == requiredPlayers || playersCountInGroup == requiredPlayers+1)
+            continue;
+
+        I("in group " + QString::number(i+1) + ", " + QString::number(playersCountInGroup) +
+          " players where selected, but " + QString::number(requiredPlayers) + " or " +
+          QString::number(requiredPlayers+1) + " were expected")
+        return false;
+    }
+
+    return true;
+}
+
+bool Backend::isDubletsDataValid(QVariantList data)
+{
+    return true;
+}
+
+bool Backend::isSingielsDataValid(QVariantList data)
+{
+    return true;
+}

@@ -26,6 +26,10 @@ public slots:
     bool debugMemoryFileExist();
     void debugDeleteMemory();
 
+    bool isTripletsDataValid(QVariantList data);
+    bool isDubletsDataValid(QVariantList data);
+    bool isSingielsDataValid(QVariantList data);
+
 signals:
     void dataValidatedCorrectly();
     void dataValidationFailed(QString description);
