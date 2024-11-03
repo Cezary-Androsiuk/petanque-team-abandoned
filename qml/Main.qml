@@ -43,9 +43,10 @@ ApplicationWindow {
             console.log("error occur while loading memory: " + message)
         }
 
-        function onMemorySaved(){
+        function onMemorySaved(reload){
             console.log("memory saved");
-            Memory.load()
+            if(reload)
+                Memory.load()
         }
 
         function onMemorySaveError(message){

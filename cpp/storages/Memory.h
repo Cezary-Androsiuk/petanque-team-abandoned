@@ -30,7 +30,7 @@ public:
 
 public slots:
     void load();
-    void save();
+    void save(bool reloadAfterSaved = true);
 
 public:
     void setBackendPtr(Backend *backend);
@@ -42,7 +42,7 @@ private:
 
 signals:
     void memoryFileNotExist();
-    void memorySaved();
+    void memorySaved(bool reload);
     void memorySaveError(QString message);
     void memoryLoaded();
     void memoryLoadError(QString message);

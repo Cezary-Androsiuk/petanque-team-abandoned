@@ -153,7 +153,7 @@ Item {
     }
 
     Component.onDestruction: {
-        Memory.save();
+        Memory.save(false /*reload after saved*/);
     }
 
 }

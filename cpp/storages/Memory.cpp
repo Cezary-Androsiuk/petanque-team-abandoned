@@ -72,7 +72,7 @@ void Memory::load()
     emit this->memoryLoaded();
 }
 
-void Memory::save()
+void Memory::save(bool reloadAfterSaved)
 {
     I("Saving memory")
     if(m_backend == nullptr)
@@ -114,7 +114,7 @@ void Memory::save()
     file.close();
 
     // m_backend->getEvent()->clearEvent();
-    emit this->memorySaved();
+    emit this->memorySaved(reloadAfterSaved);
 }
 
 void Memory::setBackendPtr(Backend *backend)
