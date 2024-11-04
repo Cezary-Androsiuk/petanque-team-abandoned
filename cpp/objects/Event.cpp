@@ -134,55 +134,113 @@ void Event::setJudge(int index, QString judge)
 
 void Event::createMatch(QVariantList selectionData)
 {
-    // Match *match = new Match(this);
+    Match *match = new Match(this);
 
-    // if(m_teams[m_phase].size() != selectionData)
-    // {
-
-    // }
-
-    // for(int i=0; i<m_teams[m_phase].size(); i++)
-    // {
-    //     auto teamDataMap = selectionData[i].toMap();
-    //     auto tripletsList = teamDataMap["triplets"].toList();
-    //     auto dubletsList = teamDataMap["dublets"].toList();
-    //     auto singielsList = teamDataMap["singiels"].toList();
-    //     Team *team = m_teams[m_phase][i];
-
-    //     MatchTeam *matchTeam = new MatchTeam(match);
-    //     match->addMatchTeam(matchTeam);
-
-    //     for(int j=0; i<team->getPlayers().size(); j++)
-    //     {
-    //         auto playerTriplets = tripletsList[j].toMap();
-    //         if(!Event::isPlayerUsedInMatchPart(playerTriplets))
-    //             continue;
-
-    //         for(int i=0; i<2; i++) // triplets groups count
-    //         {
-    //             uint playerIDsTriplet[4] = {0};
-    //             // for()
-
-    //         }
-
-    //         uint playerIDsDublet[4] = {0};
-    //         uint playerIDsSingiel = {0};
-
-
-    //         // matchTeam.
-    //     }
-    // }
-}
-
-bool Event::isPlayerUsedInMatchPart(QMap<QString, QVariant> part)
-{
-    auto stdMapPart = part.toStdMap();
-    for(const auto &[key, value] : stdMapPart)
+    if(m_teams[m_phase].size() != selectionData)
     {
-        if(value.toBool())
-            return true;
+
     }
-    return false;
+
+    for(int i=0; i<m_teams[m_phase].size(); i++)
+    {
+        auto teamDataMap = selectionData[i].toMap();
+        auto tripletsList = teamDataMap["triplets"].toList();
+        auto dubletsList = teamDataMap["dublets"].toList();
+        auto singielsList = teamDataMap["singiels"].toList();
+        Team *team = m_teams[m_phase][i];
+        PlayerList players = team->getPlayers();
+
+        MatchTeam *matchTeam = new MatchTeam(match);
+        match->addMatchTeam(matchTeam);
+        matchTeam->setTeamID(team->getTeamID());
+
+        for(int h=0; h<2; h++) /// through groups count
+        {
+            QList<uint> playerIDsTripletGroup;
+            for(int j=0; j<players.size(); j++)
+            {
+                auto playerTriplets = tripletsList[j].toMap();
+
+                if(!playerTriplets[QString::number(h+1)].toBool())
+                    continue;
+
+                playerIDsTripletGroup.append(players[j]->getPlayerID());
+            }
+
+            if(playerIDsTripletGroup.size() != 3 && playerIDsTripletGroup.size() != 4)
+            {
+                // error
+                E("")
+                delete match;
+                return;
+            }
+
+            if(playerIDsTripletGroup.size() == 3)
+                playerIDsTripletGroup.append(0);
+
+            uint tmpStorage[4];
+            for(int j=0; j<4; j++)
+                tmpStorage[j] = playerIDsTripletGroup[j];
+
+            matchTeam->addTriplet(tmpStorage);
+        }
+
+        for(int h=0; h<3; h++) /// through groups count
+        {
+            QList<uint> playerIDsDubletGroup;
+            for(int j=0; j<players.size(); j++)
+            {
+                auto playerTriplets = dubletsList[j].toMap();
+                if(!playerTriplets[QString::number(h+1)].toBool())
+                    continue;
+
+                playerIDsDubletGroup.append(players[j]->getPlayerID());
+            }
+
+            if(playerIDsDubletGroup.size() != 2 && playerIDsDubletGroup.size() != 3)
+            {
+                // error
+                E("")
+                delete match;
+                return;
+            }
+
+            if(playerIDsDubletGroup.size() == 2)
+                playerIDsDubletGroup.append(0);
+
+            uint tmpStorage[3];
+            for(int j=0; j<3; j++)
+                tmpStorage[j] = playerIDsDubletGroup[j];
+
+            matchTeam->addDublet(tmpStorage);
+        }
+
+
+        for(int h=0; h<6; h++) /// through groups count
+        {
+            uint playerIDsSingletGroup = 0;
+            for(int j=0; j<players.size(); j++)
+            {
+                auto playerTriplets = dubletsList[j].toMap();
+                if(!playerTriplets[QString::number(h+1)].toBool())
+                    continue;
+
+                playerIDsSingletGroup = players[j]->getPlayerID();
+                break;
+            }
+
+            if(playerIDsSingletGroup == 0)
+            {
+                // error
+                E("")
+                delete match;
+                return;
+            }
+
+            matchTeam->addSingiel(playerIDsSingletGroup);
+        }
+    }
+    m_matches[m_phase].append(match);
 }
 
 uint Event::generateUniqueTeamID() const
@@ -206,7 +264,7 @@ uint Event::generateUniqueTeamID() const
             break;
         }
     }
-    while(!foundUnique);
+    while(!foundUnique && rndID != 0);
 
     return rndID;
 }

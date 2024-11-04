@@ -53,7 +53,6 @@ public slots:
     void setJudge(int index, QString judge);
 
     void createMatch(QVariantList selectionData);
-    static bool isPlayerUsedInMatchPart(QMap<QString, QVariant> part);
 
 private:
     uint generateUniqueTeamID() const;

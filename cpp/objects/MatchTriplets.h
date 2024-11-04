@@ -10,6 +10,7 @@ public:
     explicit MatchTriplets(QObject *parent = nullptr);
 
 signals:
+
 };
 
 #endif // MATCHTRIPLETS_H

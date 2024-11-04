@@ -128,7 +128,7 @@ uint Team::generateUniquePlayerID() const
             break;
         }
     }
-    while(!foundUnique);
+    while(!foundUnique && rndID != 0);
 
     return rndID;
 }

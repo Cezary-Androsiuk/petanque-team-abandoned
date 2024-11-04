@@ -2,6 +2,7 @@
 #define MATCHTEAM_H
 
 #include <QObject>
+#include <QDebug>
 #include <QList>
 
 #include "cpp/objects/MatchTriplets.h"
@@ -11,6 +12,8 @@
 class MatchTeam : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(uint teamID READ getTeamID WRITE setTeamID NOTIFY teamIDChanged FINAL)
+
 public:
     explicit MatchTeam(QObject *parent = nullptr);
 
@@ -18,7 +21,11 @@ public:
     void addDublet(uint playerID[3]);
     void addSingiel(uint playerID);
 
+    uint getTeamID() const;
+    void setTeamID(uint teamID);
+
 signals:
+    void teamIDChanged();
 
 private:
     uint m_teamID;
