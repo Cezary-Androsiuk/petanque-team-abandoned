@@ -62,6 +62,10 @@ Item {
         }
     }
 
+    function returnListOfSelected(){
+        return listOfSelected;
+    }
+
     Component.onCompleted: {
         // create list for checked
         if(groupSize === 3)
@@ -82,6 +86,15 @@ Item {
                 listOfSelected.push({1: false, 2: false, 3: false, 4: false, 5: false, 6: false});
         }
 
+        if(Backend.event.matchCreated)
+        {
+            var match = Backend.event.match;
+            console.log("match created: " + match);
+        }
+        else
+        {
+            // console.log("match was not created")
+        }
     }
 
     Component.onDestruction: {

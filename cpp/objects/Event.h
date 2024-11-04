@@ -7,6 +7,7 @@
 
 #include "cpp/support/Log.h"
 #include "cpp/objects/Team.h"
+#include "cpp/objects/Match.h"
 
 class Event : public QObject
 {
@@ -24,8 +25,10 @@ class Event : public QObject
     Q_PROPERTY(QStringList judges           READ getJudges                  WRITE setJudges                 NOTIFY judgesChanged                FINAL)
     Q_PROPERTY(QString unionDelegate        READ getUnionDelegate           WRITE setUnionDelegate          NOTIFY unionDelegateChanged         FINAL)
 
-    Q_PROPERTY(int round        READ getRound       WRITE setRound      NOTIFY roundChanged         FINAL)
-    Q_PROPERTY(int roundStage   READ getRoundStage  WRITE setRoundStage NOTIFY roundStageChanged    FINAL)
+    Q_PROPERTY(int round            READ getRound       WRITE setRound      NOTIFY roundChanged         FINAL)
+    Q_PROPERTY(int roundStage       READ getRoundStage  WRITE setRoundStage NOTIFY roundStageChanged    FINAL)
+    Q_PROPERTY(bool matchCreated    READ getMatchCreated                    NOTIFY matchesChanged       FINAL)
+    Q_PROPERTY(Match *match         READ getMatch                           NOTIFY matchesChanged       FINAL)
 
 public:
     explicit Event(QObject *parent = nullptr);
@@ -49,6 +52,9 @@ public slots:
     void deleteJudge(int index);
     void setJudge(int index, QString judge);
 
+    void createMatch(QVariantList selectionData);
+    static bool isPlayerUsedInMatchPart(QMap<QString, QVariant> part);
+
 private:
     uint generateUniqueTeamID() const;
     bool isTeamIDUniqueInTeamssList(uint id) const;
@@ -69,6 +75,9 @@ public:
 
     int getRound() const;
     int getRoundStage() const;
+    bool getMatchCreated() const;
+    Match* getMatch() const;
+    MatchList getMatches() const;
 
     void setPhase(Phase phase);
     void setName(const QString &name);
@@ -82,6 +91,7 @@ public:
 
     void setRound(int round);
     void setRoundStage(int roundStage);
+
 
 signals:
     void teamsChanged();
@@ -101,6 +111,7 @@ signals:
 
     void roundChanged();
     void roundStageChanged();
+    void matchesChanged();
 
 private:
 
@@ -119,6 +130,7 @@ private:
 
     int m_round;
     int m_roundStage;
+    MatchList m_matches[2]; /// i would love to use here a simple QStack :/
 };
 
 #endif // EVENT_H

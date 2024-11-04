@@ -82,7 +82,9 @@ Item {
         }
         onLoaded:{
             if(continueLoader.item)
+            {
                 continueLoader.item.verifiedData.connect(internalDataAreVerified)
+            }
         }
     }
 

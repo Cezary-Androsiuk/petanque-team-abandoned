@@ -132,6 +132,59 @@ void Event::setJudge(int index, QString judge)
     emit this->judgesChanged();
 }
 
+void Event::createMatch(QVariantList selectionData)
+{
+    // Match *match = new Match(this);
+
+    // if(m_teams[m_phase].size() != selectionData)
+    // {
+
+    // }
+
+    // for(int i=0; i<m_teams[m_phase].size(); i++)
+    // {
+    //     auto teamDataMap = selectionData[i].toMap();
+    //     auto tripletsList = teamDataMap["triplets"].toList();
+    //     auto dubletsList = teamDataMap["dublets"].toList();
+    //     auto singielsList = teamDataMap["singiels"].toList();
+    //     Team *team = m_teams[m_phase][i];
+
+    //     MatchTeam *matchTeam = new MatchTeam(match);
+    //     match->addMatchTeam(matchTeam);
+
+    //     for(int j=0; i<team->getPlayers().size(); j++)
+    //     {
+    //         auto playerTriplets = tripletsList[j].toMap();
+    //         if(!Event::isPlayerUsedInMatchPart(playerTriplets))
+    //             continue;
+
+    //         for(int i=0; i<2; i++) // triplets groups count
+    //         {
+    //             uint playerIDsTriplet[4] = {0};
+    //             // for()
+
+    //         }
+
+    //         uint playerIDsDublet[4] = {0};
+    //         uint playerIDsSingiel = {0};
+
+
+    //         // matchTeam.
+    //     }
+    // }
+}
+
+bool Event::isPlayerUsedInMatchPart(QMap<QString, QVariant> part)
+{
+    auto stdMapPart = part.toStdMap();
+    for(const auto &[key, value] : stdMapPart)
+    {
+        if(value.toBool())
+            return true;
+    }
+    return false;
+}
+
 uint Event::generateUniqueTeamID() const
 {
     uint loopCounter = 0;
@@ -234,6 +287,26 @@ int Event::getRound() const
 int Event::getRoundStage() const
 {
     return m_roundStage;
+}
+
+bool Event::getMatchCreated() const
+{
+    return m_matches[m_phase].size() > m_round-1;
+}
+
+Match *Event::getMatch() const
+{
+    if(m_matches[m_phase].size() <= m_round-1 || m_round < 0)
+    {
+        W(QString::asprintf("matches size {%lld} <= m_round {%d-1}, cannot return match", m_matches[m_phase].size(), m_round));
+        return nullptr;
+    }
+    return m_matches[m_phase][m_round-1];
+}
+
+MatchList Event::getMatches() const
+{
+    return m_matches[m_phase];
 }
 
 void Event::setPhase(Phase phase)
