@@ -136,17 +136,6 @@ void Event::createMatch(QVariantList selectionData)
 {
     Match *match = new Match(this);
 
-    if(m_teams[m_phase].size() != selectionData.size())
-    {
-        E(QString::asprintf(
-            "m_teams[m_phase].size() = %lld, selectionData.size() = %lld",
-            m_teams[m_phase].size(), selectionData.size()
-        ));
-        E("inconsistent size ")
-        delete match;
-        return;
-    }
-
     /// overwrite list
 
     for(int i=0; i<m_teams[m_phase].size(); i++)
@@ -175,14 +164,6 @@ void Event::createMatch(QVariantList selectionData)
                 playerIDsTripletGroup.append(players[j]->getPlayerID());
             }
 
-            if(playerIDsTripletGroup.size() != 3 && playerIDsTripletGroup.size() != 4)
-            {
-                // error
-                E("triplets size is not equal to 3 or 4")
-                delete match;
-                return;
-            }
-
             if(playerIDsTripletGroup.size() == 3)
                 playerIDsTripletGroup.append(0);
 
@@ -203,14 +184,6 @@ void Event::createMatch(QVariantList selectionData)
                     continue;
 
                 playerIDsDubletGroup.append(players[j]->getPlayerID());
-            }
-
-            if(playerIDsDubletGroup.size() != 2 && playerIDsDubletGroup.size() != 3)
-            {
-                // error
-                E("dublets size is not equal to 2 or 3")
-                delete match;
-                return;
             }
 
             if(playerIDsDubletGroup.size() == 2)
@@ -235,14 +208,6 @@ void Event::createMatch(QVariantList selectionData)
 
                 playerIDsSingletGroup = players[j]->getPlayerID();
                 break;
-            }
-
-            if(playerIDsSingletGroup == 0)
-            {
-                // error
-                E("singiels player was not set")
-                delete match;
-                return;
             }
 
             matchTeam->addSingiel(playerIDsSingletGroup);
