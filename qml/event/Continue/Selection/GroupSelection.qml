@@ -3,7 +3,8 @@ import QtQuick.Controls.Material
 
 Item {
     id: groupSelection
-    required property var team;
+    required property int teamIndex;
+    readonly property var team: event.teams[teamIndex];
     required property int groupSize; // 1, 2 or 3
     onGroupSizeChanged: {
         if(groupSize !== 1 && groupSize !== 2 && groupSize !== 3){ // easy to read
@@ -90,7 +91,42 @@ Item {
         // Check if match was already created, if it was load data
         if(Backend.event.matchCreated)
         {
-            var match = Backend.event.match;
+            var matchTeam = Backend.event.match.matchTeams[teamIndex];
+            var i;
+
+            // if(groupSize === 3)
+            // {
+            //     for(i=0; i<matchTeam.triplets.length; i++)
+            //     {
+            //         matchTeam.triplets[i]
+            //         listOfSelected[i][]
+
+            //     }
+
+            //         listOfSelected.push({1: false, 2: false});
+            // }
+            // else
+            // if(groupSize === 2)
+            // {
+            //     for(i=0; i<matchTeam.dublets.length; i++)
+            //     {
+            //         matchTeam.dublets[i]
+
+            //     }
+
+            //         listOfSelected.push({1: false, 2: false, 3: false});
+            // }
+            // else
+            // // groupSize === 1
+            // {
+            //     for(i=0; i<matchTeam.singiels.length; i++)
+            //     {
+            //         matchTeam.singiels[i]
+
+            //     }
+
+            //         listOfSelected.push({1: false, 2: false, 3: false, 4: false, 5: false, 6: false});
+            // }
         }
         else
         {

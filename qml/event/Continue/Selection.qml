@@ -137,7 +137,7 @@ Item {
                         right: parent.right
                         margins: 10
                     }
-                    team: event.teams[index]
+                    teamIndex: index
                     groupSize: 3
                 }
 
@@ -149,7 +149,7 @@ Item {
                         right: parent.right
                         margins: 10
                     }
-                    team: event.teams[index]
+                    teamIndex: index
                     groupSize: 2
                 }
 
@@ -161,7 +161,7 @@ Item {
                         right: parent.right
                         margins: 10
                     }
-                    team: event.teams[index]
+                    teamIndex: index
                     groupSize: 1
                 }
 

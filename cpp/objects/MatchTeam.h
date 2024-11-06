@@ -12,7 +12,10 @@
 class MatchTeam : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(uint teamID READ getTeamID WRITE setTeamID NOTIFY teamIDChanged FINAL)
+    Q_PROPERTY(uint teamID                      READ getTeamID      WRITE setTeamID NOTIFY teamIDChanged    FINAL)
+    Q_PROPERTY(QList<MatchTriplets*> triplets   READ getTriplets                    NOTIFY tripletsChanged  FINAL)
+    Q_PROPERTY(QList<MatchDublets*> dublets     READ getDublets                     NOTIFY dubletsChanged   FINAL)
+    Q_PROPERTY(QList<MatchSingiels*> singiels   READ getSingiels                    NOTIFY singielsChanged  FINAL)
 
 public:
     explicit MatchTeam(QObject *parent = nullptr);
@@ -22,10 +25,17 @@ public:
     void addSingiel(uint playerID);
 
     uint getTeamID() const;
+    const QList<MatchTriplets*> &getTriplets() const;
+    const QList<MatchDublets*> &getDublets() const;
+    const QList<MatchSingiels*> &getSingiels() const;
+
     void setTeamID(uint teamID);
 
 signals:
     void teamIDChanged();
+    void tripletsChanged();
+    void dubletsChanged();
+    void singielsChanged();
 
 private:
     uint m_teamID;
