@@ -44,7 +44,7 @@ ApplicationWindow {
         }
 
         function onMemorySaved(reload){
-            console.log("memory saved");
+            // console.log("memory saved");
             if(reload)
                 Memory.load()
         }

@@ -86,10 +86,11 @@ Item {
                 listOfSelected.push({1: false, 2: false, 3: false, 4: false, 5: false, 6: false});
         }
 
+
+        // Check if match was already created, if it was load data
         if(Backend.event.matchCreated)
         {
             var match = Backend.event.match;
-            console.log("match created: " + match);
         }
         else
         {

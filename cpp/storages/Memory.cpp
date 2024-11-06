@@ -13,7 +13,7 @@ Memory::Memory(QObject *parent)
 
 void Memory::load()
 {
-    I("Loading memory")
+    // I("Loading memory")
     if(!QFileInfo::exists( MEMORY_FILE ))
     {
         I("Memory file not exist");
@@ -69,12 +69,13 @@ void Memory::load()
         return;
     }
 
+    I("Memory loaded");
     emit this->memoryLoaded();
 }
 
 void Memory::save(bool reloadAfterSaved)
 {
-    I("Saving memory")
+    // I("Saving memory")
     if(m_backend == nullptr)
     {
         QString message("Backend value is NULL!");
@@ -114,6 +115,7 @@ void Memory::save(bool reloadAfterSaved)
     file.close();
 
     // m_backend->getEvent()->clearEvent();
+    I("Memory saved")
     emit this->memorySaved(reloadAfterSaved);
 }
 
@@ -153,7 +155,7 @@ void Memory::eventToJson(const Event *const event, QJsonObject &jsonObject) cons
 
             teams.append(jTeam);
         }
-        D("saved " + QString::number(teams.size()) + " teams")
+        // D("saved " + QString::number(teams.size()) + " teams")
 
         QJsonObject phase1;
         phase1["teams"] = teams;
@@ -173,10 +175,10 @@ void Memory::eventToJson(const Event *const event, QJsonObject &jsonObject) cons
         jsonObject["round"] = event->getRound();
         jsonObject["round stage"] = event->getRoundStage();
 
-        D("saved phase " + QString::number(jsonObject["phase first"].toInt()))
-        D("saved " + QString::number(judges.size()) + " judges")
-        D("saved round " + QString::number(jsonObject["round"].toInt()))
-        D("saved round stage " + QString::number(jsonObject["round stage"].toInt()))
+        // D("saved phase " + QString::number(jsonObject["phase first"].toInt()))
+        // D("saved " + QString::number(judges.size()) + " judges")
+        // D("saved round " + QString::number(jsonObject["round"].toInt()))
+        // D("saved round stage " + QString::number(jsonObject["round stage"].toInt()))
     }
 }
 
@@ -221,10 +223,10 @@ bool Memory::jsonToEvent(QJsonObject &jsonObject, Event *const event, QString &e
     event->setRoundStage( jsonObject["round stage"].toInt() );
 
 
-    D("loaded phase " + QString::number(event->getPhase()))
-    D("loaded " + QString::number(judges.size()) + " judges")
-    D("loaded round " + QString::number(event->getRound()))
-    D("loaded round stage " + QString::number(event->getRoundStage()))
+    // D("loaded phase " + QString::number(event->getPhase()))
+    // D("loaded " + QString::number(judges.size()) + " judges")
+    // D("loaded round " + QString::number(event->getRound()))
+    // D("loaded round stage " + QString::number(event->getRoundStage()))
 
     return true;
 }
@@ -263,6 +265,6 @@ bool Memory::jsonToPhase1(QJsonObject &phase1, Event *const event, QString &erro
 
         event->addTeamUsingDetachedTeam();
     }
-    D("loaded " + QString::number(event->getTeams().size()) + " teams")
+    // D("loaded " + QString::number(event->getTeams().size()) + " teams")
     return true;
 }

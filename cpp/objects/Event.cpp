@@ -136,10 +136,18 @@ void Event::createMatch(QVariantList selectionData)
 {
     Match *match = new Match(this);
 
-    if(m_teams[m_phase].size() != selectionData)
+    if(m_teams[m_phase].size() != selectionData.size())
     {
-
+        E(QString::asprintf(
+            "m_teams[m_phase].size() = %lld, selectionData.size() = %lld",
+            m_teams[m_phase].size(), selectionData.size()
+        ));
+        E("inconsistent size ")
+        delete match;
+        return;
     }
+
+    /// overwrite list
 
     for(int i=0; i<m_teams[m_phase].size(); i++)
     {
@@ -170,7 +178,7 @@ void Event::createMatch(QVariantList selectionData)
             if(playerIDsTripletGroup.size() != 3 && playerIDsTripletGroup.size() != 4)
             {
                 // error
-                E("")
+                E("triplets size is not equal to 3 or 4")
                 delete match;
                 return;
             }
@@ -190,8 +198,8 @@ void Event::createMatch(QVariantList selectionData)
             QList<uint> playerIDsDubletGroup;
             for(int j=0; j<players.size(); j++)
             {
-                auto playerTriplets = dubletsList[j].toMap();
-                if(!playerTriplets[QString::number(h+1)].toBool())
+                auto playerDublets = dubletsList[j].toMap();
+                if(!playerDublets[QString::number(h+1)].toBool())
                     continue;
 
                 playerIDsDubletGroup.append(players[j]->getPlayerID());
@@ -200,7 +208,7 @@ void Event::createMatch(QVariantList selectionData)
             if(playerIDsDubletGroup.size() != 2 && playerIDsDubletGroup.size() != 3)
             {
                 // error
-                E("")
+                E("dublets size is not equal to 2 or 3")
                 delete match;
                 return;
             }
@@ -221,8 +229,8 @@ void Event::createMatch(QVariantList selectionData)
             uint playerIDsSingletGroup = 0;
             for(int j=0; j<players.size(); j++)
             {
-                auto playerTriplets = dubletsList[j].toMap();
-                if(!playerTriplets[QString::number(h+1)].toBool())
+                auto playerSingiels = singielsList[j].toMap();
+                if(!playerSingiels[QString::number(h+1)].toBool())
                     continue;
 
                 playerIDsSingletGroup = players[j]->getPlayerID();
@@ -232,7 +240,7 @@ void Event::createMatch(QVariantList selectionData)
             if(playerIDsSingletGroup == 0)
             {
                 // error
-                E("")
+                E("singiels player was not set")
                 delete match;
                 return;
             }
