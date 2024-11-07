@@ -67,6 +67,66 @@ Item {
         return listOfSelected;
     }
 
+
+    function setAlreadyExistingTriplets(matchTriplets)
+    {
+        var i, j, h;
+        // vertically align values depending on whether they fit into a triplet group
+        for(i=0; i<matchTriplets.length; i++) // for each group (contains 3 or 4 players) in triplets
+        {
+            for(h=0; h<matchTriplets[i].playersID.length; h++) // for each selected player in group
+            {
+                for(j=0; j<team.players.length; j++) // for each players
+                {
+                    if(team.players[j].playerID === matchTriplets[i].playersID[h])
+                    {
+                        // set group i+1 and player j
+                        listOfSelected[j][i+1] = true;
+                        listView.itemAtIndex(j).radioButtonsAlias.itemAt(i).checked = true
+                    }
+                }
+            }
+        }
+
+    }
+    function setAlreadyExistingDublets(matchDublets)
+    {
+        var i, j, h;
+        // vertically align values depending on whether they fit into a dublet group
+        for(i=0; i<matchDublets.length; i++) // for each group (contains 2 or 3 players) in dublets
+        {
+            for(h=0; h<matchDublets[i].playersID.length; h++) // for each selected player in group
+            {
+                for(j=0; j<team.players.length; j++) // for each players
+                {
+                    if(team.players[j].playerID === matchDublets[i].playersID[h])
+                    {
+                        // set group i+1 and player j
+                        listOfSelected[j][i+1] = true;
+                        listView.itemAtIndex(j).radioButtonsAlias.itemAt(i).checked = true
+                    }
+                }
+            }
+        }
+    }
+    function setAlreadyExistingSingiels(matchSingiels)
+    {
+        var i, j;
+        // vertically align values depending on whether they fit into a dublet group
+        for(i=0; i<matchSingiels.length; i++) // for each group (contains 1 player) in dublets
+        {
+            for(j=0; j<team.players.length; j++) // for each players
+            {
+                if(team.players[j].playerID === matchSingiels[i].playerID)
+                {
+                    // set group i+1 and player j
+                    listOfSelected[j][i+1] = true;
+                    listView.itemAtIndex(j).radioButtonsAlias.itemAt(i).checked = true
+                }
+            }
+        }
+    }
+
     Component.onCompleted: {
         // create list for checked
         if(groupSize === 3)
@@ -94,43 +154,20 @@ Item {
             var matchTeam = Backend.event.match.matchTeams[teamIndex];
             var i;
 
-            // if(groupSize === 3)
-            // {
-            //     for(i=0; i<matchTeam.triplets.length; i++)
-            //     {
-            //         matchTeam.triplets[i]
-            //         listOfSelected[i][]
-
-            //     }
-
-            //         listOfSelected.push({1: false, 2: false});
-            // }
-            // else
-            // if(groupSize === 2)
-            // {
-            //     for(i=0; i<matchTeam.dublets.length; i++)
-            //     {
-            //         matchTeam.dublets[i]
-
-            //     }
-
-            //         listOfSelected.push({1: false, 2: false, 3: false});
-            // }
-            // else
-            // // groupSize === 1
-            // {
-            //     for(i=0; i<matchTeam.singiels.length; i++)
-            //     {
-            //         matchTeam.singiels[i]
-
-            //     }
-
-            //         listOfSelected.push({1: false, 2: false, 3: false, 4: false, 5: false, 6: false});
-            // }
-        }
-        else
-        {
-            // console.log("match was not created")
+            if(groupSize === 3)
+            {
+                setAlreadyExistingTriplets(matchTeam.triplets);
+            }
+            else
+            if(groupSize === 2)
+            {
+                setAlreadyExistingDublets(matchTeam.dublets);
+            }
+            else
+            // groupSize === 1
+            {
+                setAlreadyExistingSingiels(matchTeam.singiels);
+            }
         }
     }
 

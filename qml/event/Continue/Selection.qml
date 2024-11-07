@@ -41,7 +41,10 @@ Item {
                 console.log("item at index " + i + " not found")
             }
         }
-        Backend.event.createMatch(selectionData);
+        if(Backend.event.matchCreated)
+            Backend.event.overwriteMatch(selectionData)
+        else
+            Backend.event.createMatch(selectionData);
     }
 
     function verifyData(){

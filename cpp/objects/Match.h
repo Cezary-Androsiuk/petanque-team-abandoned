@@ -17,7 +17,7 @@ public:
     void addMatchTeam(MatchTeam *matchTeam);
 
 public:
-    MatchTeamList getMatchTeams() const;
+    const MatchTeamList &getMatchTeams() const;
 
 signals:
     void matchTeamsChanged();

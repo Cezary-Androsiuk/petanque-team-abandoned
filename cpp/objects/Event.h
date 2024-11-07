@@ -8,6 +8,7 @@
 #include "cpp/support/Log.h"
 #include "cpp/objects/Team.h"
 #include "cpp/objects/Match.h"
+#include "cpp/storages/Personalization.h"
 
 class Event : public QObject
 {
@@ -52,9 +53,11 @@ public slots:
     void deleteJudge(int index);
     void setJudge(int index, QString judge);
 
+    void overwriteMatch(QVariantList selectionData);
     void createMatch(QVariantList selectionData);
 
 private:
+    static void createMatch(Match *match, const TeamList &teams, const QVariantList &selectionData);
     uint generateUniqueTeamID() const;
     bool isTeamIDUniqueInTeamssList(uint id) const;
 

@@ -10,7 +10,7 @@ void Match::addMatchTeam(MatchTeam *matchTeam)
     emit this->matchTeamsChanged();
 }
 
-MatchTeamList Match::getMatchTeams() const
+const MatchTeamList &Match::getMatchTeams() const
 {
     return m_matchTeams;
 }

@@ -132,19 +132,42 @@ void Event::setJudge(int index, QString judge)
     emit this->judgesChanged();
 }
 
+void Event::overwriteMatch(QVariantList selectionData)
+{
+    if(m_round > m_matches[m_phase].size())
+    {
+        W(QString::asprintf("cannot overwrite not existing match! round %d, matches size %lld",
+                            m_round, m_matches[m_phase].size()));
+        return;
+    }
+    Match *match = new Match(this);
+
+    Event::createMatch(match, m_teams[m_phase], selectionData);
+
+    delete m_matches[m_phase][m_round-1];
+    m_matches[m_phase][m_round-1] = match;
+    emit this->matchesChanged();
+}
+
 void Event::createMatch(QVariantList selectionData)
 {
     Match *match = new Match(this);
 
-    /// overwrite list
+    Event::createMatch(match, m_teams[m_phase], selectionData);
 
-    for(int i=0; i<m_teams[m_phase].size(); i++)
+    m_matches[m_phase].append(match);
+    emit this->matchesChanged();
+}
+
+void Event::createMatch(Match *match, const TeamList &teams, const QVariantList &selectionData)
+{
+    for(int i=0; i<teams.size(); i++)
     {
         auto teamDataMap = selectionData[i].toMap();
         auto tripletsList = teamDataMap["triplets"].toList();
         auto dubletsList = teamDataMap["dublets"].toList();
         auto singielsList = teamDataMap["singiels"].toList();
-        Team *team = m_teams[m_phase][i];
+        const Team *team = teams[i];
         PlayerList players = team->getPlayers();
 
         MatchTeam *matchTeam = new MatchTeam(match);
@@ -196,7 +219,6 @@ void Event::createMatch(QVariantList selectionData)
             matchTeam->addDublet(tmpStorage);
         }
 
-
         for(int h=0; h<6; h++) /// through groups count
         {
             uint playerIDsSingletGroup = 0;
@@ -213,7 +235,6 @@ void Event::createMatch(QVariantList selectionData)
             matchTeam->addSingiel(playerIDsSingletGroup);
         }
     }
-    m_matches[m_phase].append(match);
 }
 
 uint Event::generateUniqueTeamID() const

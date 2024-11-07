@@ -27,6 +27,7 @@ public:
 
 private:
     Q_OBJECT
+    Q_PROPERTY(uint playerID        READ getPlayerID                                CONSTANT                    FINAL)
     Q_PROPERTY(QString fname        READ getFname           WRITE setFname          NOTIFY fnameChanged         FINAL)
     Q_PROPERTY(QString lname        READ getLname           WRITE setLname          NOTIFY lnameChanged         FINAL)
     Q_PROPERTY(QString license      READ getLicense         WRITE setLicense        NOTIFY licenseChanged       FINAL)

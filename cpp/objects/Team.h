@@ -11,9 +11,10 @@
 class Team : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString teamName READ getTeamName WRITE setTeamName NOTIFY teamNameChanged FINAL)
-    Q_PROPERTY(PlayerList players READ getPlayers NOTIFY playersChanged FINAL)
-    Q_PROPERTY(Player * detachedPlayer READ getDetachedPlayer NOTIFY detachedPlayerChanged FINAL)
+    Q_PROPERTY(uint teamID              READ getTeamID                              CONSTANT                        FINAL)
+    Q_PROPERTY(QString teamName         READ getTeamName        WRITE setTeamName   NOTIFY teamNameChanged          FINAL)
+    Q_PROPERTY(PlayerList players       READ getPlayers                             NOTIFY playersChanged           FINAL)
+    Q_PROPERTY(Player * detachedPlayer  READ getDetachedPlayer                      NOTIFY detachedPlayerChanged    FINAL)
 
 public:
     explicit Team(QObject *parent = nullptr);
