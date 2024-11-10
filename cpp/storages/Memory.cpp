@@ -172,6 +172,7 @@ void Memory::eventToJson(const Event *const event, QJsonObject &jsonObject) cons
             judges.append(judge);
         jsonObject["judges"] = judges;
         jsonObject["union delegate"] = event->getUnionDelegate();
+        jsonObject["stage"] = event->getStage();
         jsonObject["round"] = event->getRound();
         jsonObject["round stage"] = event->getRoundStage();
 
@@ -219,6 +220,7 @@ bool Memory::jsonToEvent(QJsonObject &jsonObject, Event *const event, QString &e
         judges.append( jJudge.toString() );
     event->setJudges( judges );
     event->setUnionDelegate( jsonObject["union delegate"].toString() );
+    event->setStage( static_cast<Event::Stage>( jsonObject["stage"].toInt() ) );
     event->setRound( jsonObject["round"].toInt() );
     event->setRoundStage( jsonObject["round stage"].toInt() );
 

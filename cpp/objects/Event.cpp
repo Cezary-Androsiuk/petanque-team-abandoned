@@ -4,6 +4,7 @@ Event::Event(QObject *parent)
     : QObject{parent}
     , m_detachedTeam(nullptr)
     , m_phase(Phase::First)
+    , m_stage(Stage::None)
     , m_round(1)
     , m_roundStage(0)
 {
@@ -159,8 +160,35 @@ void Event::createMatch(QVariantList selectionData)
     emit this->matchesChanged();
 }
 
+void Event::goToNextStage()
+{
+    if(m_stage >= Stage::Finish)
+    {
+        W("trying to exceed the highest stage!");
+        return;
+    }
+    m_stage = static_cast<Stage>( m_stage+1 );
+    emit this->stageChanged();
+}
+
+void Event::goToPrevStage()
+{
+    if(m_stage <= Stage::Configure)
+    {
+        W("trying to exceed the lowest stage!");
+        return;
+    }
+    m_stage = static_cast<Stage>( m_stage-1 );
+    emit this->stageChanged();
+}
+
 void Event::createMatch(Match *match, const TeamList &teams, const QVariantList &selectionData)
 {
+    if(selectionData.size() < teams.size())
+    {
+        W("C++ was to fast for javascript :<");
+        return;
+    }
     for(int i=0; i<teams.size(); i++)
     {
         auto teamDataMap = selectionData[i].toMap();
@@ -331,6 +359,11 @@ QString Event::getUnionDelegate() const
     return m_unionDelegate;
 }
 
+Event::Stage Event::getStage() const
+{
+    return m_stage;
+}
+
 int Event::getRound() const
 {
     return m_round;
@@ -431,6 +464,14 @@ void Event::setUnionDelegate(const QString &unionDelegate)
         return;
     m_unionDelegate = unionDelegate;
     emit unionDelegateChanged();
+}
+
+void Event::setStage(Stage stage)
+{
+    if(m_stage == stage)
+        return;
+    m_stage = stage;
+    emit stageChanged();
 }
 
 void Event::setRound(int round)

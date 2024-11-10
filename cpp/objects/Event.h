@@ -13,23 +13,24 @@
 class Event : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(TeamList teams       READ getTeams                           NOTIFY teamsChanged         FINAL)
-    Q_PROPERTY(Team* detachedTeam   READ getDetachedTeam                    NOTIFY detachedTeamChanged  FINAL)
+    Q_PROPERTY(TeamList teams       READ getTeams                               NOTIFY teamsChanged             FINAL)
+    Q_PROPERTY(Team* detachedTeam   READ getDetachedTeam                        NOTIFY detachedTeamChanged      FINAL)
 
-    Q_PROPERTY(Phase phase                  READ getPhase                   WRITE setPhase                  NOTIFY phaseChanged                 FINAL)
-    Q_PROPERTY(QString name                 READ getName                    WRITE setName                   NOTIFY nameChanged                  FINAL)
-    Q_PROPERTY(QString firstPhaseDate       READ getFirstPhaseDate          WRITE setFirstPhaseDate         NOTIFY firstPhaseDateChanged        FINAL)
-    Q_PROPERTY(QString secondPhaseDate      READ getSecondPhaseDate         WRITE setSecondPhaseDate        NOTIFY secondPhaseDateChanged       FINAL)
-    Q_PROPERTY(QString competitionOrganizer READ getCompetitionOrganizer    WRITE setCompetitionOrganizer   NOTIFY competitionOrganizerChanged  FINAL)
-    Q_PROPERTY(QString firstPhasePlace      READ getFirstPhasePlace         WRITE setFirstPhasePlace        NOTIFY firstPhasePlaceChanged       FINAL)
-    Q_PROPERTY(QString secondPhasePlace     READ getSecondPhasePlace        WRITE setSecondPhasePlace       NOTIFY secondPhasePlaceChanged      FINAL)
-    Q_PROPERTY(QStringList judges           READ getJudges                  WRITE setJudges                 NOTIFY judgesChanged                FINAL)
-    Q_PROPERTY(QString unionDelegate        READ getUnionDelegate           WRITE setUnionDelegate          NOTIFY unionDelegateChanged         FINAL)
+    Q_PROPERTY(Phase phase                  READ getPhase                       WRITE setPhase                  NOTIFY phaseChanged                 FINAL)
+    Q_PROPERTY(QString name                 READ getName                        WRITE setName                   NOTIFY nameChanged                  FINAL)
+    Q_PROPERTY(QString firstPhaseDate       READ getFirstPhaseDate              WRITE setFirstPhaseDate         NOTIFY firstPhaseDateChanged        FINAL)
+    Q_PROPERTY(QString secondPhaseDate      READ getSecondPhaseDate             WRITE setSecondPhaseDate        NOTIFY secondPhaseDateChanged       FINAL)
+    Q_PROPERTY(QString competitionOrganizer READ getCompetitionOrganizer        WRITE setCompetitionOrganizer   NOTIFY competitionOrganizerChanged  FINAL)
+    Q_PROPERTY(QString firstPhasePlace      READ getFirstPhasePlace             WRITE setFirstPhasePlace        NOTIFY firstPhasePlaceChanged       FINAL)
+    Q_PROPERTY(QString secondPhasePlace     READ getSecondPhasePlace            WRITE setSecondPhasePlace       NOTIFY secondPhasePlaceChanged      FINAL)
+    Q_PROPERTY(QStringList judges           READ getJudges                      WRITE setJudges                 NOTIFY judgesChanged                FINAL)
+    Q_PROPERTY(QString unionDelegate        READ getUnionDelegate               WRITE setUnionDelegate          NOTIFY unionDelegateChanged         FINAL)
 
-    Q_PROPERTY(int round            READ getRound       WRITE setRound      NOTIFY roundChanged         FINAL)
-    Q_PROPERTY(int roundStage       READ getRoundStage  WRITE setRoundStage NOTIFY roundStageChanged    FINAL)
-    Q_PROPERTY(bool matchCreated    READ getMatchCreated                    NOTIFY matchesChanged       FINAL)
-    Q_PROPERTY(Match *match         READ getMatch                           NOTIFY matchesChanged       FINAL)
+    Q_PROPERTY(Stage stage          READ getStage                               NOTIFY stageChanged             FINAL)
+    Q_PROPERTY(int round            READ getRound           WRITE setRound      NOTIFY roundChanged             FINAL)
+    Q_PROPERTY(int roundStage       READ getRoundStage      WRITE setRoundStage NOTIFY roundStageChanged        FINAL)
+    Q_PROPERTY(bool matchCreated    READ getMatchCreated                        NOTIFY matchesChanged           FINAL)
+    Q_PROPERTY(Match *match         READ getMatch                               NOTIFY matchesChanged           FINAL)
 
 public:
     explicit Event(QObject *parent = nullptr);
@@ -40,6 +41,12 @@ public:
     enum Phase{
         First = 0,
         Second = 1,
+    };
+    enum Stage{
+        None = 0,
+        Configure = 1,
+        Continue = 2,
+        Finish = 3,
     };
 
 public slots:
@@ -55,6 +62,9 @@ public slots:
 
     void overwriteMatch(QVariantList selectionData);
     void createMatch(QVariantList selectionData);
+
+    void goToNextStage();
+    void goToPrevStage();
 
 private:
     static void createMatch(Match *match, const TeamList &teams, const QVariantList &selectionData);
@@ -75,6 +85,7 @@ public:
     QStringList getJudges() const;
     QString getUnionDelegate() const;
 
+    Stage getStage() const;
     int getRound() const;
     int getRoundStage() const;
     bool getMatchCreated() const;
@@ -91,6 +102,7 @@ public:
     void setJudges(const QStringList &judges);
     void setUnionDelegate(const QString &unionDelegate);
 
+    void setStage(Stage stage);
     void setRound(int round);
     void setRoundStage(int roundStage);
 
@@ -111,6 +123,7 @@ signals:
     void judgesChanged();
     void unionDelegateChanged();
 
+    void stageChanged();
     void roundChanged();
     void roundStageChanged();
     void matchesChanged();
@@ -130,6 +143,7 @@ private:
     QStringList m_judges;
     QString m_unionDelegate;
 
+    Stage m_stage;
     int m_round;
     int m_roundStage;
     MatchList m_matches[2]; /// i would love to use here a simple QStack :/

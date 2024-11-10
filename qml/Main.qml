@@ -31,19 +31,20 @@ ApplicationWindow {
     Connections{
         target: Memory
         function onMemoryFileNotExist(){
-            rootLoader.source = "event/Configure.qml"
+            Backend.event.goToNextStage() // from Stage None to Configure
+            rootLoader.source = "Play.qml"
         }
 
         function onMemoryLoaded(){
-            rootLoader.source = "event/Continue.qml"
-            // rootLoader.source = "event/Configure.qml" // to display person data that was loaded
+            rootLoader.source = "Play.qml"
         }
 
         function onMemoryLoadError(message){
+            rootLoader.source = ""
             console.log("error occur while loading memory: " + message)
         }
 
-        function onMemorySaved(reload){
+        function onMemorySaved(reload){ // not reloading memory, while exiting the app
             // console.log("memory saved");
             if(reload)
                 Memory.load()
@@ -53,12 +54,12 @@ ApplicationWindow {
             console.log("error occur while saving memory: " + message)
         }
     }
-
+    
     Connections{
         target: Login
         function onAuthenticated(){
-
             Memory.load()
+
         }
         function onAuthenticationFailed(){
             console.log("onAuthenticationFailed")

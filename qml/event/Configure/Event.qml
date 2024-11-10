@@ -27,7 +27,8 @@ Item {
     /////////////////// onEventStartConfirmed
     // Memory.save();
     function onConfirmed(){
-        Memory.save(); // handled in Main.qml
+        Memory.save();
+        Backend.event.goToNextStage() // changes stage from Configure to Continue
     }
 
     Item{
