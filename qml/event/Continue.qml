@@ -5,8 +5,35 @@ Item {
     id: continueEvent
     anchors.fill: parent
 
-    property int round: (!Backend)?0: Backend.event.round
-    property int roundStage: (!Backend)?0: Backend.event.roundStage
+    property int round: Backend.event.round
+    property int roundStage: Backend.event.roundStage
+
+    Component.onCompleted: {
+        Backend.event.createMatchIfNotExist();
+    }
+
+    Connections{
+        target: Backend.event
+        function onRoundChanged(){
+            Backend.event.createMatchIfNotExist();
+
+        }
+        function onRoundStageChanged(){
+        }
+
+        function onCurrentRoundStageVerified(){
+            console.log("verified")
+            if(roundStage === 4)
+            {
+                Backend.event.roundStage = 0;
+                Backend.event.round += 1;
+            }
+            else
+                Backend.event.roundStage += 1;
+
+            Memory.save()
+        }
+    }
 
     Item{
         id: header
@@ -65,34 +92,15 @@ Item {
             bottom: footer.top
         }
         source: {
-            if(roundStage === 0)
-                "Continue/Selection.qml";
-            else if(roundStage === 1)
-                "Continue/Triplets.qml";
-            else if(roundStage === 2)
-                "Continue/Dublets.qml";
-            else if(roundStage === 3)
-                "Continue/Singiels.qml";
-            else if(roundStage === 4)
-                "Continue/Confirm.qml";
-            else{
+            if(roundStage === 0)   "Continue/Selection.qml";    else
+            if(roundStage === 1)   "Continue/Triplets.qml";     else
+            if(roundStage === 2)   "Continue/Dublets.qml";      else
+            if(roundStage === 3)   "Continue/Singiels.qml";     else
+            {
                 console.log("Error: received roundStage=" + roundStage + " in Continue.qml");
                 "";
             }
         }
-        onLoaded:{
-            if(continueLoader.item)
-            {
-                continueLoader.item.verifiedData.connect(internalDataAreVerified)
-            }
-        }
-    }
-
-    function internalDataAreVerified(){
-        console.log("verified")
-        if(Backend.event.roundStage !== 4)
-            Backend.event.roundStage += 1
-        Memory.save()
     }
 
     Item{
@@ -118,11 +126,28 @@ Item {
                 rightMargin: 5
                 verticalCenter: parent.verticalCenter
             }
-            enabled: (!Backend)?false: Backend.event.roundStage !== 0
+            enabled: round === 1 ? (roundStage !== 0) : true
+
             text: "left"
             onClicked: {
-                if(Backend.event.roundStage !== 0)
-                    Backend.event.roundStage -= 1
+                if(round == 1)
+                {
+                    if(roundStage !== 0)
+                        Backend.event.roundStage -= 1;
+                    else
+                        ;
+                }
+                else
+                {
+                    if(roundStage === 0)
+                    {
+                        Backend.event.roundStage = 4;
+                        Backend.event.round -= 1;
+                    }
+                    else
+                        Backend.event.roundStage -= 1;
+                }
+
             }
         }
 
@@ -133,10 +158,10 @@ Item {
                 leftMargin: 5
                 verticalCenter: parent.verticalCenter
             }
-            enabled: (!Backend)?false: Backend.event.roundStage !== 4
+            enabled: true
             text: "right"
             onClicked: {
-                continueLoader.item.verifyData();
+                Backend.event.verifyCurrentRoundStage();
             }
         }
 

@@ -48,6 +48,13 @@ public:
         Continue = 2,
         Finish = 3,
     };
+    enum RoundStage{
+        Selection = 0,
+        Triplets,
+        Dublets,
+        Singiels,
+
+    };
 
 public slots:
     void createDetachedTeam();
