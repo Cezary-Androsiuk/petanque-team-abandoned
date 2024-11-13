@@ -25,6 +25,7 @@ void Personalization::setDefault()
     m_minimumPlayersInTeam = defaultMinimumPlayersInTeam;
     m_requiresJuniors = defaultRequiresJuniors;
     m_roundsMatches = QJsonDocument::fromJson(defaultRoundsMatches).object();
+    this->computeRoundsCount();
     m_exampleData = QJsonDocument::fromJson(defaultExampleData).object();
 }
 
@@ -82,6 +83,7 @@ void Personalization::load()
     key = KEY_ROUND_MATCHES;
     if(jp.contains(key)) m_roundsMatches = jp[key].toObject();
     else KEY_NOT_FOUND_MESSAGE;
+    this->computeRoundsCount();
 
     key = KEY_EXAMPLE_DATA;
     if(jp.contains(key)) m_exampleData = jp[key].toObject();
@@ -119,6 +121,13 @@ void Personalization::save()
     emit this->saved();
 }
 
+void Personalization::computeRoundsCount()
+{
+    m_roundsCount = 0;
+    for(const auto &roundMatch : m_roundsMatches)
+        m_roundsCount++;
+}
+
 
 int Personalization::getMinimumPlayersInTeam() const
 {
@@ -143,5 +152,10 @@ const QJsonObject &Personalization::getRoundsMatches() const
 const QJsonObject &Personalization::getExampleData() const
 {
     return m_exampleData;
+}
+
+int Personalization::getRoundsCount() const
+{
+    return m_roundsCount;
 }
 

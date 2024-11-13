@@ -56,6 +56,9 @@ public:
 private:
     void save();
 
+private:
+    void computeRoundsCount();
+
 public:
     /// Getters
     int getMinimumPlayersInTeam() const;
@@ -63,6 +66,7 @@ public:
     bool getRequiresJuniors() const;
     const QJsonObject &getRoundsMatches() const;
     const QJsonObject &getExampleData() const;
+    int getRoundsCount() const;
 
 signals:
     void loaded();
@@ -76,6 +80,7 @@ private:
     bool m_requiresJuniors;
     QJsonObject m_roundsMatches;
     QJsonObject m_exampleData;
+    int m_roundsCount;
 };
 
 #endif // PERSONALIZATION_H
