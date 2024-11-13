@@ -26,7 +26,7 @@ public slots:
     bool debugMemoryFileExist();
     void debugDeleteMemory();
 
-    QString isSelectionDataValid(QVariantList data, int groupSize, int groupsCount);
+    // QString isSelectionDataValid(QVariantList data, int groupSize, int groupsCount);
 
 private:
 

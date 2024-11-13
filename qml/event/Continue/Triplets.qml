@@ -5,13 +5,6 @@ Item {
     id: selection
     anchors.fill: parent
 
-    function verifyData(){
-
-        verifiedData();
-    }
-
-    signal verifiedData();
-
     Item{
         anchors{
             fill: parent

@@ -25,59 +25,6 @@ Item {
         }
     }
 
-    function createMatch(){
-        var selectionData = []
-        for(let i=0; i<listView.count; i++)
-        {
-            let delegate = listView.itemAtIndex(i);
-            if(delegate)
-            {
-                var l3 = delegate.itemTripletsGroupSelection.returnListOfSelected();
-                var l2 = delegate.itemDubletsGroupSelection.returnListOfSelected();
-                var l1 = delegate.itemSingielsGroupSelection.returnListOfSelected();
-                selectionData.push({"triplets": l3, "dublets": l2, "singiels": l1})
-            }
-            else{
-                console.log("item at index " + i + " not found")
-            }
-        }
-        if(Backend.event.matchCreated)
-            Backend.event.overwriteMatch(selectionData)
-        else
-            Backend.event.createMatch(selectionData);
-    }
-
-    function verifyData(){
-        // console.log("verifyData - selection")
-        for(let i=0; i<listView.count; i++)
-        {
-            let delegate = listView.itemAtIndex(i);
-            if(delegate)
-            {
-                let valid
-                valid = delegate.itemTripletsGroupSelection.inputDataAreValid()
-                if(!valid)
-                    return;
-
-                valid = delegate.itemDubletsGroupSelection.inputDataAreValid()
-                if(!valid)
-                    return;
-
-                valid = delegate.itemSingielsGroupSelection.inputDataAreValid()
-                if(!valid)
-                    return;
-            }
-            else{
-                console.log("item at index " + i + " not found")
-            }
-        }
-
-        createMatch();
-
-        selection.verifiedData();
-    }
-    signal verifiedData();
-
     Item{
         anchors{
             fill: parent
@@ -89,7 +36,7 @@ Item {
             id: listView
             anchors.fill: parent
 
-            model: (!event)?null:event.teams.length
+            model: event.match.matchTeams.length // or event.teams.length
             boundsBehavior: Flickable.StopAtBounds
             clip: true
             cacheBuffer: 10000 // for god sake, keep delegates alive while scrolling

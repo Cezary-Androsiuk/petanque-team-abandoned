@@ -133,32 +133,32 @@ void Event::setJudge(int index, QString judge)
     emit this->judgesChanged();
 }
 
-void Event::overwriteMatch(QVariantList selectionData)
-{
-    if(m_round > m_matches[m_phase].size())
-    {
-        W(QString::asprintf("cannot overwrite not existing match! round %d, matches size %lld",
-                            m_round, m_matches[m_phase].size()));
-        return;
-    }
-    Match *match = new Match(this);
+// void Event::overwriteMatch(QVariantList selectionData)
+// {
+//     if(m_round > m_matches[m_phase].size())
+//     {
+//         W(QString::asprintf("cannot overwrite not existing match! round %d, matches size %lld",
+//                             m_round, m_matches[m_phase].size()));
+//         return;
+//     }
+//     Match *match = new Match(this);
 
-    Event::createMatch(match, m_teams[m_phase], selectionData);
+//     Event::createMatch(match, m_teams[m_phase], selectionData);
 
-    delete m_matches[m_phase][m_round-1];
-    m_matches[m_phase][m_round-1] = match;
-    emit this->matchesChanged();
-}
+//     delete m_matches[m_phase][m_round-1];
+//     m_matches[m_phase][m_round-1] = match;
+//     emit this->matchesChanged();
+// }
 
-void Event::createMatch(QVariantList selectionData)
-{
-    Match *match = new Match(this);
+// void Event::createMatch(QVariantList selectionData)
+// {
+//     Match *match = new Match(this);
 
-    Event::createMatch(match, m_teams[m_phase], selectionData);
+//     Event::createMatch(match, m_teams[m_phase], selectionData);
 
-    m_matches[m_phase].append(match);
-    emit this->matchesChanged();
-}
+//     m_matches[m_phase].append(match);
+//     emit this->matchesChanged();
+// }
 
 void Event::goToNextStage()
 {
@@ -182,88 +182,174 @@ void Event::goToPrevStage()
     emit this->stageChanged();
 }
 
-void Event::createMatch(Match *match, const TeamList &teams, const QVariantList &selectionData)
+void Event::goToNextRoundStage()
 {
-    if(selectionData.size() < teams.size())
+    if(m_round >= Personalization::getInstance()->getRoundsCount() && m_roundStage == Event::lastRoundStage)
     {
-        W("C++ was to fast for javascript :<");
+        W("trying to go forward to much")
         return;
     }
-    for(int i=0; i<teams.size(); i++)
+
+    if(m_roundStage == Event::lastRoundStage)
     {
-        auto teamDataMap = selectionData[i].toMap();
-        auto tripletsList = teamDataMap["triplets"].toList();
-        auto dubletsList = teamDataMap["dublets"].toList();
-        auto singielsList = teamDataMap["singiels"].toList();
-        const Team *team = teams[i];
-        PlayerList players = team->getPlayers();
+        m_roundStage = Event::firstRoundStage;
+        m_round++;
+        emit this->roundStageChanged();
+        emit this->roundChanged();
+    }
+    else
+    {
+        m_roundStage = static_cast<RoundStage>(m_roundStage +1);
+        emit this->roundStageChanged();
+    }
 
-        MatchTeam *matchTeam = new MatchTeam(match);
-        match->addMatchTeam(matchTeam);
-        matchTeam->setTeamID(team->getTeamID());
+}
 
-        for(int h=0; h<2; h++) /// through groups count
-        {
-            QList<uint> playerIDsTripletGroup;
-            for(int j=0; j<players.size(); j++)
-            {
-                auto playerTriplets = tripletsList[j].toMap();
+void Event::goToPrevRoundStage()
+{
+    if(m_round <= 1 && m_roundStage == Event::firstRoundStage)
+    {
+        W("trying to go back to much")
+        return;
+    }
 
-                if(!playerTriplets[QString::number(h+1)].toBool())
-                    continue;
-
-                playerIDsTripletGroup.append(players[j]->getPlayerID());
-            }
-
-            if(playerIDsTripletGroup.size() == 3)
-                playerIDsTripletGroup.append(0);
-
-            uint tmpStorage[4];
-            for(int j=0; j<4; j++)
-                tmpStorage[j] = playerIDsTripletGroup[j];
-
-            matchTeam->addTriplet(tmpStorage);
-        }
-
-        for(int h=0; h<3; h++) /// through groups count
-        {
-            QList<uint> playerIDsDubletGroup;
-            for(int j=0; j<players.size(); j++)
-            {
-                auto playerDublets = dubletsList[j].toMap();
-                if(!playerDublets[QString::number(h+1)].toBool())
-                    continue;
-
-                playerIDsDubletGroup.append(players[j]->getPlayerID());
-            }
-
-            if(playerIDsDubletGroup.size() == 2)
-                playerIDsDubletGroup.append(0);
-
-            uint tmpStorage[3];
-            for(int j=0; j<3; j++)
-                tmpStorage[j] = playerIDsDubletGroup[j];
-
-            matchTeam->addDublet(tmpStorage);
-        }
-
-        for(int h=0; h<6; h++) /// through groups count
-        {
-            uint playerIDsSingletGroup = 0;
-            for(int j=0; j<players.size(); j++)
-            {
-                auto playerSingiels = singielsList[j].toMap();
-                if(!playerSingiels[QString::number(h+1)].toBool())
-                    continue;
-
-                playerIDsSingletGroup = players[j]->getPlayerID();
-                break;
-            }
-
-            matchTeam->addSingiel(playerIDsSingletGroup);
-        }
+    if(m_roundStage == Event::firstRoundStage)
+    {
+        m_roundStage = Event::lastRoundStage;
+        m_round--;
+        emit this->roundStageChanged();
+        emit this->roundChanged();
+    }
+    else
+    {
+        m_roundStage = static_cast<RoundStage>(m_roundStage -1);
+        emit this->roundStageChanged();
     }
 }
+
+void Event::createMatchIfNotExist()
+{
+    /// for n round should be n matches created
+    if(m_round > m_matches[m_phase].size())
+    {
+        /// create match
+        Match *newMatch = new Match(this);
+
+
+
+        m_matches[m_phase].append(newMatch);
+        emit this->matchWasCreated();
+    }
+    else
+    {
+        /// match already created and can be used
+        emit this->matchAlreadyExist();
+    }
+}
+
+void Event::verifyCurrentRoundStage()
+{
+    emit this->currentRoundStageVerified();
+}
+
+bool Event::hasNextRoundStage() const
+{
+    if(m_round != Personalization::getInstance()->getRoundsCount())
+        return true;
+    else
+        return m_roundStage != Event::lastRoundStage;
+}
+
+bool Event::hasPrevRoundStage() const
+{
+    if(m_round != 1)
+        return true;
+    else
+        return m_roundStage != Event::firstRoundStage;
+}
+
+// void Event::createMatch(Match *match, const TeamList &teams, const QVariantList &selectionData)
+// {
+//     if(selectionData.size() < teams.size())
+//     {
+//         W("C++ was to fast for javascript :<");
+//         return;
+//     }
+//     for(int i=0; i<teams.size(); i++)
+//     {
+//         auto teamDataMap = selectionData[i].toMap();
+//         auto tripletsList = teamDataMap["triplets"].toList();
+//         auto dubletsList = teamDataMap["dublets"].toList();
+//         auto singielsList = teamDataMap["singiels"].toList();
+//         const Team *team = teams[i];
+//         PlayerList players = team->getPlayers();
+
+//         MatchTeam *matchTeam = new MatchTeam(match);
+//         match->addMatchTeam(matchTeam);
+//         matchTeam->setTeamID(team->getTeamID());
+
+//         for(int h=0; h<2; h++) /// through groups count
+//         {
+//             QList<uint> playerIDsTripletGroup;
+//             for(int j=0; j<players.size(); j++)
+//             {
+//                 auto playerTriplets = tripletsList[j].toMap();
+
+//                 if(!playerTriplets[QString::number(h+1)].toBool())
+//                     continue;
+
+//                 playerIDsTripletGroup.append(players[j]->getPlayerID());
+//             }
+
+//             if(playerIDsTripletGroup.size() == 3)
+//                 playerIDsTripletGroup.append(0);
+
+//             uint tmpStorage[4];
+//             for(int j=0; j<4; j++)
+//                 tmpStorage[j] = playerIDsTripletGroup[j];
+
+//             matchTeam->addTriplet(tmpStorage);
+//         }
+
+//         for(int h=0; h<3; h++) /// through groups count
+//         {
+//             QList<uint> playerIDsDubletGroup;
+//             for(int j=0; j<players.size(); j++)
+//             {
+//                 auto playerDublets = dubletsList[j].toMap();
+//                 if(!playerDublets[QString::number(h+1)].toBool())
+//                     continue;
+
+//                 playerIDsDubletGroup.append(players[j]->getPlayerID());
+//             }
+
+//             if(playerIDsDubletGroup.size() == 2)
+//                 playerIDsDubletGroup.append(0);
+
+//             uint tmpStorage[3];
+//             for(int j=0; j<3; j++)
+//                 tmpStorage[j] = playerIDsDubletGroup[j];
+
+//             matchTeam->addDublet(tmpStorage);
+//         }
+
+//         for(int h=0; h<6; h++) /// through groups count
+//         {
+//             uint playerIDsSingletGroup = 0;
+//             for(int j=0; j<players.size(); j++)
+//             {
+//                 auto playerSingiels = singielsList[j].toMap();
+//                 if(!playerSingiels[QString::number(h+1)].toBool())
+//                     continue;
+
+//                 playerIDsSingletGroup = players[j]->getPlayerID();
+//                 break;
+//             }
+
+//             matchTeam->addSingiel(playerIDsSingletGroup);
+//         }
+//     }
+// }
 
 uint Event::generateUniqueTeamID() const
 {

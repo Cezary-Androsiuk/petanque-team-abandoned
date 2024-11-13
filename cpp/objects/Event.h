@@ -32,6 +32,9 @@ class Event : public QObject
     Q_PROPERTY(bool matchCreated    READ getMatchCreated                        NOTIFY matchesChanged           FINAL)
     Q_PROPERTY(Match *match         READ getMatch                               NOTIFY matchesChanged           FINAL)
 
+    Q_PROPERTY(bool hasNextRoundStage READ hasNextRoundStage NOTIFY roundStageChanged FINAL)
+    Q_PROPERTY(bool hasPrevRoundStage READ hasPrevRoundStage NOTIFY roundStageChanged FINAL)
+
 public:
     explicit Event(QObject *parent = nullptr);
     ~Event();
@@ -53,8 +56,9 @@ public:
         Triplets,
         Dublets,
         Singiels,
-
     };
+    static constexpr RoundStage firstRoundStage = RoundStage::Selection;
+    static constexpr RoundStage lastRoundStage = RoundStage::Singiels;
 
 public slots:
     void createDetachedTeam();
@@ -67,14 +71,30 @@ public slots:
     void deleteJudge(int index);
     void setJudge(int index, QString judge);
 
-    void overwriteMatch(QVariantList selectionData);
-    void createMatch(QVariantList selectionData);
+    // void overwriteMatch(QVariantList selectionData);
+    // void createMatch(QVariantList selectionData);
 
     void goToNextStage();
     void goToPrevStage();
 
+    void goToNextRoundStage();
+    void goToPrevRoundStage();
+
+    void createMatchIfNotExist();
+    void verifyCurrentRoundStage();
+
+public:
+    bool hasNextRoundStage() const;
+    bool hasPrevRoundStage() const;
+
+signals:
+    void matchWasCreated();
+    void matchAlreadyExist();
+    void currentRoundStageVerified();
+    void currentRoundStageVerificationFailed(QString message);
+
 private:
-    static void createMatch(Match *match, const TeamList &teams, const QVariantList &selectionData);
+    // static void createMatch(Match *match, const TeamList &teams, const QVariantList &selectionData);
     uint generateUniqueTeamID() const;
     bool isTeamIDUniqueInTeamssList(uint id) const;
 
@@ -98,6 +118,7 @@ public:
     bool getMatchCreated() const;
     Match* getMatch() const;
     MatchList getMatches() const;
+
 
     void setPhase(Phase phase);
     void setName(const QString &name);

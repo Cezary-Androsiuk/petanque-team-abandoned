@@ -16,22 +16,24 @@ Item {
         target: Backend.event
         function onRoundChanged(){
             Backend.event.createMatchIfNotExist();
-
         }
         function onRoundStageChanged(){
+
+        }
+
+        function onMatchWasCreated(){
+            continueLoader.active = true;
+        }
+        function onMatchAlreadyExist(){
+            continueLoader.active = true;
         }
 
         function onCurrentRoundStageVerified(){
-            console.log("verified")
-            if(roundStage === 4)
-            {
-                Backend.event.roundStage = 0;
-                Backend.event.round += 1;
-            }
-            else
-                Backend.event.roundStage += 1;
-
+            Backend.event.goToNextRoundStage();
             Memory.save()
+        }
+        function onCurrentRoundStageVerificationFailed(message){
+            console.log("verification current stage failed: " + message)
         }
     }
 
@@ -91,6 +93,7 @@ Item {
             right: parent.right
             bottom: footer.top
         }
+        active: false
         source: {
             if(roundStage === 0)   "Continue/Selection.qml";    else
             if(roundStage === 1)   "Continue/Triplets.qml";     else
@@ -126,28 +129,11 @@ Item {
                 rightMargin: 5
                 verticalCenter: parent.verticalCenter
             }
-            enabled: round === 1 ? (roundStage !== 0) : true
+            enabled: Backend.event.hasPrevRoundStage;
 
             text: "left"
             onClicked: {
-                if(round == 1)
-                {
-                    if(roundStage !== 0)
-                        Backend.event.roundStage -= 1;
-                    else
-                        ;
-                }
-                else
-                {
-                    if(roundStage === 0)
-                    {
-                        Backend.event.roundStage = 4;
-                        Backend.event.round -= 1;
-                    }
-                    else
-                        Backend.event.roundStage -= 1;
-                }
-
+                Backend.event.goToPrevRoundStage();
             }
         }
 
@@ -158,7 +144,7 @@ Item {
                 leftMargin: 5
                 verticalCenter: parent.verticalCenter
             }
-            enabled: true
+            enabled: Backend.event.hasNextRoundStage;
             text: "right"
             onClicked: {
                 Backend.event.verifyCurrentRoundStage();

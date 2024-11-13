@@ -5,14 +5,9 @@ Item {
     id: groupSelection
     required property int teamIndex;
     readonly property var team: event.teams[teamIndex];
+    readonly property var matchTeam: event.match.matchTeams[teamIndex];
     required property int groupSize; // 1, 2 or 3
-    onGroupSizeChanged: {
-        if(groupSize !== 1 && groupSize !== 2 && groupSize !== 3){ // easy to read
-           console.log("groupSize is not an required value! received: " + groupSize +
-                       ", changing to 1")
-            groupSize = 1
-        }
-    }
+
     readonly property int groupsCount: {
         if(groupSize === 3)         2;
         else if(groupSize === 2)    3;
@@ -29,23 +24,8 @@ Item {
     readonly property int footerHeight: 30;
     readonly property int playersCount: (!team)?0: team.players.length
     readonly property int groupSelectionHeight: playersCount * delegateHeight + headerHeight + footerHeight
-    readonly property var listOfSelected: []
 
     height: groupSelectionHeight
-
-    function inputDataAreValid(){ // called by Selection.qml
-        // console.log("verifyData - groupSelection")
-        let messageError = Backend.isSelectionDataValid(listOfSelected, groupSize, groupsCount);
-
-        if(messageError !== "")
-        {
-            console.log("error occur in team "+team.teamName+" in " + groupsSelectionName)
-            console.log("message: " + messageError) // popup
-            return false;
-        }
-        else
-            return true;
-    }
 
     function setExampleData(){
         var i,j,h;
@@ -61,137 +41,6 @@ Item {
 
             }
         }
-    }
-
-    function returnListOfSelected(){
-        return listOfSelected;
-    }
-
-
-    function setAlreadyExistingTriplets(matchTriplets)
-    {
-        var i, j, h;
-        // vertically align values depending on whether they fit into a triplet group
-        for(i=0; i<matchTriplets.length; i++) // for each group (contains 3 or 4 players) in triplets
-        {
-            for(h=0; h<matchTriplets[i].playersID.length; h++) // for each selected player in group
-            {
-                for(j=0; j<team.players.length; j++) // for each players
-                {
-                    if(team.players[j].playerID === matchTriplets[i].playersID[h])
-                    {
-                        // set group i+1 and player j
-                        listOfSelected[j][i+1] = true;
-                        listView.itemAtIndex(j).radioButtonsAlias.itemAt(i).checked = true
-                    }
-                }
-            }
-        }
-
-    }
-    function setAlreadyExistingDublets(matchDublets)
-    {
-        var i, j, h;
-        // vertically align values depending on whether they fit into a dublet group
-        for(i=0; i<matchDublets.length; i++) // for each group (contains 2 or 3 players) in dublets
-        {
-            for(h=0; h<matchDublets[i].playersID.length; h++) // for each selected player in group
-            {
-                for(j=0; j<team.players.length; j++) // for each players
-                {
-                    if(team.players[j].playerID === matchDublets[i].playersID[h])
-                    {
-                        // set group i+1 and player j
-                        listOfSelected[j][i+1] = true;
-                        listView.itemAtIndex(j).radioButtonsAlias.itemAt(i).checked = true
-                    }
-                }
-            }
-        }
-    }
-    function setAlreadyExistingSingiels(matchSingiels)
-    {
-        var i, j;
-        // vertically align values depending on whether they fit into a dublet group
-        for(i=0; i<matchSingiels.length; i++) // for each group (contains 1 player) in dublets
-        {
-            for(j=0; j<team.players.length; j++) // for each players
-            {
-                if(team.players[j].playerID === matchSingiels[i].playerID)
-                {
-                    // set group i+1 and player j
-                    listOfSelected[j][i+1] = true;
-                    listView.itemAtIndex(j).radioButtonsAlias.itemAt(i).checked = true
-                }
-            }
-        }
-    }
-
-    Component.onCompleted: {
-        // create list for checked
-        if(groupSize === 3)
-        {
-            for(let i=0; i<playersCount; i++)
-                listOfSelected.push({1: false, 2: false});
-        }
-        else
-        if(groupSize === 2)
-        {
-            for(let i=0; i<playersCount; i++)
-                listOfSelected.push({1: false, 2: false, 3: false});
-        }
-        else
-        // groupSize === 1
-        {
-            for(let i=0; i<playersCount; i++)
-                listOfSelected.push({1: false, 2: false, 3: false, 4: false, 5: false, 6: false});
-        }
-
-
-        // Check if match was already created, if it was load data
-        if(Backend.event.matchCreated)
-        {
-            var matchTeam = Backend.event.match.matchTeams[teamIndex];
-            var i;
-
-            if(groupSize === 3)
-            {
-                setAlreadyExistingTriplets(matchTeam.triplets);
-            }
-            else
-            if(groupSize === 2)
-            {
-                setAlreadyExistingDublets(matchTeam.dublets);
-            }
-            else
-            // groupSize === 1
-            {
-                setAlreadyExistingSingiels(matchTeam.singiels);
-            }
-        }
-    }
-
-    Component.onDestruction: {
-        // console.log("")
-
-        // if(groupSize === 3)
-        // {
-        //     for(let selected of listOfSelected)
-        //         console.log("1: " + selected[1] + ", 2: " + selected[2])
-        // }
-        // else
-        // if(groupSize === 2)
-        // {
-        //     for(let selected of listOfSelected)
-        //         console.log("1: " + selected[1] + ", 2: " + selected[2] + ", 3: " + selected[3])
-        // }
-        // else
-        // // groupSize === 1
-        // {
-        //     for(let selected of listOfSelected)
-        //         console.log("1: " + selected[1] + ", 2: " + selected[2] + ", 3: " + selected[3] +
-        //                     "4: " + selected[4] + ", 5: " + selected[5] + ", 6: " + selected[6])
-        // }
     }
 
     ListView{
