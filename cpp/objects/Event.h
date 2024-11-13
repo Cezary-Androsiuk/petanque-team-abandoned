@@ -29,7 +29,6 @@ class Event : public QObject
     Q_PROPERTY(Stage stage          READ getStage                               NOTIFY stageChanged             FINAL)
     Q_PROPERTY(int round            READ getRound           WRITE setRound      NOTIFY roundChanged             FINAL)
     Q_PROPERTY(int roundStage       READ getRoundStage      WRITE setRoundStage NOTIFY roundStageChanged        FINAL)
-    Q_PROPERTY(bool matchCreated    READ getMatchCreated                        NOTIFY matchesChanged           FINAL)
     Q_PROPERTY(Match *match         READ getMatch                               NOTIFY matchesChanged           FINAL)
 
     Q_PROPERTY(bool hasNextRoundStage READ hasNextRoundStage NOTIFY roundStageChanged FINAL)
@@ -115,7 +114,6 @@ public:
     Stage getStage() const;
     int getRound() const;
     int getRoundStage() const;
-    bool getMatchCreated() const;
     Match* getMatch() const;
     MatchList getMatches() const;
 

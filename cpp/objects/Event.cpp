@@ -235,7 +235,7 @@ void Event::createMatchIfNotExist()
         /// create match
         Match *newMatch = new Match(this);
 
-
+        // D("Match created")
 
         m_matches[m_phase].append(newMatch);
         emit this->matchWasCreated();
@@ -243,6 +243,7 @@ void Event::createMatchIfNotExist()
     else
     {
         /// match already created and can be used
+        // D("Match exist")
         emit this->matchAlreadyExist();
     }
 }
@@ -460,14 +461,9 @@ int Event::getRoundStage() const
     return m_roundStage;
 }
 
-bool Event::getMatchCreated() const
-{
-    return m_matches[m_phase].size() > m_round-1;
-}
-
 Match *Event::getMatch() const
 {
-    if(m_matches[m_phase].size() <= m_round-1 || m_round < 0)
+    if(m_matches[m_phase].size() < m_round || m_round < 1)
     {
         W(QString::asprintf("matches size {%lld} <= m_round {%d-1}, cannot return match", m_matches[m_phase].size(), m_round));
         return nullptr;

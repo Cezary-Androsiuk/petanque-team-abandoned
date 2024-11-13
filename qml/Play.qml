@@ -29,10 +29,10 @@ Item {
         }
     }
 
-    BusyIndicator{
-        anchors.centerIn: parent
-        running: loaderSource === ""
-    }
+    // BusyIndicator{
+    //     anchors.centerIn: parent
+    //     running: loaderSource === ""
+    // }
 
     Loader{
         id: playLoader

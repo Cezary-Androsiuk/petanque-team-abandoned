@@ -18,7 +18,7 @@ Item {
             Backend.event.createMatchIfNotExist();
         }
         function onRoundStageChanged(){
-
+            Backend.event.createMatchIfNotExist();
         }
 
         function onMatchWasCreated(){
@@ -29,6 +29,7 @@ Item {
         }
 
         function onCurrentRoundStageVerified(){
+            continueLoader.active = false;
             Backend.event.goToNextRoundStage();
             Memory.save()
         }
@@ -83,6 +84,11 @@ Item {
         anchors.fill: parent
         color: "blue"
         opacity: 0.2
+    }
+
+    BusyIndicator{
+        anchors.centerIn: parent
+        running: loaderSource === ""
     }
 
     Loader{
