@@ -12,37 +12,36 @@
 class MatchTeam : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(uint teamID                      READ getTeamID      WRITE setTeamID NOTIFY teamIDChanged    FINAL)
-    Q_PROPERTY(QList<MatchTriplets*> triplets   READ getTriplets                    NOTIFY tripletsChanged  FINAL)
-    Q_PROPERTY(QList<MatchDublets*> dublets     READ getDublets                     NOTIFY dubletsChanged   FINAL)
-    Q_PROPERTY(QList<MatchSingiels*> singiels   READ getSingiels                    NOTIFY singielsChanged  FINAL)
+    Q_PROPERTY(uint teamID                  READ getTeamID      WRITE setTeamID NOTIFY teamIDChanged    FINAL)
+    Q_PROPERTY(MatchTriplets triplets       READ getTriplets    CONSTANT FINAL)
+    Q_PROPERTY(MatchDublets dublets         READ getDublets     CONSTANT FINAL)
+    Q_PROPERTY(MatchSingiels singiels       READ getSingiels    CONSTANT FINAL)
 
 public:
     explicit MatchTeam(QObject *parent = nullptr);
 
-    void addTriplet(uint playerID[4]);
-    void addDublet(uint playerID[3]);
-    void addSingiel(uint playerID);
-
     uint getTeamID() const;
-    const QList<MatchTriplets*> &getTriplets() const;
-    const QList<MatchDublets*> &getDublets() const;
-    const QList<MatchSingiels*> &getSingiels() const;
+    const MatchTriplets *getTriplets() const;
+    const MatchDublets *getDublets() const;
+    const MatchSingiels *getSingiels() const;
 
     void setTeamID(uint teamID);
+    void setTriplets(MatchTriplets *triplets);
+    void setDublets(MatchDublets *dublets);
+    void setSingiels(MatchSingiels *singiels);
 
 signals:
     void teamIDChanged();
-    void tripletsChanged();
-    void dubletsChanged();
-    void singielsChanged();
+    // void tripletsChanged();
+    // void dubletsChanged();
+    // void singielsChanged();
 
 private:
     uint m_teamID;
 
-    QList<MatchTriplets*> m_triplets;
-    QList<MatchDublets*> m_dublets;
-    QList<MatchSingiels*> m_singiels;
+    MatchTriplets* m_triplets;
+    MatchDublets* m_dublets;
+    MatchSingiels* m_singiels;
 };
 
 typedef QList<MatchTeam*> MatchTeamList;

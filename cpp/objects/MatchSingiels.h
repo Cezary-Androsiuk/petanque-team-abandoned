@@ -8,18 +8,13 @@
 class MatchSingiels : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(uint playerID READ getPlayerID NOTIFY playerIDChanged FINAL)
 public:
-    explicit MatchSingiels(QObject *parent = nullptr);
-
-    uint getPlayerID() const;
-    void setPlayerID(uint playerID);
+    explicit MatchSingiels(int playersCount, QObject *parent = nullptr);
 
 signals:
-    void playerIDChanged();
 
 private:
-    uint m_playerID;
+    QVector<QVector<bool>> m_selection; // rows<columns> [row][col]
 };
 
 #endif // MATCHSINGIELS_H
