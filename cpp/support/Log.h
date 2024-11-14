@@ -13,6 +13,7 @@
 #include <QIODevice>
 
 #define QAPF(...) QString::asprintf(__VA_ARGS__) /* QString as printf */
+#define QAPF_T(text, ...) QString::asprintf(tr(text).toStdString().c_str(), __VA_ARGS__) /* QString as printf translate */
 
 //////////////////// OLD DEBUG ////////////////////
 #define FUNCTION __PRETTY_FUNCTION__

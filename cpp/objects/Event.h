@@ -26,10 +26,10 @@ class Event : public QObject
     Q_PROPERTY(QStringList judges           READ getJudges                      WRITE setJudges                 NOTIFY judgesChanged                FINAL)
     Q_PROPERTY(QString unionDelegate        READ getUnionDelegate               WRITE setUnionDelegate          NOTIFY unionDelegateChanged         FINAL)
 
-    Q_PROPERTY(Stage stage          READ getStage                               NOTIFY stageChanged             FINAL)
-    Q_PROPERTY(int round            READ getRound           WRITE setRound      NOTIFY roundChanged             FINAL)
-    Q_PROPERTY(int roundStage       READ getRoundStage      WRITE setRoundStage NOTIFY roundStageChanged        FINAL)
-    Q_PROPERTY(Match *match         READ getMatch                               NOTIFY matchesChanged           FINAL)
+    Q_PROPERTY(Stage stage              READ getStage                               NOTIFY stageChanged             FINAL)
+    Q_PROPERTY(int round                READ getRound           WRITE setRound      NOTIFY roundChanged             FINAL)
+    Q_PROPERTY(RoundStage roundStage    READ getRoundStage      WRITE setRoundStage NOTIFY roundStageChanged        FINAL)
+    Q_PROPERTY(Match *match             READ getMatch                               NOTIFY matchesChanged           FINAL)
 
     Q_PROPERTY(bool hasNextRoundStage READ hasNextRoundStage NOTIFY roundStageChanged FINAL)
     Q_PROPERTY(bool hasPrevRoundStage READ hasPrevRoundStage NOTIFY roundStageChanged FINAL)
@@ -70,9 +70,6 @@ public slots:
     void deleteJudge(int index);
     void setJudge(int index, QString judge);
 
-    // void overwriteMatch(QVariantList selectionData);
-    // void createMatch(QVariantList selectionData);
-
     void goToNextStage();
     void goToPrevStage();
 
@@ -93,7 +90,6 @@ signals:
     void currentRoundStageVerificationFailed(QString message);
 
 private:
-    // static void createMatch(Match *match, const TeamList &teams, const QVariantList &selectionData);
     uint generateUniqueTeamID() const;
     bool isTeamIDUniqueInTeamssList(uint id) const;
 
@@ -113,7 +109,7 @@ public:
 
     Stage getStage() const;
     int getRound() const;
-    int getRoundStage() const;
+    RoundStage getRoundStage() const;
     Match* getMatch() const;
     MatchList getMatches() const;
 
@@ -130,7 +126,7 @@ public:
 
     void setStage(Stage stage);
     void setRound(int round);
-    void setRoundStage(int roundStage);
+    void setRoundStage(RoundStage roundStage);
 
 
 signals:
@@ -169,7 +165,7 @@ private:
 
     Stage m_stage;
     int m_round;
-    int m_roundStage;
+    RoundStage m_roundStage;
     MatchList m_matches[2]; /// i would love to use here a simple QStack :/
 };
 

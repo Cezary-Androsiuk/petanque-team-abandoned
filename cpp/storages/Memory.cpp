@@ -222,7 +222,7 @@ bool Memory::jsonToEvent(QJsonObject &jsonObject, Event *const event, QString &e
     event->setUnionDelegate( jsonObject["union delegate"].toString() );
     event->setStage( static_cast<Event::Stage>( jsonObject["stage"].toInt() ) );
     event->setRound( jsonObject["round"].toInt() );
-    event->setRoundStage( jsonObject["round stage"].toInt() );
+    event->setRoundStage( static_cast<Event::RoundStage>( jsonObject["round stage"].toInt() ) );
 
 
     // D("loaded phase " + QString::number(event->getPhase()))

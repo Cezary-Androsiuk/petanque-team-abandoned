@@ -13,6 +13,7 @@ class MatchSingiels : public MatchTypeBase
 public:
     explicit MatchSingiels(uint playersCount, QObject *parent = nullptr);
 
+    bool isSelectionDataValid(QString *message = nullptr) const override;
 signals:
 
 private:

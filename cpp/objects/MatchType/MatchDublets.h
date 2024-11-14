@@ -13,6 +13,7 @@ class MatchDublets : public MatchTypeBase
 public:
     explicit MatchDublets(uint playersCount, QObject *parent = nullptr);
 
+    bool isSelectionDataValid(QString *message = nullptr) const override;
 signals:
 
 private:

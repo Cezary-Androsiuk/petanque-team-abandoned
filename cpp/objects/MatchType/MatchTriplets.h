@@ -13,6 +13,7 @@ class MatchTriplets : public MatchTypeBase
 public:
     explicit MatchTriplets(uint playersCount, QObject *parent = nullptr);
 
+    bool isSelectionDataValid(QString *message = nullptr) const override;
 signals:
 
 private:

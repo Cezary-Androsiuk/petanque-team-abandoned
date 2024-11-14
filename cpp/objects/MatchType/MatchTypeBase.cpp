@@ -7,6 +7,49 @@ MatchTypeBase::MatchTypeBase(uint playersCount, uint groups, QObject *parent)
     , m_selection(m_rows, QVector<bool>(m_columns, false))
 {}
 
+bool MatchTypeBase::isSelectionDataValid(const int minSelections, const int maxSelections, QString *message) const
+{
+    QVector<int> selectionCountsInGroups(m_columns, 0);
+    this->countSelectionsInGroups(selectionCountsInGroups);
+
+    for(int i=0; i<m_columns; i++)
+    {
+        int selectionsCountInGroup = selectionCountsInGroups[i];
+        if(minSelections <= selectionsCountInGroup && selectionsCountInGroup <= maxSelections)
+            continue;
+
+        QString _message = QAPF_T(
+            "in group %d, %d players were selected, but %d or %d were expected",
+            i+1, selectionsCountInGroup, minSelections, maxSelections);
+        I(_message);
+
+        if(message != nullptr)
+            *message = _message;
+        return false;
+    }
+
+    return true;
+}
+
+void MatchTypeBase::countSelectionsInGroups(QVector<int> &groups) const
+{
+    if(groups.size() != m_columns)
+    {
+        W("cannot count selections in groups due to uneven groups count")
+        return;
+    }
+
+    for(int ri=0; ri<m_rows; ri++)
+    {
+        const QVector<bool> &row = m_selection[ri];
+
+        for(int ci=0; ci<m_columns; ci++)
+        {
+            if(row[ci])
+                groups[ci]++;
+        }
+    }
+}
 
 void MatchTypeBase::setSelectionCell(uint row, uint column, bool value)
 {

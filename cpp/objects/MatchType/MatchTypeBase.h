@@ -17,6 +17,12 @@ class MatchTypeBase : public QObject
 public:
     explicit MatchTypeBase(uint playersCount, uint groups, QObject *parent = nullptr);
 
+    virtual bool isSelectionDataValid(QString *message = nullptr) const = 0;
+
+protected:
+    bool isSelectionDataValid(const int minSelections, const int maxSelections, QString *message) const;
+    void countSelectionsInGroups(QVector<int> &groups) const;
+
 public slots:
     void setSelectionCell(uint row, uint column, bool value);
 
@@ -28,9 +34,9 @@ public:
 signals:
     void selectionChanged();
 
-private:
-    const uint m_rows;
-    const uint m_columns;
+protected:
+    const uint m_rows; // players
+    const uint m_columns; // groups
     BoolMatrix m_selection; // rows<columns> [row][col]
 };
 

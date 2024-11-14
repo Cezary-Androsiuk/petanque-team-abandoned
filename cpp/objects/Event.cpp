@@ -6,7 +6,7 @@ Event::Event(QObject *parent)
     , m_phase(Phase::First)
     , m_stage(Stage::None)
     , m_round(1)
-    , m_roundStage(0)
+    , m_roundStage(RoundStage::Selection)
 {
 }
 
@@ -131,33 +131,6 @@ void Event::setJudge(int index, QString judge)
     emit this->judgesChanged();
 }
 
-// void Event::overwriteMatch(QVariantList selectionData)
-// {
-//     if(m_round > m_matches[m_phase].size())
-//     {
-//         W(QString::asprintf("cannot overwrite not existing match! round %d, matches size %lld",
-//                             m_round, m_matches[m_phase].size()));
-//         return;
-//     }
-//     Match *match = new Match(this);
-
-//     Event::createMatch(match, m_teams[m_phase], selectionData);
-
-//     delete m_matches[m_phase][m_round-1];
-//     m_matches[m_phase][m_round-1] = match;
-//     emit this->matchesChanged();
-// }
-
-// void Event::createMatch(QVariantList selectionData)
-// {
-//     Match *match = new Match(this);
-
-//     Event::createMatch(match, m_teams[m_phase], selectionData);
-
-//     m_matches[m_phase].append(match);
-//     emit this->matchesChanged();
-// }
-
 void Event::goToNextStage()
 {
     if(m_stage >= Stage::Finish)
@@ -262,6 +235,62 @@ void Event::createMatchIfNotExist()
 
 void Event::verifyCurrentRoundStage()
 {
+    const MatchTeamList &mtl = m_matches[m_phase][m_round-1]->getMatchTeams();
+    for(int i=0; i<mtl.size(); i++)
+    {
+        switch(m_roundStage)
+        {
+        case RoundStage::Selection:
+        {
+            QString errorMessage;
+            bool ok = true;
+
+            ok = mtl[i]->getTriplets()->isSelectionDataValid(&errorMessage);
+            if(!ok)
+            {
+                QString returnMessage = tr("in team ") + m_teams[m_phase][i]->getTeamName() +
+                                        tr(", triplets selection is not valid: ") + errorMessage;
+                I(returnMessage);
+                emit this->currentRoundStageVerificationFailed(returnMessage);
+                return;
+            }
+
+            ok = mtl[i]->getDublets()->isSelectionDataValid(&errorMessage);
+            if(!ok)
+            {
+                QString returnMessage = tr("in team ") + m_teams[m_phase][i]->getTeamName() +
+                                        tr(", dublets selection is not valid: ") + errorMessage;
+                I(returnMessage);
+                emit this->currentRoundStageVerificationFailed(returnMessage);
+                return;
+            }
+
+            ok = mtl[i]->getSingiels()->isSelectionDataValid(&errorMessage);
+            if(!ok)
+            {
+                QString returnMessage = tr("in team ") + m_teams[m_phase][i]->getTeamName() +
+                                        tr(", singiels selection is not valid: ") + errorMessage;
+                I(returnMessage);
+                emit this->currentRoundStageVerificationFailed(returnMessage);
+                return;
+            }
+            break;
+        }
+        case RoundStage::Triplets:
+
+            break;
+        case RoundStage::Dublets:
+
+            break;
+        case RoundStage::Singiels:
+
+            break;
+        default:
+            W("received unknown round stage: " + QString::number(m_roundStage));
+        }
+
+
+    }
     emit this->currentRoundStageVerified();
 }
 
@@ -280,89 +309,6 @@ bool Event::hasPrevRoundStage() const
     else
         return m_roundStage != Event::firstRoundStage;
 }
-
-// void Event::createMatch(Match *match, const TeamList &teams, const QVariantList &selectionData)
-// {
-//     if(selectionData.size() < teams.size())
-//     {
-//         W("C++ was to fast for javascript :<");
-//         return;
-//     }
-//     for(int i=0; i<teams.size(); i++)
-//     {
-//         auto teamDataMap = selectionData[i].toMap();
-//         auto tripletsList = teamDataMap["triplets"].toList();
-//         auto dubletsList = teamDataMap["dublets"].toList();
-//         auto singielsList = teamDataMap["singiels"].toList();
-//         const Team *team = teams[i];
-//         PlayerList players = team->getPlayers();
-
-//         MatchTeam *matchTeam = new MatchTeam(match);
-//         match->addMatchTeam(matchTeam);
-//         matchTeam->setTeamID(team->getTeamID());
-
-//         for(int h=0; h<2; h++) /// through groups count
-//         {
-//             QList<uint> playerIDsTripletGroup;
-//             for(int j=0; j<players.size(); j++)
-//             {
-//                 auto playerTriplets = tripletsList[j].toMap();
-
-//                 if(!playerTriplets[QString::number(h+1)].toBool())
-//                     continue;
-
-//                 playerIDsTripletGroup.append(players[j]->getPlayerID());
-//             }
-
-//             if(playerIDsTripletGroup.size() == 3)
-//                 playerIDsTripletGroup.append(0);
-
-//             uint tmpStorage[4];
-//             for(int j=0; j<4; j++)
-//                 tmpStorage[j] = playerIDsTripletGroup[j];
-
-//             matchTeam->addTriplet(tmpStorage);
-//         }
-
-//         for(int h=0; h<3; h++) /// through groups count
-//         {
-//             QList<uint> playerIDsDubletGroup;
-//             for(int j=0; j<players.size(); j++)
-//             {
-//                 auto playerDublets = dubletsList[j].toMap();
-//                 if(!playerDublets[QString::number(h+1)].toBool())
-//                     continue;
-
-//                 playerIDsDubletGroup.append(players[j]->getPlayerID());
-//             }
-
-//             if(playerIDsDubletGroup.size() == 2)
-//                 playerIDsDubletGroup.append(0);
-
-//             uint tmpStorage[3];
-//             for(int j=0; j<3; j++)
-//                 tmpStorage[j] = playerIDsDubletGroup[j];
-
-//             matchTeam->addDublet(tmpStorage);
-//         }
-
-//         for(int h=0; h<6; h++) /// through groups count
-//         {
-//             uint playerIDsSingletGroup = 0;
-//             for(int j=0; j<players.size(); j++)
-//             {
-//                 auto playerSingiels = singielsList[j].toMap();
-//                 if(!playerSingiels[QString::number(h+1)].toBool())
-//                     continue;
-
-//                 playerIDsSingletGroup = players[j]->getPlayerID();
-//                 break;
-//             }
-
-//             matchTeam->addSingiel(playerIDsSingletGroup);
-//         }
-//     }
-// }
 
 uint Event::generateUniqueTeamID() const
 {
@@ -468,7 +414,7 @@ int Event::getRound() const
     return m_round;
 }
 
-int Event::getRoundStage() const
+Event::RoundStage Event::getRoundStage() const
 {
     return m_roundStage;
 }
@@ -576,7 +522,7 @@ void Event::setRound(int round)
     emit roundChanged();
 }
 
-void Event::setRoundStage(int roundStage)
+void Event::setRoundStage(RoundStage roundStage)
 {
     if (m_roundStage == roundStage)
         return;
