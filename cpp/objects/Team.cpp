@@ -5,8 +5,6 @@ Team::Team(QObject *parent)
     , m_teamID(0)
     , m_detachedPlayer(nullptr)
 {
-    QObject::connect(this, &Team::detachedPlayerUsed, this, &Team::deleteDetachedPlayer);
-
 }
 
 Team::~Team()
@@ -19,28 +17,6 @@ void Team::clearPlayers()
     for(Player *player : m_players)
         delete player;
     m_players.clear();
-}
-
-void Team::copyFromOtherTeam(const Team &sourceTeam)
-{
-    // I("Using other Team as a reference")
-    if(this == &sourceTeam)
-        return;
-
-    m_teamID = sourceTeam.m_teamID;
-    m_teamName = sourceTeam.m_teamName;
-
-    this->clearPlayers();
-    for(Player *player : sourceTeam.getPlayers())
-    {
-        Player *newPlayer = new Player(this);
-        newPlayer->copyFromOtherPlayer(*player);
-        m_players.append(newPlayer);
-    }
-
-    emit this->teamNameChanged();
-    emit this->playersChanged();
-
 }
 
 void Team::createDetachedPlayer()
@@ -73,14 +49,13 @@ void Team::deleteDetachedPlayer()
 void Team::addPlayerUsingDetachedPlayer()
 {
     // I("Adding detached Player to Team")
-    Player *player = new Player(this);
-    player->copyFromOtherPlayer( *m_detachedPlayer );
+    Player *player = m_detachedPlayer;
+    m_detachedPlayer = nullptr;
+
     if(!this->isPlayerIDUniqueInPlayersList( player->getPlayerID() ))
         W("In the meantime creating detached Player, playerID was changed to not unique (in relation to players list)");
 
-    emit this->detachedPlayerUsed();
-
-    m_players.append(player); // that line slows down entire process
+    m_players.append(player);
     emit this->playersChanged();
 }
 

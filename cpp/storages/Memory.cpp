@@ -235,21 +235,25 @@ bool Memory::jsonToEvent(QJsonObject &jsonObject, Event *const event, QString &e
 
 bool Memory::jsonToPhase1(QJsonObject &phase1, Event *const event, QString &errorMessage) const
 {
-    QJsonArray teams = phase1["teams"].toArray();
+    event->clearEvent();
+    event->blockSignals(true);
 
-    for(auto _jTeam : teams)
+    QJsonArray jTeams = phase1["teams"].toArray();
+    for(int i=0; i<jTeams.size(); i++)
     {
-        QJsonObject jTeam = _jTeam.toObject();
+        QJsonObject jTeam = jTeams[i].toObject();
 
         event->createDetachedTeam();
         Team *team = event->getDetachedTeam();
+        team->blockSignals(true);
+
         team->setTeamName( jTeam["teamName"].toString() );
         team->setTeamID( static_cast<uint>(jTeam["teamID"].toInt()) );
 
-        QJsonArray players = jTeam["players"].toArray();
-        for(auto _jPlayer : players)
+        QJsonArray jPlayers = jTeam["players"].toArray();
+        for(int j=0; j<jPlayers.size(); j++)
         {
-            QJsonObject jPlayer = _jPlayer.toObject();
+            QJsonObject jPlayer = jPlayers[j].toObject();
 
             team->createDetachedPlayer();
             Player *player = team->getDetachedPlayer();
@@ -263,10 +267,16 @@ bool Memory::jsonToPhase1(QJsonObject &phase1, Event *const event, QString &erro
 
             team->addPlayerUsingDetachedPlayer();
         }
-        // D("loaded " + QString::number(team->getPlayers().size()) + " players")
+
+        team->blockSignals(false);
+        emit team->playersChanged();
 
         event->addTeamUsingDetachedTeam();
     }
+
+    event->blockSignals(false);
+    emit event->teamsChanged();
+
     // D("loaded " + QString::number(event->getTeams().size()) + " teams")
     return true;
 }

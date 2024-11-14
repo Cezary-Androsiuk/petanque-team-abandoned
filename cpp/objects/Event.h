@@ -137,8 +137,6 @@ signals:
     void teamsChanged();
     void detachedTeamChanged();
 
-    void detachedTeamUsed();
-
     void phaseChanged();
     void nameChanged();
     void firstPhaseDateChanged();

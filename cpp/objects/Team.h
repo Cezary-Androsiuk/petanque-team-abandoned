@@ -20,7 +20,6 @@ public:
     explicit Team(QObject *parent = nullptr);
     ~Team();
     void clearPlayers();
-    void copyFromOtherTeam(const Team &team);
 
 public slots:
     void createDetachedPlayer();
@@ -46,8 +45,6 @@ signals:
     void teamNameChanged();
     void playersChanged();
     void detachedPlayerChanged();
-
-    void detachedPlayerUsed();
 
 private:
     uint m_teamID; // unique in event

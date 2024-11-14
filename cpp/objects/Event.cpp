@@ -8,7 +8,6 @@ Event::Event(QObject *parent)
     , m_round(1)
     , m_roundStage(0)
 {
-    QObject::connect(this, &Event::detachedTeamUsed, this, &Event::deleteDetachedTeam);
 }
 
 Event::~Event()
@@ -65,21 +64,16 @@ void Event::deleteDetachedTeam()
 void Event::addTeamUsingDetachedTeam()
 {
     // I("Adding detached Team to Event")
-    Team *team = new Team(this);
-    team->copyFromOtherTeam( *m_detachedTeam );
-
-    // Team *team = m_detachedTeam;
-    // m_detachedTeam = nullptr; // this might be a better way than copying x object containing y other objects
+    Team *team = m_detachedTeam;
+    m_detachedTeam = nullptr;
 
     if(!this->isTeamIDUniqueInTeamssList( team->getTeamID() ))
         W("In the meantime creating detached Team, teamID{" +
           QString::number(team->getTeamID()) +
           "} was changed to not unique (in relation to teams list)");
 
-    emit this->detachedTeamUsed();
-
     m_teams[m_phase].append(team);
-    emit this->teamsChanged(); // this slows down program
+    emit this->teamsChanged(); // this slows down program, but can be muted
 }
 
 void Event::deleteTeam(const Team * const team)

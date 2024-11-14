@@ -20,42 +20,43 @@ Event *Backend::getEvent() const
 void Backend::createExampleData()
 {
     m_event->clearEvent();
-
-    const QJsonObject &exampleData = Personalization::getInstance()->getExampleData();
-    QJsonArray teams = exampleData["teams"].toArray();
-    int ti = 0;
     m_event->blockSignals(true);
-    for(const auto &_team : teams)
+
+    QJsonArray jTeams = Personalization::getInstance()->getExampleData()["teams"].toArray();
+    for(int i=0; i<jTeams.size(); i++)
     {
-        QJsonObject team = _team.toObject();
+        QJsonObject jTeam = jTeams[i].toObject();
 
         m_event->createDetachedTeam();
-        Team *dTeam = m_event->getDetachedTeam();
-        dTeam->setTeamName( team["team name"].toString() );
+        Team *team = m_event->getDetachedTeam();
+        team->blockSignals(true);
 
-        QJsonArray players = team["players"].toArray();
-        int pi = 0;
-        for(const auto &_player : players)
+        team->setTeamName( jTeam["team name"].toString() );
+
+        QJsonArray jPlayers = jTeam["players"].toArray();
+        for(int j=0; j<jPlayers.size(); j++)
         {
-            QJsonObject player = _player.toObject();
+            QJsonObject jPlayer = jPlayers[j].toObject();
 
-            dTeam->createDetachedPlayer();
-            Player *dPlayer = dTeam->getDetachedPlayer();
+            team->createDetachedPlayer();
+            Player *player = team->getDetachedPlayer();
 
-            dPlayer->setFname( player["fname"].toString() );
-            dPlayer->setLname( player["lname"].toString() );
-            dPlayer->setLicense( player["license"].toString() );
-            dPlayer->setAgeGroup( player["age group"].toInt() );
-            dPlayer->setGender( player["gender"].toInt() );
-            dPlayer->setIsTeamLeader( player["isTeamLeader"].toBool() );
+            player->setFname( jPlayer["fname"].toString() );
+            player->setLname( jPlayer["lname"].toString() );
+            player->setLicense( jPlayer["license"].toString() );
+            player->setAgeGroup( jPlayer["age group"].toInt() );
+            player->setGender( jPlayer["gender"].toInt() );
+            player->setIsTeamLeader( jPlayer["isTeamLeader"].toBool() );
 
-            dTeam->addPlayerUsingDetachedPlayer();
-            D(QAPF("created player %d", ++pi));
+            team->addPlayerUsingDetachedPlayer();
         }
 
+        team->blockSignals(false);
+        emit team->playersChanged();
+
         m_event->addTeamUsingDetachedTeam();
-        D(QAPF("created team %d", ++ti));
     }
+
     m_event->blockSignals(false);
     emit m_event->teamsChanged();
 }
