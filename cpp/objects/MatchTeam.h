@@ -13,9 +13,9 @@ class MatchTeam : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(uint teamID                  READ getTeamID      WRITE setTeamID NOTIFY teamIDChanged    FINAL)
-    Q_PROPERTY(MatchTriplets triplets       READ getTriplets    CONSTANT FINAL)
-    Q_PROPERTY(MatchDublets dublets         READ getDublets     CONSTANT FINAL)
-    Q_PROPERTY(MatchSingiels singiels       READ getSingiels    CONSTANT FINAL)
+    Q_PROPERTY(const MatchTriplets *triplets       READ getTriplets    CONSTANT FINAL)
+    Q_PROPERTY(const MatchDublets *dublets         READ getDublets     CONSTANT FINAL)
+    Q_PROPERTY(const MatchSingiels *singiels       READ getSingiels    CONSTANT FINAL)
 
 public:
     explicit MatchTeam(QObject *parent = nullptr);

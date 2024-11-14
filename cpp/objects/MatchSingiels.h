@@ -2,8 +2,11 @@
 #define MATCHSINGIELS_H
 
 #include <QObject>
+#include <QVector>
 
 #include "cpp/support/Log.h"
+
+typedef QVector<QVector<bool>> BoolMatrix;
 
 class MatchSingiels : public QObject
 {

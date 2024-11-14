@@ -2,9 +2,11 @@
 #define MATCHDUBLETS_H
 
 #include <QObject>
-#include <QList>
+#include <QVector>
 
 #include "cpp/support/Log.h"
+
+typedef QVector<QVector<bool>> BoolMatrix;
 
 class MatchDublets : public QObject
 {

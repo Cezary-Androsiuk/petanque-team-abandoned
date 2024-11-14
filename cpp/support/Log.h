@@ -12,6 +12,8 @@
 #include <QTextStream>
 #include <QIODevice>
 
+#define QAPF(...) QString::asprintf(__VA_ARGS__) /* QString as printf */
+
 //////////////////// OLD DEBUG ////////////////////
 #define FUNCTION __PRETTY_FUNCTION__
 // #define FUNCTION __FUNCTION__

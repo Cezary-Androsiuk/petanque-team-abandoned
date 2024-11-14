@@ -4,25 +4,35 @@ import QtQuick.Controls.Material
 Item {
     id: groupSelection
     required property int teamIndex;
-    readonly property var team: event.teams[teamIndex];
-    readonly property var matchTeam: event.match.matchTeams[teamIndex];
     required property int groupSize; // 1, 2 or 3
 
-    readonly property int groupsCount: {
-        if(groupSize === 3)         2;
-        else if(groupSize === 2)    3;
-        else /* groupSize === 1 */  6;
+    readonly property var team: event.teams[teamIndex];
+    readonly property var matchTeam: event.match.matchTeams[teamIndex];
+    readonly property var currentMatchType: {
+        if(groupSize === 3)         matchTeam.triplets;
+        else if(groupSize === 2)    matchTeam.dublets;
+        else /* groupSize === 1 */  matchTeam.singiels;
     }
+    readonly property var selectionArray: currentMatchType.selection
+    readonly property var selectionArrayRows: currentMatchType.rows
+    readonly property var selectionArrayColumns: currentMatchType.columns
     readonly property string groupsSelectionName: {
         if(groupSize === 3)         "Triplets";
         else if(groupSize === 2)    "Dublets";
         else /* groupSize === 1 */  "Singiels";
     }
 
+
+    // readonly property int groupsCount: {
+    //     if(groupSize === 3)         2;
+    //     else if(groupSize === 2)    3;
+    //     else /* groupSize === 1 */  6;
+    // }
+
     readonly property int delegateHeight: 30;
     readonly property int headerHeight: 60;
     readonly property int footerHeight: 30;
-    readonly property int playersCount: (!team)?0: team.players.length
+    readonly property int playersCount: selectionArray.length
     readonly property int groupSelectionHeight: playersCount * delegateHeight + headerHeight + footerHeight
 
     height: groupSelectionHeight
@@ -30,24 +40,21 @@ Item {
     function setExampleData(){
         var i,j,h;
 
-        for(i=0; i<groupSize; i++)
+        for(i=0; i<selectionArrayRows; i++)
         {
-            for(j=0; j<groupsCount; j++)
+            for(j=0; j<selectionArrayColumns; j++)
             {
-                h = i + j*groupSize;
-                // set Group j
-                listOfSelected[h][j+1] = true;
-                listView.itemAtIndex(h).radioButtonsAlias.itemAt(j).checked = true
-
+                currentMatchType.setSelectionCell(i, j, true);
             }
         }
     }
+
 
     ListView{
         id: listView
         anchors.fill: parent
 
-        model: (!team)?null:team.players
+        model: selectionArray.length
         boundsBehavior: Flickable.StopAtBounds
         clip: true
         interactive: false
@@ -76,7 +83,7 @@ Item {
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                     font.pixelSize: 18 // default is 14
-                    text: groupsSelectionName
+                    text: groupSelection.groupsSelectionName
                 }
                 Item{
                     id: exampleSelectionButtonField
@@ -134,7 +141,7 @@ Item {
                 }
 
                 Repeater{
-                    model: groupSelection.groupsCount
+                    model: groupSelection.selectionArrayColumns
                     Item{
                         height: parent.height
                         width: 140
@@ -167,8 +174,6 @@ Item {
             width: listView.width
             height: delegateHeight
 
-            property alias radioButtonsAlias: radioButtons;
-
             Row{
                 id: row
                 anchors.fill: parent
@@ -187,12 +192,15 @@ Item {
                 }
                 Repeater{
                     id: radioButtons
-                    model: groupSelection.groupsCount
+                    model: groupSelection.selectionArrayColumns
                     RadioButton{
                         id: radioButton
                         width: 140
                         height: parent.height
                         // text: "group " + (row.parentIndex+1) +  "" + (index+1)
+
+                        // disable row exclusive
+                        autoExclusive: false
 
                         // uncheck mechanic
                         property bool wasCheckedWhilePressing: false
@@ -204,8 +212,9 @@ Item {
                                 checked = false
                         }
 
+                        checked: groupSelection.selectionArray[row.parentIndex][index]
                         onCheckedChanged: {
-                            listOfSelected[row.parentIndex][index+1] = checked
+                            groupSelection.currentMatchType.setSelectionCell(row.parentIndex, index, checked)
                         }
                     }
                 }
