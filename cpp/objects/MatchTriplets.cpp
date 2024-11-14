@@ -9,6 +9,7 @@ MatchTriplets::MatchTriplets(uint playersCount, QObject *parent)
 
 void MatchTriplets::setSelectionCell(uint row, uint column, bool value)
 {
+    /// input value protection (always use protection)
     if(m_selection.size() <= row)
     {
         W(QAPF("trying to access %u row, while this matrix contains %lld rows", row, m_selection.size()))
@@ -23,17 +24,21 @@ void MatchTriplets::setSelectionCell(uint row, uint column, bool value)
         return;
     }
 
+    /// Binding loop protection
     if(m_selection[row][column] == value)
         return;
 
+    /// keep row exclusive
     if(value == true)
     {
-        /// set all values in that row to false // make row exclusive
+        /// set all values in that row to false
         for(int i=0; i<m_selection[row].size(); i++)
             m_selection[row][i] = false;
     }
 
     m_selection[row][column] = value;
+
+    /// print matrix
     for(const auto &row : m_selection)
     {
         QString rowText;
