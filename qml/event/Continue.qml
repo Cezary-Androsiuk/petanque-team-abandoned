@@ -12,6 +12,10 @@ Item {
         Backend.event.createMatchIfNotExist();
     }
 
+    Component.onDestruction: {
+        Memory.save();
+    }
+
     Connections{
         target: Backend.event
         function onRoundChanged(){
@@ -171,8 +175,5 @@ Item {
         }
     }
 
-    Component.onDestruction: {
-        Memory.save(false /*reload after saved*/);
-    }
 
 }

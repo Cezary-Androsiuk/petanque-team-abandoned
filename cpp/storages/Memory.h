@@ -30,7 +30,7 @@ public:
 
 public slots:
     void load();
-    void save(bool reloadAfterSaved = true);
+    void save(bool reloadAfterSaved = false);
 
 public:
     void setBackendPtr(Backend *backend);

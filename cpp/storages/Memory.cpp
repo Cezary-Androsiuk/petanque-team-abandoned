@@ -129,6 +129,8 @@ void Memory::eventToJson(const Event *const event, QJsonObject &jsonObject) cons
     Event::Phase phase = event->getPhase();
     if(phase == Event::Phase::First)
     {
+        QJsonObject phase1;
+
         QJsonArray teams;
         for(Team *team : event->getTeams())
         {
@@ -155,12 +157,51 @@ void Memory::eventToJson(const Event *const event, QJsonObject &jsonObject) cons
 
             teams.append(jTeam);
         }
+        phase1["teams"] = teams;
         // D("saved " + QString::number(teams.size()) + " teams")
 
-        QJsonObject phase1;
-        phase1["teams"] = teams;
+        QJsonArray jMatches;
+        for(const Match *match : event->getMatches())
+        {
+            QJsonArray jMatchTeams;
+            for(const MatchTeam *matchTeam : match->getMatchTeams())
+            {
+                QJsonObject jMatchTeam;
+                QJsonObject jMatchTypeBase[3];
+                const MatchTypeBase *const matchTeamBase[3] = {
+                    matchTeam->getTriplets(),
+                    matchTeam->getDublets(),
+                    matchTeam->getSingiels()
+                };
+
+                for(int i=0; i<3; i++)
+                {
+                    QJsonArray jSelectionRows;
+                    for(const auto &row : matchTeamBase[i]->getSelection())
+                    {
+                        QJsonArray jSelectionColumns;
+                        for(bool column : row)
+                            jSelectionColumns.append(column);
+                        jSelectionRows.append(jSelectionColumns);
+                    }
+
+                    jMatchTypeBase[i]["selection"] = jSelectionRows;
+                    jMatchTypeBase[i]["rows"] = static_cast<int>(matchTeamBase[i]->getRows());
+                    jMatchTypeBase[i]["columns"] = static_cast<int>(matchTeamBase[i]->getColumns());
+
+                }
+
+                jMatchTeam["triplets"] = jMatchTypeBase[0];
+                jMatchTeam["dublets"] = jMatchTypeBase[1];
+                jMatchTeam["singiels"] = jMatchTypeBase[2];
+                jMatchTeams.append(jMatchTeam);
+            }
+            jMatches.append(jMatchTeams);
+        }
+        phase1["matches"] = jMatches;
 
         jsonObject["phase first"] = phase1;
+
         jsonObject["name"] = event->getName();
         jsonObject["first phhase date"] = event->getFirstPhaseDate();
         jsonObject["second phase date"] = event->getSecondPhaseDate();
