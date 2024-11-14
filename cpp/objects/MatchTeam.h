@@ -5,9 +5,9 @@
 #include <QDebug>
 #include <QList>
 
-#include "cpp/objects/MatchTriplets.h"
-#include "cpp/objects/MatchDublets.h"
-#include "cpp/objects/MatchSingiels.h"
+#include "cpp/objects/MatchType/MatchTriplets.h"
+#include "cpp/objects/MatchType/MatchDublets.h"
+#include "cpp/objects/MatchType/MatchSingiels.h"
 
 class MatchTeam : public QObject
 {

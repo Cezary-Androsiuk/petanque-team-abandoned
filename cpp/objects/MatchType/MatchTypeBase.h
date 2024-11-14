@@ -1,5 +1,5 @@
-#ifndef MATCHTRIPLETS_H
-#define MATCHTRIPLETS_H
+#ifndef MATCHTYPEBASE_H
+#define MATCHTYPEBASE_H
 
 #include <QObject>
 #include <QVector>
@@ -8,14 +8,14 @@
 
 typedef QVector<QVector<bool>> BoolMatrix;
 
-class MatchTriplets : public QObject
+class MatchTypeBase : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(BoolMatrix selection READ getSelection NOTIFY selectionChanged FINAL)
     Q_PROPERTY(uint rows READ getRows CONSTANT FINAL)
     Q_PROPERTY(uint columns READ getColumns CONSTANT FINAL)
 public:
-    explicit MatchTriplets(uint playersCount, QObject *parent = nullptr);
+    explicit MatchTypeBase(uint playersCount, uint groups, QObject *parent = nullptr);
 
 public slots:
     void setSelectionCell(uint row, uint column, bool value);
@@ -34,4 +34,4 @@ private:
     BoolMatrix m_selection; // rows<columns> [row][col]
 };
 
-#endif // MATCHTRIPLETS_H
+#endif // MATCHTYPEBASE_H

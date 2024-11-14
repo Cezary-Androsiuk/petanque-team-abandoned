@@ -13,9 +13,9 @@ Item {
         else if(groupSize === 2)    matchTeam.dublets;
         else /* groupSize === 1 */  matchTeam.singiels;
     }
-    readonly property var selectionArray: currentMatchType.selection
-    readonly property var selectionArrayRows: currentMatchType.rows
-    readonly property var selectionArrayColumns: currentMatchType.columns
+    readonly property var matrix: currentMatchType.selection
+    readonly property var matrixRows: currentMatchType.rows
+    readonly property var matrixColumns: currentMatchType.columns
     readonly property string groupsSelectionName: {
         if(groupSize === 3)         "Triplets";
         else if(groupSize === 2)    "Dublets";
@@ -32,21 +32,46 @@ Item {
     readonly property int delegateHeight: 30;
     readonly property int headerHeight: 60;
     readonly property int footerHeight: 30;
-    readonly property int playersCount: selectionArray.length
-    readonly property int groupSelectionHeight: playersCount * delegateHeight + headerHeight + footerHeight
+    readonly property int groupSelectionHeight: matrixRows * delegateHeight + headerHeight + footerHeight
 
     height: groupSelectionHeight
+
+    function setSC(row, column, value){ currentMatchType.setSelectionCell(row, column, value); }
 
     function setExampleData(){
         var i,j,h;
 
-        for(i=0; i<selectionArrayRows; i++)
+
+        // turn off all rows
+        for(i=0; i<matrixRows; i++)
         {
-            for(j=0; j<selectionArrayColumns; j++)
-            {
-                currentMatchType.setSelectionCell(i, j, true);
-            }
+            // (using mechanic that uncheck rest of the radioButtons)
+            setSC(i, 0, true);
+            setSC(i, 0, false);
         }
+
+
+        if(groupSize === 3)
+        {
+            setSC(0, 0, true); setSC(1, 0, true); setSC(2, 0, true); // group 1
+            setSC(3, 1, true); setSC(4, 1, true); setSC(5, 1, true); // group 2
+        }
+        else if(groupSize === 2)
+        {
+            setSC(0, 0, true); setSC(1, 0, true); // group 1
+            setSC(2, 1, true); setSC(3, 1, true); // group 2
+            setSC(4, 2, true); setSC(5, 2, true); // group 3
+        }
+        else /* groupSize === 1 */
+        {
+            setSC(0, 0, true); // group 1
+            setSC(1, 1, true); // group 2
+            setSC(2, 2, true); // group 3
+            setSC(3, 3, true); // group 4
+            setSC(4, 4, true); // group 5
+            setSC(5, 5, true); // group 6
+        }
+
     }
 
 
@@ -54,7 +79,7 @@ Item {
         id: listView
         anchors.fill: parent
 
-        model: selectionArray.length
+        model: groupSelection.matrixRows
         boundsBehavior: Flickable.StopAtBounds
         clip: true
         interactive: false
@@ -67,7 +92,7 @@ Item {
 
         header: Item{
             width: listView.width
-            height: headerHeight
+            height: groupSelection.headerHeight
 
             Item{
                 id: groupsSelectionNameTitle
@@ -98,7 +123,7 @@ Item {
                         id: exampleSelectionButton
                         anchors.fill: parent
                         onClicked: {
-                            setExampleData();
+                            groupSelection.setExampleData();
                         }
                     }
 
@@ -141,7 +166,7 @@ Item {
                 }
 
                 Repeater{
-                    model: groupSelection.selectionArrayColumns
+                    model: groupSelection.matrixColumns
                     Item{
                         height: parent.height
                         width: 140
@@ -171,15 +196,17 @@ Item {
         }
 
         delegate: Item{
+            id: rowDelegate
             width: listView.width
-            height: delegateHeight
+            height: groupSelection.delegateHeight
+
+            readonly property int rowIndex: index
 
             Row{
                 id: row
                 anchors.fill: parent
                 spacing: 0
 
-                readonly property int parentIndex: index
 
                 Label{
                     id: playerInfo
@@ -188,18 +215,24 @@ Item {
                     horizontalAlignment: Text.AlignLeft
                     verticalAlignment: Text.AlignVCenter
                     // pixelSize is 14
-                    text: modelData.fname + " " + modelData.lname
+                    text: {
+                        var player = groupSelection.team.players[rowDelegate.rowIndex];
+                        player.fname + " " + player.lname;
+                    }
                 }
                 Repeater{
                     id: radioButtons
-                    model: groupSelection.selectionArrayColumns
+                    model: groupSelection.matrixColumns
+
+
                     RadioButton{
                         id: radioButton
+                        readonly property int colIndex: index
                         width: 140
                         height: parent.height
-                        // text: "group " + (row.parentIndex+1) +  "" + (index+1)
+                        // text: "group " + (rowDelegate.rowIndex+1) +  "" + (radioButtons.colIndex+1)
 
-                        // disable row exclusive
+                        // disable row exclusive // will be handled in backend
                         autoExclusive: false
 
                         // uncheck mechanic
@@ -212,9 +245,9 @@ Item {
                                 checked = false
                         }
 
-                        checked: groupSelection.selectionArray[row.parentIndex][index]
+                        checked: groupSelection.matrix[rowDelegate.rowIndex][radioButton.colIndex]
                         onCheckedChanged: {
-                            groupSelection.currentMatchType.setSelectionCell(row.parentIndex, index, checked)
+                            groupSelection.setSC(rowDelegate.rowIndex, radioButton.colIndex, checked)
                         }
                     }
                 }

@@ -16,8 +16,8 @@ Item {
             if(delegate)
             {
                 delegate.itemTripletsGroupSelection.setExampleData();
-                // delegate.itemDubletsGroupSelection.setExampleData();
-                // delegate.itemSingielsGroupSelection.setExampleData();
+                delegate.itemDubletsGroupSelection.setExampleData();
+                delegate.itemSingielsGroupSelection.setExampleData();
             }
             else{
                 console.log("item at index " + i + " not found")
@@ -36,7 +36,7 @@ Item {
             id: listView
             anchors.fill: parent
 
-            model: 1//event.match.matchTeams.length // or event.teams.length
+            model: event.match.matchTeams.length // or event.teams.length
             boundsBehavior: Flickable.StopAtBounds
             clip: true
             cacheBuffer: 10000 // for god sake, keep delegates alive while scrolling
@@ -55,12 +55,12 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 height: teamNameField.height + 50
                         + tripletsGroupSelection.height
-                        // + dubletsGroupSelection.height
-                        // + singielsGroupSelection.height
+                        + dubletsGroupSelection.height
+                        + singielsGroupSelection.height
 
                 property alias itemTripletsGroupSelection: tripletsGroupSelection
-                // property alias itemDubletsGroupSelection: dubletsGroupSelection
-                // property alias itemSingielsGroupSelection: singielsGroupSelection
+                property alias itemDubletsGroupSelection: dubletsGroupSelection
+                property alias itemSingielsGroupSelection: singielsGroupSelection
 
                 Item{
                     id: teamNameField
@@ -91,29 +91,29 @@ Item {
                     groupSize: 3
                 }
 
-                // GroupSelection{
-                //     id: dubletsGroupSelection
-                //     anchors{
-                //         top: tripletsGroupSelection.bottom
-                //         left: parent.left
-                //         right: parent.right
-                //         margins: 10
-                //     }
-                //     teamIndex: index
-                //     groupSize: 2
-                // }
+                GroupSelection{
+                    id: dubletsGroupSelection
+                    anchors{
+                        top: tripletsGroupSelection.bottom
+                        left: parent.left
+                        right: parent.right
+                        margins: 10
+                    }
+                    teamIndex: index
+                    groupSize: 2
+                }
 
-                // GroupSelection{
-                //     id: singielsGroupSelection
-                //     anchors{
-                //         top: dubletsGroupSelection.bottom
-                //         left: parent.left
-                //         right: parent.right
-                //         margins: 10
-                //     }
-                //     teamIndex: index
-                //     groupSize: 1
-                // }
+                GroupSelection{
+                    id: singielsGroupSelection
+                    anchors{
+                        top: dubletsGroupSelection.bottom
+                        left: parent.left
+                        right: parent.right
+                        margins: 10
+                    }
+                    teamIndex: index
+                    groupSize: 1
+                }
 
                 Rectangle{
                     anchors.fill: parent

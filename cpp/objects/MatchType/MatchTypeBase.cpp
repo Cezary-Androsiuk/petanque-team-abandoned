@@ -1,13 +1,14 @@
-#include "MatchTriplets.h"
+#include "MatchTypeBase.h"
 
-MatchTriplets::MatchTriplets(uint playersCount, QObject *parent)
+MatchTypeBase::MatchTypeBase(uint playersCount, uint groups, QObject *parent)
     : QObject{parent}
     , m_rows{playersCount}
-    , m_columns{2}
+    , m_columns{groups}
     , m_selection(m_rows, QVector<bool>(m_columns, false))
 {}
 
-void MatchTriplets::setSelectionCell(uint row, uint column, bool value)
+
+void MatchTypeBase::setSelectionCell(uint row, uint column, bool value)
 {
     /// input value protection (always use protection)
     if(m_selection.size() <= row)
@@ -39,28 +40,28 @@ void MatchTriplets::setSelectionCell(uint row, uint column, bool value)
     m_selection[row][column] = value;
 
     /// print matrix
-    for(const auto &row : m_selection)
-    {
-        QString rowText;
-        for(bool cell : row)
-            rowText += QAPF("%c ", cell ? 'x' : ' ');
-        qDebug() << rowText.toStdString().c_str();
-    }
+    // for(const auto &row : m_selection)
+    // {
+    //     QString rowText;
+    //     for(bool cell : row)
+    //         rowText += QAPF("%c ", cell ? 'x' : ' ');
+    //     qDebug() << rowText.toStdString().c_str();
+    // }
 
     emit this->selectionChanged();
 }
 
-const BoolMatrix &MatchTriplets::getSelection() const
+const BoolMatrix &MatchTypeBase::getSelection() const
 {
     return m_selection;
 }
 
-uint MatchTriplets::getRows() const
+uint MatchTypeBase::getRows() const
 {
     return m_rows;
 }
 
-uint MatchTriplets::getColumns() const
+uint MatchTypeBase::getColumns() const
 {
     return m_columns;
 }
