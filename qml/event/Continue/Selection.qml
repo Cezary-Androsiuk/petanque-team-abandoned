@@ -72,7 +72,7 @@ Item {
                     height: 60
                     Label{
                         anchors.fill: parent
-                        text: (!event)?"": event.teams[index].teamName
+                        text: (!event)?"": (!event.teams[index])?"": event.teams[index].teamName
                         font.pixelSize: 26
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter

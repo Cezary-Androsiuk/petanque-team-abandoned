@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QList>
+#include <QCoreApplication>
 #include <QVariant>
 
 #include "cpp/support/Log.h"

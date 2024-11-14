@@ -67,6 +67,10 @@ void Event::addTeamUsingDetachedTeam()
     // I("Adding detached Team to Event")
     Team *team = new Team(this);
     team->copyFromOtherTeam( *m_detachedTeam );
+
+    // Team *team = m_detachedTeam;
+    // m_detachedTeam = nullptr; // this might be a better way than copying x object containing y other objects
+
     if(!this->isTeamIDUniqueInTeamssList( team->getTeamID() ))
         W("In the meantime creating detached Team, teamID{" +
           QString::number(team->getTeamID()) +
@@ -75,7 +79,7 @@ void Event::addTeamUsingDetachedTeam()
     emit this->detachedTeamUsed();
 
     m_teams[m_phase].append(team);
-    emit this->teamsChanged();
+    emit this->teamsChanged(); // this slows down program
 }
 
 void Event::deleteTeam(const Team * const team)

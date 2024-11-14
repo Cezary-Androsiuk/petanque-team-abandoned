@@ -23,6 +23,8 @@ void Backend::createExampleData()
 
     const QJsonObject &exampleData = Personalization::getInstance()->getExampleData();
     QJsonArray teams = exampleData["teams"].toArray();
+    int ti = 0;
+    m_event->blockSignals(true);
     for(const auto &_team : teams)
     {
         QJsonObject team = _team.toObject();
@@ -32,6 +34,7 @@ void Backend::createExampleData()
         dTeam->setTeamName( team["team name"].toString() );
 
         QJsonArray players = team["players"].toArray();
+        int pi = 0;
         for(const auto &_player : players)
         {
             QJsonObject player = _player.toObject();
@@ -47,10 +50,14 @@ void Backend::createExampleData()
             dPlayer->setIsTeamLeader( player["isTeamLeader"].toBool() );
 
             dTeam->addPlayerUsingDetachedPlayer();
+            D(QAPF("created player %d", ++pi));
         }
 
         m_event->addTeamUsingDetachedTeam();
+        D(QAPF("created team %d", ++ti));
     }
+    m_event->blockSignals(false);
+    emit m_event->teamsChanged();
 }
 
 void Backend::validateData()

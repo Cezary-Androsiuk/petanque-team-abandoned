@@ -6,7 +6,7 @@ Item {
     required property int teamIndex;
     required property int groupSize; // 1, 2 or 3
 
-    readonly property var team: event.teams[teamIndex];
+    readonly property var team: event.teams[teamIndex]
     readonly property var matchTeam: event.match.matchTeams[teamIndex];
     readonly property var currentMatchType: {
         if(groupSize === 3)         matchTeam.triplets;
@@ -216,8 +216,12 @@ Item {
                     verticalAlignment: Text.AlignVCenter
                     // pixelSize is 14
                     text: {
-                        var player = groupSelection.team.players[rowDelegate.rowIndex];
-                        player.fname + " " + player.lname;
+                        if(!groupSelection.team)
+                            "";
+                        else{
+                            var player = groupSelection.team.players[rowDelegate.rowIndex];
+                            player.fname + " " + player.lname;
+                        }
                     }
                 }
                 Repeater{
