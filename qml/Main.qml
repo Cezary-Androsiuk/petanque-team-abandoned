@@ -41,8 +41,15 @@ ApplicationWindow {
 
         function onMemoryLoadError(message){
             rootLoader.source = ""
-            console.log("error occur while loading memory: " + message)
+            log.e("error occur while loading memory: " + message)
+
+            console.log(this)
+            console.log(this.target) // może jakoś na string
+            console.log(this.target.objectName)
+
         }
+
+        // sprawdzić jak przekazywane jest matchTeam i triplets etc do qml i jak umożliwia modyfikację wartości skoro pamiętam, że jest const
 
         function onMemorySaved(reload){ // not reloading memory, while exiting the app
             // console.log("memory saved");
@@ -51,7 +58,7 @@ ApplicationWindow {
         }
 
         function onMemorySaveError(message){
-            console.log("error occur while saving memory: " + message)
+            log.w("error occur while saving memory: " + message)
         }
     }
     
