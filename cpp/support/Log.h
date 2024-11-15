@@ -45,7 +45,7 @@
 
 
 #define LOG_FILE "Logs.log"
-#define EST_FUNCTION_LENGTH 70 // estimated function name length what will be reserved while creating log
+#define EST_FUNCTION_LENGTH 90 // estimated function name length what will be reserved while creating log
 #define SHORTER_FUNCTION_FILL_CHARACTER ' ' // characters that fills area before function name to fit estimated function name length
 #define CONTENT_SPACE 10 // space between function name and content
 #define CONTENT_SPACE_CHARACTER ' ' // characters that fills space between function name and content
@@ -64,23 +64,26 @@ public:
         PrintSesion = Print | Sesion,
         All = Save | Print | Sesion,
     };
+
+    typedef const QString &cQS;
+
     static constexpr Action actionForceHighest = Action::All; // set highest ( will be compared with & sign )
     static constexpr Action actionForceLowest = Action::None;  // set lowest ( will be compared with | sign )
 
-    static void info(QString func, QString log, Action action = Action(Action::All));
-    static void warning(QString func, QString log, Action action = Action(Action::All));
-    static void error(QString func, QString log, Action action = Action(Action::All));
-    static void debug(QString func, QString log, Action action = Action(Action::All));
+    static void info(cQS func, cQS log, Action action = Action(Action::All));
+    static void warning(cQS func, cQS log, Action action = Action(Action::All));
+    static void error(cQS func, cQS log, Action action = Action(Action::All));
+    static void debug(cQS func, cQS log, Action action = Action(Action::All));
 
 private:
     static QString time();
-    static QString buildPrefix(QString type, QString func);
+    static QString buildPrefix(cQS type, cQS func, bool time = false);
     static QString buildStartPrefix();
 
-    static void log(QString content, Action action);
-    static void print(QString content);
-    static void saveFile(QString content);
-    static void addSession(QString content);
+    static void log(const char *type, cQS func, cQS log, Action action);
+    static void print(cQS content);
+    static void saveFile(cQS content);
+    static void addSession(cQS content);
 
 public:
     class Convert{

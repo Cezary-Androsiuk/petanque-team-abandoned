@@ -207,7 +207,7 @@ void Memory::jsonToMatches(const QJsonArray &jMatches, Event * const event) cons
         QJsonArray jMatchTeams = jMatch["match teams"].toArray();
         if(match->getMatchTeams().size() != jMatchTeams.size())
         {
-            E("match teams size: " + QString::number(match->getMatchTeams().size()) + ", jMatchTeams size: " + QString::number(jMatchTeams.size()))
+            W("match teams size: " + QString::number(match->getMatchTeams().size()) + ", jMatchTeams size: " + QString::number(jMatchTeams.size()))
             return;
         }
         for(int j=0; j<jMatchTeams.size(); j++)
