@@ -25,6 +25,10 @@ public:
     const MatchDublets *getDublets() const;
     const MatchSingiels *getSingiels() const;
 
+    MatchTriplets *getTripletsRef();
+    MatchDublets *getDubletsRef();
+    MatchSingiels *getSingielsRef();
+
     void setTeamID(uint teamID);
     void setTriplets(MatchTriplets *triplets);
     void setDublets(MatchDublets *dublets);

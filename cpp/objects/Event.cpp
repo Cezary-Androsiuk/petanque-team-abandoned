@@ -204,25 +204,7 @@ void Event::createMatchIfNotExist()
     if(m_round > m_matches[m_phase].size())
     {
         /// create match
-        Match *match = new Match(this);
-        for(int i=0; i<m_teams[m_phase].size(); i++)
-        {
-            MatchTeam *matchTeam = new MatchTeam(match);
-
-            int playersCount = m_teams[m_phase][i]->getPlayers().size();
-            MatchTriplets *triplets = new MatchTriplets(playersCount, matchTeam);
-            MatchDublets *dublets = new MatchDublets(playersCount, matchTeam);
-            MatchSingiels *singiels = new MatchSingiels(playersCount, matchTeam);
-
-            matchTeam->setTriplets(triplets);
-            matchTeam->setDublets(dublets);
-            matchTeam->setSingiels(singiels);
-
-            match->addMatchTeam(matchTeam);
-        }
-        // D("Match created")
-
-        m_matches[m_phase].append(match);
+        this->createNewMatch();
         emit this->matchWasCreated();
     }
     else
@@ -231,6 +213,30 @@ void Event::createMatchIfNotExist()
         // D("Match exist")
         emit this->matchAlreadyExist();
     }
+}
+
+Match *Event::createNewMatch()
+{
+    Match *match = new Match(this);
+    for(int i=0; i<m_teams[m_phase].size(); i++)
+    {
+        MatchTeam *matchTeam = new MatchTeam(match);
+
+        int playersCount = m_teams[m_phase][i]->getPlayers().size();
+        MatchTriplets *triplets = new MatchTriplets(playersCount, matchTeam);
+        MatchDublets *dublets = new MatchDublets(playersCount, matchTeam);
+        MatchSingiels *singiels = new MatchSingiels(playersCount, matchTeam);
+
+        matchTeam->setTriplets(triplets);
+        matchTeam->setDublets(dublets);
+        matchTeam->setSingiels(singiels);
+
+        match->addMatchTeam(matchTeam);
+    }
+    // D("Match created")
+
+    m_matches[m_phase].append(match);
+    return match;
 }
 
 void Event::verifyCurrentRoundStage()

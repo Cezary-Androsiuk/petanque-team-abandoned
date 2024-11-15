@@ -25,6 +25,21 @@ const MatchSingiels *MatchTeam::getSingiels() const
     return m_singiels;
 }
 
+MatchTriplets *MatchTeam::getTripletsRef()
+{
+    return m_triplets;
+}
+
+MatchDublets *MatchTeam::getDubletsRef()
+{
+    return m_dublets;
+}
+
+MatchSingiels *MatchTeam::getSingielsRef()
+{
+    return m_singiels;
+}
+
 void MatchTeam::setTeamID(uint teamID)
 {
     if (m_teamID == teamID)

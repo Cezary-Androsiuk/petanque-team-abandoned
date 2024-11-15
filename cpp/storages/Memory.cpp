@@ -117,6 +117,132 @@ void Memory::setBackendPtr(Backend *backend)
     m_backend = backend;
 }
 
+void Memory::jsonToEvent(const QJsonObject &jsonObject, Event *const event) const
+{
+    event->clearEvent();
+
+    event->setPhase(Event::Phase::First);
+    QJsonObject phase1 = jsonObject["phase first"].toObject();
+
+    this->jsonToTeams(phase1["teams"].toArray(), event);
+
+    this->jsonToMatches(phase1["matches"].toArray(), event);
+
+    if(jsonObject.contains("phase second"))
+    {
+        event->setPhase(Event::Phase::Second);
+        QJsonObject phase2 = jsonObject["phase second"].toObject();
+
+    }
+
+    event->setName( jsonObject["name"].toString() );
+    event->setFirstPhaseDate( jsonObject["first phhase date"].toString() );
+    event->setSecondPhaseDate( jsonObject["second phase date"].toString() );
+    event->setCompetitionOrganizer( jsonObject["competition organizer"].toString() );
+    event->setFirstPhasePlace( jsonObject["first phase place"].toString() );
+    event->setSecondPhasePlace( jsonObject["second phase place"].toString() );
+    QJsonArray jsonJudges = jsonObject["judges"].toArray();
+    QStringList judges;
+    for(auto jJudge : jsonJudges)
+        judges.append( jJudge.toString() );
+    event->setJudges( judges );
+    event->setUnionDelegate( jsonObject["union delegate"].toString() );
+    event->setStage( static_cast<Event::Stage>( jsonObject["stage"].toInt() ) );
+    event->setRound( jsonObject["round"].toInt() );
+    event->setRoundStage( static_cast<Event::RoundStage>( jsonObject["round stage"].toInt() ) );
+
+}
+
+void Memory::jsonToTeams(const QJsonArray &jTeams, Event * const event) const
+{
+    event->blockSignals(true);
+
+    for(int i=0; i<jTeams.size(); i++)
+    {
+        QJsonObject jTeam = jTeams[i].toObject();
+
+        event->createDetachedTeam();
+        Team *team = event->getDetachedTeam();
+        team->blockSignals(true);
+
+        team->setTeamName( jTeam["teamName"].toString() );
+        team->setTeamID( static_cast<uint>(jTeam["teamID"].toInt()) );
+
+        QJsonArray jPlayers = jTeam["players"].toArray();
+        for(int j=0; j<jPlayers.size(); j++)
+        {
+            QJsonObject jPlayer = jPlayers[j].toObject();
+
+            team->createDetachedPlayer();
+            Player *player = team->getDetachedPlayer();
+            player->setPlayerID( static_cast<uint>(jPlayer["playerID"].toInt()) );
+            player->setFname( jPlayer["fname"].toString() );
+            player->setLname( jPlayer["lname"].toString() );
+            player->setLicense( jPlayer["license"].toString() );
+            player->setAgeGroup( jPlayer["age group"].toInt() );
+            player->setGender( jPlayer["gender"].toInt() );
+            player->setIsTeamLeader( jPlayer["isTeamLeader"].toBool() );
+
+            team->addPlayerUsingDetachedPlayer();
+        }
+
+        team->blockSignals(false);
+        emit team->playersChanged();
+
+        event->addTeamUsingDetachedTeam();
+    }
+
+    event->blockSignals(false);
+    emit event->teamsChanged();
+}
+
+void Memory::jsonToMatches(const QJsonArray &jMatches, Event * const event) const
+{
+    for(int i=0; i<jMatches.size(); i++)
+    {
+        QJsonObject jMatch = jMatches[i].toObject();
+
+        Match *match = event->createNewMatch();
+
+        QJsonArray jMatchTeams = jMatch["match teams"].toArray();
+        if(match->getMatchTeams().size() != jMatchTeams.size())
+        {
+            E("match teams size: " + QString::number(match->getMatchTeams().size()) + ", jMatchTeams size: " + QString::number(jMatchTeams.size()))
+            return;
+        }
+        for(int j=0; j<jMatchTeams.size(); j++)
+        {
+            MatchTeam *matchTeam = match->getMatchTeams()[j];
+            QJsonObject jMatchTeam = jMatchTeams[j].toObject();
+            const QJsonObject jMatchTypeBase[3] = {
+               jMatchTeam["triplets"].toObject(),
+               jMatchTeam["dublets"].toObject(),
+               jMatchTeam["singiels"].toObject()
+            };
+            MatchTypeBase *const matchTeamBase[3] = {
+                matchTeam->getTripletsRef(),
+                matchTeam->getDubletsRef(),
+                matchTeam->getSingielsRef()
+            };
+
+
+            for(int h=0; h<3; h++)
+            {
+                QJsonArray jSelectionRows = jMatchTypeBase[h]["selection"].toArray();
+                for(int r=0; r<jSelectionRows.size(); r++)
+                {
+                    QJsonArray jSelectionColumns = jSelectionRows[r].toArray();
+                    for(int c=0; c<jSelectionColumns.size(); c++)
+                        matchTeamBase[h]->setSelectionCell(r, c, jSelectionColumns[c].toBool());
+
+                }
+                // rows and columns are set in createNewMatch;
+            }
+        }
+
+    }
+}
+
 void Memory::eventToJson(const Event *const event, QJsonObject &jsonObject) const
 {
     Event::Phase phase = event->getPhase();
@@ -183,6 +309,7 @@ void Memory::matchesToJson(const Event * const event, QJsonArray &jMatches) cons
 {
     for(const Match *match : event->getMatches())
     {
+        QJsonObject jMatch;
         QJsonArray jMatchTeams;
         for(const MatchTeam *matchTeam : match->getMatchTeams())
         {
@@ -215,109 +342,7 @@ void Memory::matchesToJson(const Event * const event, QJsonArray &jMatches) cons
             jMatchTeam["singiels"] = jMatchTypeBase[2];
             jMatchTeams.append(jMatchTeam);
         }
-        jMatches.append(jMatchTeams);
+        jMatch["match teams"] = jMatchTeams;
+        jMatches.append(jMatch);
     }
-}
-
-void Memory::jsonToEvent(const QJsonObject &jsonObject, Event *const event) const
-{
-    Event::Phase phase;
-    if(jsonObject.contains("phase second"))
-    {
-        phase = Event::Phase::Second;
-        // QJsonObject phase2 = jsonObject["phase second"].toObject();
-        // if(!this->jsonToPhase2(phase2, event, errorMessage))
-        //     return false;
-    }
-    else if(jsonObject.contains("phase first"))
-    {
-        phase = Event::Phase::First;
-        QJsonObject phase1 = jsonObject["phase first"].toObject();
-
-        this->jsonToTeams(phase1["teams"].toArray(), event);
-
-        this->jsonToMatches(phase1["matches"].toArray(), event);
-    }
-    else
-    {
-        E("no phase found while changind json to event!");
-    }
-
-    event->setPhase(phase);
-
-    event->setName( jsonObject["name"].toString() );
-    event->setFirstPhaseDate( jsonObject["first phhase date"].toString() );
-    event->setSecondPhaseDate( jsonObject["second phase date"].toString() );
-    event->setCompetitionOrganizer( jsonObject["competition organizer"].toString() );
-    event->setFirstPhasePlace( jsonObject["first phase place"].toString() );
-    event->setSecondPhasePlace( jsonObject["second phase place"].toString() );
-    QJsonArray jsonJudges = jsonObject["judges"].toArray();
-    QStringList judges;
-    for(auto jJudge : jsonJudges)
-        judges.append( jJudge.toString() );
-    event->setJudges( judges );
-    event->setUnionDelegate( jsonObject["union delegate"].toString() );
-    event->setStage( static_cast<Event::Stage>( jsonObject["stage"].toInt() ) );
-    event->setRound( jsonObject["round"].toInt() );
-    event->setRoundStage( static_cast<Event::RoundStage>( jsonObject["round stage"].toInt() ) );
-
-}
-
-void Memory::jsonToTeams(const QJsonArray &jTeams, Event * const event) const
-{
-
-}
-
-void Memory::jsonToMatches(const QJsonArray &jMatches, Event * const event) const
-{
-
-}
-
-
-bool Memory::jsonToPhase1(QJsonObject &phase1, Event *const event, QString &errorMessage) const
-{
-    event->clearEvent();
-    event->blockSignals(true);
-
-    QJsonArray jTeams = phase1["teams"].toArray();
-    for(int i=0; i<jTeams.size(); i++)
-    {
-        QJsonObject jTeam = jTeams[i].toObject();
-
-        event->createDetachedTeam();
-        Team *team = event->getDetachedTeam();
-        team->blockSignals(true);
-
-        team->setTeamName( jTeam["teamName"].toString() );
-        team->setTeamID( static_cast<uint>(jTeam["teamID"].toInt()) );
-
-        QJsonArray jPlayers = jTeam["players"].toArray();
-        for(int j=0; j<jPlayers.size(); j++)
-        {
-            QJsonObject jPlayer = jPlayers[j].toObject();
-
-            team->createDetachedPlayer();
-            Player *player = team->getDetachedPlayer();
-            player->setPlayerID( static_cast<uint>(jPlayer["playerID"].toInt()) );
-            player->setFname( jPlayer["fname"].toString() );
-            player->setLname( jPlayer["lname"].toString() );
-            player->setLicense( jPlayer["license"].toString() );
-            player->setAgeGroup( jPlayer["age group"].toInt() );
-            player->setGender( jPlayer["gender"].toInt() );
-            player->setIsTeamLeader( jPlayer["isTeamLeader"].toBool() );
-
-            team->addPlayerUsingDetachedPlayer();
-        }
-
-        team->blockSignals(false);
-        emit team->playersChanged();
-
-        event->addTeamUsingDetachedTeam();
-    }
-
-    event->blockSignals(false);
-    emit event->teamsChanged();
-
-    // D("loaded " + QString::number(event->getTeams().size()) + " teams")
-    return true;
 }

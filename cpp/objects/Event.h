@@ -76,7 +76,8 @@ public slots:
     void goToNextRoundStage();
     void goToPrevRoundStage();
 
-    void createMatchIfNotExist();
+    void createMatchIfNotExist(); /// mostly used by qml
+    Match *createNewMatch(); /// mostly used by Memory
     void verifyCurrentRoundStage();
 
 public:

@@ -36,15 +36,13 @@ public:
     void setBackendPtr(Backend *backend);
 
 private:
-    void eventToJson(const Event *const event, QJsonObject &jsonObject) const;
-    void teamsToJson(const Event *const event, QJsonArray &jTeams) const;
-    void matchesToJson(const Event *const event, QJsonArray &jMatches) const;
-
     void jsonToEvent(const QJsonObject &jsonObject, Event *const event) const;
     void jsonToTeams(const QJsonArray &jTeams, Event *const event) const;
     void jsonToMatches(const QJsonArray &jMatches, Event *const event) const;
 
-    bool jsonToPhase1(QJsonObject &phase1, Event *const event, QString &errorMessage) const;
+    void eventToJson(const Event *const event, QJsonObject &jsonObject) const;
+    void teamsToJson(const Event *const event, QJsonArray &jTeams) const;
+    void matchesToJson(const Event *const event, QJsonArray &jMatches) const;
 
 signals:
     void memoryFileNotExist();
