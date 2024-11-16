@@ -110,7 +110,7 @@ Item {
             if(roundStage === 2)   "Continue/Dublets.qml";      else
             if(roundStage === 3)   "Continue/Singiels.qml";     else
             {
-                console.log("Error: received roundStage=" + roundStage + " in Continue.qml");
+                log.e("Error: received roundStage=" + roundStage + " in Continue.qml");
                 "";
             }
         }

@@ -20,7 +20,7 @@ Item {
                 delegate.itemSingielsGroupSelection.setExampleData();
             }
             else{
-                console.log("item at index " + i + " not found")
+                log.e("item at index " + i + " not found")
             }
         }
     }

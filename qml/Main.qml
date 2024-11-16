@@ -41,12 +41,7 @@ ApplicationWindow {
 
         function onMemoryLoadError(message){
             rootLoader.source = ""
-            log.e("error occur while loading memory: " + message)
-
-            console.log(this)
-            console.log(this.target) // może jakoś na string
-            console.log(this.target.objectName)
-
+            log.e("error occur while loading memory: " + message, this.target.toString() + " onMemoryLoadError")
         }
 
         // sprawdzić jak przekazywane jest matchTeam i triplets etc do qml i jak umożliwia modyfikację wartości skoro pamiętam, że jest const
@@ -69,7 +64,7 @@ ApplicationWindow {
 
         }
         function onAuthenticationFailed(){
-            console.log("onAuthenticationFailed")
+            log.e("onAuthenticationFailed")
         }
     }
 

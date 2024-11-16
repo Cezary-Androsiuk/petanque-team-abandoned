@@ -12,14 +12,14 @@ Item {
     Connections{
         target: Backend
         function onDataValidatedCorrectly(){
-            console.log("data are valid")
+            log.i("data are valid")
 
             // confirm popup
             onConfirmed()
         }
 
         function onDataValidationFailed(description){
-            console.log("data are NOT valid")
+            log.i("data are NOT valid")
         }
 
     }

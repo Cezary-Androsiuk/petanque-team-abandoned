@@ -17,7 +17,7 @@ Item {
     Connections{
         target: Login
         function onAuthenticationFailed(message){
-            console.log("Received failed authentication signal: " + message)
+            log.w("Received failed authentication signal: " + message)
             errorInfoLabel.visible = true
             errorInfoLabel.text = message
         }

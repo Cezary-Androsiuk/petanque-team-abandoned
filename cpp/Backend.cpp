@@ -115,7 +115,7 @@ void Backend::validateData()
             return;
         }
 
-        /// check if team has junior
+        /// check if team has a junior
         if(p->getRequiresJuniors())
         {
             bool foundJunior = false;
@@ -149,17 +149,18 @@ void Backend::validateData()
         if(foundLeaders == 0)
         {
             /// team missing leader
-            QString message = tr("In team %1, no leader was selected")
+            QString message = tr("In team %1, no leader was selected, each team requires leader")
                                   .arg(team->getTeamName());
             I(message);
             emit this->dataValidationFailed(message);
             return;
         }
-        if(foundLeaders > 1)
+        else if(foundLeaders > 1)
         {
             /// team contains few leaders
-            QString message = tr("Team %1 has few leaders")
-                                  .arg(team->getTeamName());
+            QString message = tr("Team %1 has %2 leaders, but should be only one")
+                                  .arg(team->getTeamName())
+                                  .arg(foundLeaders);
             I(message);
             emit this->dataValidationFailed(message);
             return;

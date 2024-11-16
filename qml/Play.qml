@@ -6,10 +6,9 @@ Item {
     anchors.fill: parent
 
     property string loaderSource: {
-        console.log("source")
         if(Backend.event.stage === 0) // None
         {
-            console.log("none stage was reached");
+            log.e("none stage was reached");
             "";
         }
         else
