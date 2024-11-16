@@ -164,6 +164,7 @@ Item{
                         width: playersInfo.width
                         playerObject: modelData
                         parentStackView: teamDelegate.parentStackView
+                        team: teamDelegate.teamObject
                     }
                 }
             }

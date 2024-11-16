@@ -89,6 +89,7 @@ Item {
                     delegate: PlayerDelegate{
                         defaultHeight: 50
                         width: listView.width
+                        team: configureTeam.team
                         playerObject: modelData
                         parentStackView: configureTeam.parentStackView
                     }

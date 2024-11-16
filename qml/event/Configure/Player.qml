@@ -9,7 +9,7 @@ Item {
     }
 
     required property var parentStackView
-    property var team
+    required property var team
     required property var player
     property bool edit: false
 
@@ -119,8 +119,13 @@ Item {
             onCheckedChanged: {
                 if(player)
                 {
-                    if(player.isTeamLeader !== checked)
-                        player.isTeamLeader = checked
+                    if(checked === player.isTeamLeader)
+                         return;
+
+                    configurePlayer.team.uncheckAllLeaders();
+
+                    if(checked)
+                        player.isTeamLeader = true
                 }
             }
             text: "Is Team Leader"

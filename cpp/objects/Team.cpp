@@ -82,6 +82,12 @@ void Team::deletePlayer(const Player * const player)
     emit this->playersChanged();
 }
 
+void Team::uncheckAllLeaders()
+{
+    for(auto &player : m_players)
+        player->setIsTeamLeader(false);
+}
+
 uint Team::generateUniquePlayerID() const
 {
     uint loopCounter = 0;

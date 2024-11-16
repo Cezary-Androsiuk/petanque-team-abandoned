@@ -6,6 +6,7 @@ Item{
 
     property double defaultHeight: 50
     property var playerObject
+    required property var team
     property var parentStackView
 
     clip: true
@@ -81,7 +82,8 @@ Item{
                                 {
                                     edit: true,
                                     parentStackView: playerDelegate.parentStackView,
-                                    player: playerDelegate.playerObject
+                                    player: playerDelegate.playerObject,
+                                    team: playerDelegate.team
                                 }
                     )
                 }

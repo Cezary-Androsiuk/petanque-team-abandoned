@@ -28,6 +28,8 @@ public slots:
     void addPlayerUsingDetachedPlayer();
     void deletePlayer(const Player *const player);
 
+    void uncheckAllLeaders();
+
 private:
     uint generateUniquePlayerID() const;
     bool isPlayerIDUniqueInPlayersList(uint id) const;
