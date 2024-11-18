@@ -4,9 +4,10 @@ import QtQuick.Controls.Material
 import "Selection"
 
 Item {
-    id: selection
+    id: selectionTemplate
     anchors.fill: parent
 
+    required property int selectionType; // 1 - SingielsSelection, 2 - DubletsSelection, 3 - TripletsSelection
     readonly property var event: Backend !== null ? Backend.event : null
 
     function setExampleData(){
@@ -15,9 +16,9 @@ Item {
             let delegate = listView.itemAtIndex(i);
             if(delegate)
             {
-                delegate.itemTripletsGroupSelection.setExampleData();
-                delegate.itemDubletsGroupSelection.setExampleData();
-                delegate.itemSingielsGroupSelection.setExampleData();
+                delegate.itemGroupSelection.setExampleData();
+                // delegate.itemDubletsGroupSelection.setExampleData();
+                // delegate.itemSingielsGroupSelection.setExampleData();
             }
             else{
                 log.e("item at index " + i + " not found")
@@ -54,13 +55,12 @@ Item {
                 width: listView.width - 40
                 anchors.horizontalCenter: parent.horizontalCenter
                 height: teamNameField.height + 50
-                        + tripletsGroupSelection.height
-                        + dubletsGroupSelection.height
-                        + singielsGroupSelection.height
+                        + groupSelectionLoader.height;
+                        // + tripletsGroupSelection.height
+                        // + dubletsGroupSelection.height
+                        // + singielsGroupSelection.height
 
-                property alias itemTripletsGroupSelection: tripletsGroupSelection
-                property alias itemDubletsGroupSelection: dubletsGroupSelection
-                property alias itemSingielsGroupSelection: singielsGroupSelection
+                property alias itemGroupSelection: groupSelectionLoader.item
 
                 Item{
                     id: teamNameField
@@ -79,40 +79,68 @@ Item {
                     }
                 }
 
-                GroupSelection{
-                    id: tripletsGroupSelection
+                Loader{
+                    id: groupSelectionLoader
                     anchors{
                         top: teamNameField.bottom
                         left: parent.left
                         right: parent.right
                         margins: 10
                     }
-                    teamIndex: index
-                    groupSize: 3
+                    sourceComponent: {
+                        if(selectionType === 1) singielsGroupSelection; else
+                        if(selectionType === 2) dubletsGroupSelection; else
+                        if(selectionType === 3) tripletsGroupSelection; else{
+                            log.w("unknown selectionType, required 1, 2 or 3")
+                        }
+                    }
+                    onLoaded: {
+                        console.log(item.height);
+                        height = item.height;
+                    }
                 }
 
-                GroupSelection{
+                Component{
+                    id: tripletsGroupSelection
+                    GroupSelection{
+                        anchors{
+                            top: teamNameField.bottom
+                            left: parent.left
+                            right: parent.right
+                            margins: 10
+                        }
+                        teamIndex: index
+                        groupSize: 3
+                    }
+                }
+
+                Component{
                     id: dubletsGroupSelection
-                    anchors{
-                        top: tripletsGroupSelection.bottom
-                        left: parent.left
-                        right: parent.right
-                        margins: 10
+                    GroupSelection{
+                        anchors{
+                            top: tripletsGroupSelection.bottom
+                            left: parent.left
+                            right: parent.right
+                            margins: 10
+                        }
+                        teamIndex: index
+                        groupSize: 2
                     }
-                    teamIndex: index
-                    groupSize: 2
                 }
 
-                GroupSelection{
+
+                Component{
                     id: singielsGroupSelection
-                    anchors{
-                        top: dubletsGroupSelection.bottom
-                        left: parent.left
-                        right: parent.right
-                        margins: 10
+                    GroupSelection{
+                        anchors{
+                            top: dubletsGroupSelection.bottom
+                            left: parent.left
+                            right: parent.right
+                            margins: 10
+                        }
+                        teamIndex: index
+                        groupSize: 1
                     }
-                    teamIndex: index
-                    groupSize: 1
                 }
 
                 Rectangle{

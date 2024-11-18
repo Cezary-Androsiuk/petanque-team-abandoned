@@ -105,10 +105,12 @@ Item {
         }
         active: false
         source: {
-            if(roundStage === 0)   "Continue/Selection.qml";    else
-            if(roundStage === 1)   "Continue/Triplets.qml";     else
-            if(roundStage === 2)   "Continue/Dublets.qml";      else
-            if(roundStage === 3)   "Continue/Singiels.qml";     else
+            if(roundStage === 0)   "Continue/SingielsSelection.qml";    else
+            if(roundStage === 1)   "Continue/Singiels.qml";             else
+            if(roundStage === 2)   "Continue/DubletsSelection.qml";     else
+            if(roundStage === 3)   "Continue/Dublets.qml";              else
+            if(roundStage === 4)   "Continue/TripletsSelection.qml";    else
+            if(roundStage === 5)   "Continue/Triplets.qml";             else
             {
                 log.e("Error: received roundStage=" + roundStage + " in Continue.qml");
                 "";

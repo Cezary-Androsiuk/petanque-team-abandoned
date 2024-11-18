@@ -51,13 +51,15 @@ public:
         Finish = 3,
     };
     enum RoundStage{
-        Selection = 0,
-        Triplets,
-        Dublets,
+        SingielsSelection = 0,
         Singiels,
+        DubletsSelection,
+        Dublets,
+        TripletsSelection,
+        Triplets,
     };
-    static constexpr RoundStage firstRoundStage = RoundStage::Selection;
-    static constexpr RoundStage lastRoundStage = RoundStage::Singiels;
+    static constexpr RoundStage firstRoundStage = RoundStage::SingielsSelection;
+    static constexpr RoundStage lastRoundStage = RoundStage::Triplets;
 
 public slots:
     void createDetachedTeam();

@@ -6,7 +6,7 @@ Event::Event(QObject *parent)
     , m_phase(Phase::First)
     , m_stage(Stage::None)
     , m_round(1)
-    , m_roundStage(RoundStage::Selection)
+    , m_roundStage(firstRoundStage)
 {
 }
 
@@ -244,51 +244,54 @@ void Event::verifyCurrentRoundStage()
     const MatchTeamList &mtl = m_matches[m_phase][m_round-1]->getMatchTeams();
     for(int i=0; i<mtl.size(); i++)
     {
+        QString errorMessage;
+        bool ok = true;
+
         switch(m_roundStage)
         {
-        case RoundStage::Selection:
-        {
-            QString errorMessage;
-            bool ok = true;
-
-            ok = mtl[i]->getTriplets()->isSelectionDataValid(&errorMessage);
-            if(!ok)
-            {
-                QString returnMessage = tr("in team ") + m_teams[m_phase][i]->getTeamName() +
-                                        tr(", triplets selection is not valid: ") + errorMessage;
-                I(returnMessage);
-                emit this->currentRoundStageVerificationFailed(returnMessage);
-                return;
-            }
-
-            ok = mtl[i]->getDublets()->isSelectionDataValid(&errorMessage);
-            if(!ok)
-            {
-                QString returnMessage = tr("in team ") + m_teams[m_phase][i]->getTeamName() +
-                                        tr(", dublets selection is not valid: ") + errorMessage;
-                I(returnMessage);
-                emit this->currentRoundStageVerificationFailed(returnMessage);
-                return;
-            }
-
+        case RoundStage::SingielsSelection:
             ok = mtl[i]->getSingiels()->isSelectionDataValid(&errorMessage);
             if(!ok)
             {
-                QString returnMessage = tr("in team ") + m_teams[m_phase][i]->getTeamName() +
-                                        tr(", singiels selection is not valid: ") + errorMessage;
+                QString returnMessage = tr("in team %1, singiels selection is not valid: %2")
+                                            .arg(m_teams[m_phase][i]->getTeamName(), errorMessage);
                 I(returnMessage);
                 emit this->currentRoundStageVerificationFailed(returnMessage);
                 return;
             }
+
             break;
-        }
-        case RoundStage::Triplets:
+        case RoundStage::Singiels:
+
+            break;
+        case RoundStage::DubletsSelection:
+            ok = mtl[i]->getDublets()->isSelectionDataValid(&errorMessage);
+            if(!ok)
+            {
+                QString returnMessage = tr("in team %1, dublets selection is not valid: %2")
+                                            .arg(m_teams[m_phase][i]->getTeamName(), errorMessage);
+                I(returnMessage);
+                emit this->currentRoundStageVerificationFailed(returnMessage);
+                return;
+            }
 
             break;
         case RoundStage::Dublets:
 
             break;
-        case RoundStage::Singiels:
+        case RoundStage::TripletsSelection:
+            ok = mtl[i]->getTriplets()->isSelectionDataValid(&errorMessage);
+            if(!ok)
+            {
+                QString returnMessage = tr("in team %1, triplets selection is not valid: %2")
+                                            .arg(m_teams[m_phase][i]->getTeamName(), errorMessage);
+                I(returnMessage);
+                emit this->currentRoundStageVerificationFailed(returnMessage);
+                return;
+            }
+
+            break;
+        case RoundStage::Triplets:
 
             break;
         default:
