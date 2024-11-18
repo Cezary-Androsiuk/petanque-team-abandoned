@@ -218,6 +218,14 @@ void Event::createMatchIfNotExist()
 Match *Event::createNewMatch()
 {
     Match *match = new Match(this);
+    QString matchNumber = "r" + QString::number(m_matches[m_phase].size());
+    QJsonArray matchCombinations = Personalization::getInstance()->getRoundsMatches()[matchNumber].toArray();
+    for(const auto &_matchCombination : matchCombinations)
+    {
+        QJsonObject matchCombination = _matchCombination.toObject();
+        match->addMatchCombination(matchCombination["t1"].toInt(), matchCombination["t2"].toInt());
+    }
+
     for(int i=0; i<m_teams[m_phase].size(); i++)
     {
         MatchTeam *matchTeam = new MatchTeam(match);
