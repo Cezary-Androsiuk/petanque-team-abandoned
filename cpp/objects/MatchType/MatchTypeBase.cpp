@@ -4,7 +4,8 @@ MatchTypeBase::MatchTypeBase(uint playersCount, uint groups, QObject *parent)
     : QObject{parent}
     , m_rows{playersCount}
     , m_columns{groups}
-    , m_selection(m_rows, QVector<bool>(m_columns, false))
+    , m_selection(playersCount, QVector<bool>(m_columns, false))
+    , m_usedPlayersInGroups(groups, PlayerList())
 {}
 
 bool MatchTypeBase::isSelectionDataValid(const int minSelections, const int maxSelections, QString *message) const
@@ -92,6 +93,44 @@ void MatchTypeBase::setSelectionCell(uint row, uint column, bool value)
     // }
 
     emit this->selectionChanged();
+}
+
+void MatchTypeBase::computePlayersUsed(const PlayerList &players)
+{
+    if(!isSelectionDataValid())
+    {
+        I("Skipping computing used players, due to invalid data");
+        return;
+    }
+
+    if(players.size() != m_rows)
+    {
+        W("players size(" + QString::number(players.size()) + ") is not equal to count of rows(" + QString::number(m_rows) + ")");
+        return;
+    }
+
+    /// clear usedPlayersInGroups
+    for(int i=0; i<m_columns; i++)
+    {
+        for(Player *p : m_usedPlayersInGroups[i])
+            delete p;
+        m_usedPlayersInGroups.clear();
+    }
+
+    /// create and add player to list coresponding to group
+    for(int i=0; i<m_columns; i++)
+    {
+        for(int j=0; j<m_rows; j++)
+        {
+            if(!m_selection[j][i])
+                continue;
+
+            Player *player = players[j];
+            Player *newPlayer = new Player(this);
+            newPlayer->copyFromOtherPlayer(*player);
+            m_usedPlayersInGroups[i].append(newPlayer);
+        }
+    }
 }
 
 const BoolMatrix &MatchTypeBase::getSelection() const

@@ -19,7 +19,7 @@ Item {
                 delegate.itemGroupSelection.setExampleData();
             }
             else{
-                log.e("item at index " + i + " not found")
+                log.w("item at index " + i + " not found")
             }
         }
     }
@@ -52,8 +52,7 @@ Item {
             delegate: Item{
                 width: listView.width - 40
                 anchors.horizontalCenter: parent.horizontalCenter
-                height: teamNameField.height + 50
-                        + groupSelection.height;
+                height: teamNameField.height + groupSelection.height + delegateFooter.height;
 
                 property alias itemGroupSelection: groupSelection
 
@@ -84,6 +83,16 @@ Item {
                     }
                     teamIndex: index
                     groupSize: selectionType
+                }
+
+                Item{
+                    id: delegateFooter
+                    anchors{
+                        top: groupSelection.bottom
+                        left: parent.left
+                        right: parent.right
+                    }
+                    height: 50
                 }
 
                 Rectangle{

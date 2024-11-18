@@ -5,6 +5,7 @@
 #include <QVector>
 
 #include "cpp/support/Log.h"
+#include "cpp/objects/Player.h"
 
 typedef QVector<QVector<bool>> BoolMatrix;
 
@@ -25,6 +26,7 @@ protected:
 
 public slots:
     void setSelectionCell(uint row, uint column, bool value);
+    void computePlayersUsed(const PlayerList &players);
 
 public:
     const BoolMatrix &getSelection() const;
@@ -38,6 +40,8 @@ protected:
     const uint m_rows; // players
     const uint m_columns; // groups
     BoolMatrix m_selection; // rows<columns> [row][col]
+
+    QVector<PlayerList> m_usedPlayersInGroups;
 };
 
 #endif // MATCHTYPEBASE_H
