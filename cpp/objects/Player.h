@@ -37,6 +37,8 @@ private:
 public:
     explicit Player(QObject *parent = nullptr);
 
+    void copyFromOtherPlayer(const Player &sourcePlayer);
+
     Q_INVOKABLE QObject *getParent() const;
 
     uint getPlayerID() const;

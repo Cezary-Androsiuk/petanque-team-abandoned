@@ -6,6 +6,28 @@ Player::Player(QObject *parent)
     , m_isTeamLeader(false)
 {}
 
+
+void Player::copyFromOtherPlayer(const Player &sourcePlayer)
+{
+    if(this == &sourcePlayer)
+        return;
+
+    m_playerID = sourcePlayer.m_playerID;
+    m_fname = sourcePlayer.m_fname;
+    m_lname = sourcePlayer.m_lname;
+    m_license = sourcePlayer.m_license;
+    m_ageGroup = sourcePlayer.m_ageGroup;
+    m_gender = sourcePlayer.m_gender;
+    m_isTeamLeader = sourcePlayer.m_isTeamLeader;
+
+    emit this->fnameChanged();
+    emit this->lnameChanged();
+    emit this->licenseChanged();
+    emit this->ageGroupChanged();
+    emit this->genderChanged();
+    emit this->isTeamLeaderChanged();
+}
+
 QObject *Player::getParent() const
 {
     return this->parent();
