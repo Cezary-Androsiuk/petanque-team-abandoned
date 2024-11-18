@@ -17,8 +17,6 @@ Item {
             if(delegate)
             {
                 delegate.itemGroupSelection.setExampleData();
-                // delegate.itemDubletsGroupSelection.setExampleData();
-                // delegate.itemSingielsGroupSelection.setExampleData();
             }
             else{
                 log.e("item at index " + i + " not found")
@@ -55,12 +53,9 @@ Item {
                 width: listView.width - 40
                 anchors.horizontalCenter: parent.horizontalCenter
                 height: teamNameField.height + 50
-                        + groupSelectionLoader.height;
-                        // + tripletsGroupSelection.height
-                        // + dubletsGroupSelection.height
-                        // + singielsGroupSelection.height
+                        + groupSelection.height;
 
-                property alias itemGroupSelection: groupSelectionLoader.item
+                property alias itemGroupSelection: groupSelection
 
                 Item{
                     id: teamNameField
@@ -79,68 +74,16 @@ Item {
                     }
                 }
 
-                Loader{
-                    id: groupSelectionLoader
+                GroupSelection{
+                    id: groupSelection
                     anchors{
                         top: teamNameField.bottom
                         left: parent.left
                         right: parent.right
                         margins: 10
                     }
-                    sourceComponent: {
-                        if(selectionType === 1) singielsGroupSelection; else
-                        if(selectionType === 2) dubletsGroupSelection; else
-                        if(selectionType === 3) tripletsGroupSelection; else{
-                            log.w("unknown selectionType, required 1, 2 or 3")
-                        }
-                    }
-                    onLoaded: {
-                        console.log(item.height);
-                        height = item.height;
-                    }
-                }
-
-                Component{
-                    id: tripletsGroupSelection
-                    GroupSelection{
-                        anchors{
-                            top: teamNameField.bottom
-                            left: parent.left
-                            right: parent.right
-                            margins: 10
-                        }
-                        teamIndex: index
-                        groupSize: 3
-                    }
-                }
-
-                Component{
-                    id: dubletsGroupSelection
-                    GroupSelection{
-                        anchors{
-                            top: tripletsGroupSelection.bottom
-                            left: parent.left
-                            right: parent.right
-                            margins: 10
-                        }
-                        teamIndex: index
-                        groupSize: 2
-                    }
-                }
-
-
-                Component{
-                    id: singielsGroupSelection
-                    GroupSelection{
-                        anchors{
-                            top: dubletsGroupSelection.bottom
-                            left: parent.left
-                            right: parent.right
-                            margins: 10
-                        }
-                        teamIndex: index
-                        groupSize: 1
-                    }
+                    teamIndex: index
+                    groupSize: selectionType
                 }
 
                 Rectangle{
