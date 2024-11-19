@@ -26,7 +26,7 @@ protected:
 
 public slots:
     void setSelectionCell(uint row, uint column, bool value);
-    void computePlayersUsed(const PlayerList &players);
+    void computePlayersUsed(const PlayerList &players); /// should be used after selection
 
 public:
     const BoolMatrix &getSelection() const;

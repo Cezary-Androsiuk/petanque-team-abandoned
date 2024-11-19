@@ -129,6 +129,11 @@ void MatchTypeBase::computePlayersUsed(const PlayerList &players)
             Player *newPlayer = new Player(this);
             newPlayer->copyFromOtherPlayer(*player);
             m_usedPlayersInGroups[i].append(newPlayer);
+            /*
+             * Now use copy of the value, but now I find out that I can use
+             * std::shared_ptr or QSharedPointer in team along with std::weak_ptr or QWeakPointer
+             * and verification if weak pointer exist before use
+            */
         }
     }
 }
