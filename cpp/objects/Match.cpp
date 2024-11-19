@@ -51,13 +51,13 @@ Team *Match::getTeamByIndexes(const TeamList &teams, int combinationIndex, int t
 
     int index;
     if(teamIndex == 1)
-        index = m_matchCombinations[combinationIndex].first;
+        index = m_matchCombinations[combinationIndex].first -1;
     else
-        index = m_matchCombinations[combinationIndex].second;
+        index = m_matchCombinations[combinationIndex].second -1;
     if(teams.size() <= index)
     {
         auto a = QString::number(teams.size());
-        auto b = QString::number(m_matchCombinations.size());
+        auto b = QString::number(index);
         W("teams size is " + a + " and index is " + b + " - cannot read that team, returning value on index 0");
         return teams[0];
     }
@@ -65,17 +65,43 @@ Team *Match::getTeamByIndexes(const TeamList &teams, int combinationIndex, int t
     return teams[index];
 }
 
-int Match::intFromPair(const QPair<int, int> &pair, int index)
+MatchTeam *Match::getMatchTeamByIndexes(int combinationIndex, int teamIndex)
 {
-    if(index == 1)
-        return pair.first;
-    else if(index == 2)
-        return pair.second;
-    else
+    const MatchTeamList &matchTeams = this->getMatchTeams();
+
+    if(matchTeams.empty())
     {
-        W("index out of bounds: " + QString::number(index));
-        return -1;
+        E("matchTeams is empty");
+        return nullptr;
     }
 
+    if(combinationIndex >= m_matchCombinations.size())
+    {
+        auto a = QString::number(combinationIndex);
+        auto b = QString::number(m_matchCombinations.size());
+        W("input combinationIndex("+ a +") >= m_matchCombinations.size()("+ b +"), returning value on index 0");
+        return matchTeams[0];
+    }
 
+    if(teamIndex != 1 && teamIndex != 2)
+    {
+        auto a = QString::number(teamIndex);
+        W("teamIndex is "+ a +", not 1 or 2, returning value on index 0");
+        return matchTeams[0];
+    }
+
+    int index;
+    if(teamIndex == 1)
+        index = m_matchCombinations[combinationIndex].first -1;
+    else
+        index = m_matchCombinations[combinationIndex].second -1;
+    if(matchTeams.size() <= index)
+    {
+        auto a = QString::number(matchTeams.size());
+        auto b = QString::number(index);
+        W("teams size is " + a + " and index is " + b + " - cannot read that team, returning value on index 0");
+        return matchTeams[0];
+    }
+
+    return matchTeams[index];
 }

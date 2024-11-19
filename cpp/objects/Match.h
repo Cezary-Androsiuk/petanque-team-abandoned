@@ -28,7 +28,7 @@ public:
 
 public slots:
     Team *getTeamByIndexes(const TeamList &teams, int combinationIndex, int teamIndex);
-    static int intFromPair(const QPair<int, int> &pair, int index);
+    MatchTeam *getMatchTeamByIndexes(int combinationIndex, int teamIndex);
 
 signals:
     void matchTeamsChanged();

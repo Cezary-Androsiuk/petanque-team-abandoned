@@ -37,30 +37,15 @@ Item {
                 width: listView.width
                 height: leftTeam.height + 30
 
-                // readonly property var delegateTeam1: {
-                //     console.log("readonly property", index)
-                //     match.getTeamByIndexes(event.teams, index, 1)
-                // }
-
-                // readonly property var delegateTeam2:
-                //     match.getTeamByIndexes(event.teams, index, 2)
-
-                function intFromPair(pair, index)
-                {
-                    return match.intFromPair(pair, index); // static method
-                }
-
-                readonly property int teamIndex1: intFromPair(match.matchCombinations[index], 1) -1;
-                readonly property int teamIndex2: intFromPair(match.matchCombinations[index], 2) -1;
-                readonly property var team1: event.teams[teamIndex1];
-                readonly property var team2: event.teams[teamIndex2];
-                readonly property var matchTeam1: match.matchTeams[teamIndex1].dublets;
-                readonly property var matchTeam2: match.matchTeams[teamIndex2].dublets;
+                readonly property var team1: match.getTeamByIndexes(event.teams, index, 1);
+                readonly property var team2: match.getTeamByIndexes(event.teams, index, 2);
+                readonly property var matchTeam1: match.getMatchTeamByIndexes(index, 1);
+                readonly property var matchTeam2: match.getMatchTeamByIndexes(index, 2);
 
                 Component.onCompleted: {
                     // is exdcuted after filling properties
-                    match.matchTeams[teamIndex1].dublets.computePlayersUsed(team1.players);
-                    match.matchTeams[teamIndex2].dublets.computePlayersUsed(team2.players);
+                    matchTeam1.dublets.computePlayersUsed(team1.players);
+                    matchTeam2.dublets.computePlayersUsed(team2.players);
                 }
 
                 Item{
@@ -81,7 +66,7 @@ Item {
 
                         Label{
                             text: {
-                                var group = matchTeam1.usedPlayersInGroups[0];
+                                var group = matchTeam1.dublets.usedPlayersInGroups[0];
                                 if(group)
                                 {
                                     var player = group[0];
@@ -94,7 +79,7 @@ Item {
                         Label{
                             text: {
 
-                                var group = matchTeam1.usedPlayersInGroups[0];
+                                var group = matchTeam1.dublets.usedPlayersInGroups[0];
                                 if(group)
                                 {
                                     var player = group[1];
@@ -107,7 +92,7 @@ Item {
                         Label{
                             text: {
 
-                                var group = matchTeam1.usedPlayersInGroups[1];
+                                var group = matchTeam1.dublets.usedPlayersInGroups[1];
                                 if(group)
                                 {
                                     var player = group[0];
@@ -120,7 +105,7 @@ Item {
                         Label{
                             text: {
 
-                                var group = matchTeam1.usedPlayersInGroups[1];
+                                var group = matchTeam1.dublets.usedPlayersInGroups[1];
                                 if(group)
                                 {
                                     var player = group[1];
@@ -133,7 +118,7 @@ Item {
                         Label{
                             text: {
 
-                                var group = matchTeam1.usedPlayersInGroups[2];
+                                var group = matchTeam1.dublets.usedPlayersInGroups[2];
                                 if(group)
                                 {
                                     var player = group[0];
@@ -146,7 +131,7 @@ Item {
                         Label{
                             text: {
 
-                                var group = matchTeam1.usedPlayersInGroups[2];
+                                var group = matchTeam1.dublets.usedPlayersInGroups[2];
                                 if(group)
                                 {
                                     var player = group[1];
@@ -177,7 +162,7 @@ Item {
 
                         Label{
                             text: {
-                                var group = matchTeam2.usedPlayersInGroups[0];
+                                var group = matchTeam2.dublets.usedPlayersInGroups[0];
                                 if(group)
                                 {
                                     var player = group[0];
@@ -190,7 +175,7 @@ Item {
                         Label{
                             text: {
 
-                                var group = matchTeam2.usedPlayersInGroups[0];
+                                var group = matchTeam2.dublets.usedPlayersInGroups[0];
                                 if(group)
                                 {
                                     var player = group[1];
@@ -203,7 +188,7 @@ Item {
                         Label{
                             text: {
 
-                                var group = matchTeam2.usedPlayersInGroups[1];
+                                var group = matchTeam2.dublets.usedPlayersInGroups[1];
                                 if(group)
                                 {
                                     var player = group[0];
@@ -216,7 +201,7 @@ Item {
                         Label{
                             text: {
 
-                                var group = matchTeam2.usedPlayersInGroups[1];
+                                var group = matchTeam2.dublets.usedPlayersInGroups[1];
                                 if(group)
                                 {
                                     var player = group[1];
@@ -229,7 +214,7 @@ Item {
                         Label{
                             text: {
 
-                                var group = matchTeam2.usedPlayersInGroups[2];
+                                var group = matchTeam2.dublets.usedPlayersInGroups[2];
                                 if(group)
                                 {
                                     var player = group[0];
@@ -242,7 +227,7 @@ Item {
                         Label{
                             text: {
 
-                                var group = matchTeam2.usedPlayersInGroups[2];
+                                var group = matchTeam2.dublets.usedPlayersInGroups[2];
                                 if(group)
                                 {
                                     var player = group[1];
