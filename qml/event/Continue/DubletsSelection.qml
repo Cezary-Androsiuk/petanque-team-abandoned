@@ -3,7 +3,7 @@ import QtQuick 2.15
 import "Selection"
 
 Item {
-    id: singielsSelection
+    id: dubletsSelection
     anchors.fill: parent
 
     function setExampleData(){

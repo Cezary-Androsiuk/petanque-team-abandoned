@@ -4,6 +4,15 @@ import QtQuick.Controls.Material
 import "Match"
 
 Item {
-    id: selection
+    id: singielsMatch
     anchors.fill: parent
+
+    function setExampleData(){
+        matchTemplate.setExampleData()
+    }
+
+    MatchTemplate{
+        id: matchTemplate
+        matchType: 1
+    }
 }
