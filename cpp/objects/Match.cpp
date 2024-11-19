@@ -12,7 +12,6 @@ void Match::addMatchTeam(MatchTeam *matchTeam)
 
 void Match::addMatchCombination(int teamIndex1, int teamIndex2)
 {
-    D("added pair " + QString::number(teamIndex1) + " " + QString::number(teamIndex2))
     m_matchCombinations.append(QPair<int, int>(teamIndex1, teamIndex2));
 }
 

@@ -37,12 +37,12 @@ qt_add_qml_module(appPetanqueTeam
     SOURCES cpp/objects/Event.h cpp/objects/Event.cpp
     SOURCES cpp/objects/Match.h cpp/objects/Match.cpp
     SOURCES cpp/storages/DefaultPersonalizationData.h cpp/storages/DefaultPersonalizationData.cpp
-    QML_FILES qml/event/Continue/SelectionTemplate.qml
+    QML_FILES qml/event/Continue/Selection/SelectionTemplate.qml
     QML_FILES qml/event/Configure/Event/InfoField.qml
     QML_FILES qml/event/Configure/Event/TeamsList.qml
-    QML_FILES qml/event/Continue/Triplets.qml
-    QML_FILES qml/event/Continue/Dublets.qml
-    QML_FILES qml/event/Continue/Singiels.qml
+    QML_FILES qml/event/Continue/TripletsMatch.qml
+    QML_FILES qml/event/Continue/DubletsMatch.qml
+    QML_FILES qml/event/Continue/SingielsMatch.qml
     QML_FILES qml/event/Continue/Selection/GroupSelection.qml
     SOURCES cpp/objects/MatchTeam.h cpp/objects/MatchTeam.cpp
     SOURCES cpp/objects/MatchType/MatchTriplets.h cpp/objects/MatchType/MatchTriplets.cpp
@@ -54,6 +54,7 @@ qt_add_qml_module(appPetanqueTeam
     QML_FILES qml/event/Continue/SingielsSelection.qml
     QML_FILES qml/event/Continue/DubletsSelection.qml
     QML_FILES qml/event/Continue/TripletsSelection.qml
+    QML_FILES qml/event/Continue/Match/MatchTemplate.qml
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

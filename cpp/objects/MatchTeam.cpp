@@ -10,9 +10,9 @@ uint MatchTeam::getTeamID() const
     return m_teamID;
 }
 
-const MatchTriplets *MatchTeam::getTriplets() const
+const MatchSingiels *MatchTeam::getSingiels() const
 {
-    return m_triplets;
+    return m_singiels;
 }
 
 const MatchDublets *MatchTeam::getDublets() const
@@ -20,14 +20,14 @@ const MatchDublets *MatchTeam::getDublets() const
     return m_dublets;
 }
 
-const MatchSingiels *MatchTeam::getSingiels() const
-{
-    return m_singiels;
-}
-
-MatchTriplets *MatchTeam::getTripletsRef()
+const MatchTriplets *MatchTeam::getTriplets() const
 {
     return m_triplets;
+}
+
+MatchSingiels *MatchTeam::getSingielsRef()
+{
+    return m_singiels;
 }
 
 MatchDublets *MatchTeam::getDubletsRef()
@@ -35,9 +35,9 @@ MatchDublets *MatchTeam::getDubletsRef()
     return m_dublets;
 }
 
-MatchSingiels *MatchTeam::getSingielsRef()
+MatchTriplets *MatchTeam::getTripletsRef()
 {
-    return m_singiels;
+    return m_triplets;
 }
 
 void MatchTeam::setTeamID(uint teamID)
@@ -48,10 +48,9 @@ void MatchTeam::setTeamID(uint teamID)
     emit teamIDChanged();
 }
 
-
-void MatchTeam::setTriplets(MatchTriplets *triplets)
+void MatchTeam::setSingiels(MatchSingiels *singiels)
 {
-    m_triplets = triplets;
+    m_singiels = singiels;
 }
 
 void MatchTeam::setDublets(MatchDublets *dublets)
@@ -59,7 +58,8 @@ void MatchTeam::setDublets(MatchDublets *dublets)
     m_dublets = dublets;
 }
 
-void MatchTeam::setSingiels(MatchSingiels *singiels)
+void MatchTeam::setTriplets(MatchTriplets *triplets)
 {
-    m_singiels = singiels;
+    m_triplets = triplets;
 }
+
