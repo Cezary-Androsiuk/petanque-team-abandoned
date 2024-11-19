@@ -8,11 +8,13 @@
 #include "cpp/objects/MatchTeam.h"
 #include "cpp/objects/Team.h"
 
+typedef QList<QPair<int, int>> IntMap;
+
 class Match : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(MatchTeamList matchTeams READ getMatchTeams NOTIFY matchTeamsChanged FINAL)
-    Q_PROPERTY(TeamList teamsRefList READ getTeamsRefList CONSTANT FINAL)
+    Q_PROPERTY(IntMap matchCombinations READ getMatchCombinations CONSTANT FINAL)
 
 public:
     explicit Match(QObject *parent = nullptr);
@@ -22,17 +24,18 @@ public:
 
 public:
     const MatchTeamList &getMatchTeams() const;
-    const QList<QPair<int, int>> &getMatchCombinations() const;
+    const IntMap &getMatchCombinations() const;
 
 public slots:
     Team *getTeamByIndexes(const TeamList &teams, int combinationIndex, int teamIndex);
+    static int intFromPair(const QPair<int, int> &pair, int index);
 
 signals:
     void matchTeamsChanged();
 
 private:
     MatchTeamList m_matchTeams;
-    QList<QPair<int, int>> m_matchCombinations;
+    IntMap m_matchCombinations;
 };
 
 typedef QList<Match*> MatchList;

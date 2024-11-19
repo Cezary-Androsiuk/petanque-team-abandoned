@@ -12,7 +12,8 @@ void Match::addMatchTeam(MatchTeam *matchTeam)
 
 void Match::addMatchCombination(int teamIndex1, int teamIndex2)
 {
-    m_matchCombinations.emplace(teamIndex1, teamIndex2);
+    D("added pair " + QString::number(teamIndex1) + " " + QString::number(teamIndex2))
+    m_matchCombinations.append(QPair<int, int>(teamIndex1, teamIndex2));
 }
 
 const MatchTeamList &Match::getMatchTeams() const
@@ -20,7 +21,7 @@ const MatchTeamList &Match::getMatchTeams() const
     return m_matchTeams;
 }
 
-const QList<QPair<int, int>> &Match::getMatchCombinations() const
+const IntMap &Match::getMatchCombinations() const
 {
     return m_matchCombinations;
 }
@@ -33,11 +34,11 @@ Team *Match::getTeamByIndexes(const TeamList &teams, int combinationIndex, int t
         return nullptr;
     }
 
-    if(combinationIndex != m_matchCombinations.size())
+    if(combinationIndex >= m_matchCombinations.size())
     {
         auto a = QString::number(combinationIndex);
         auto b = QString::number(m_matchCombinations.size());
-        W("input combinationIndex("+ a +") != m_matchCombinations.size()("+ b +"), returning value on index 0");
+        W("input combinationIndex("+ a +") >= m_matchCombinations.size()("+ b +"), returning value on index 0");
         return teams[0];
     }
 
@@ -62,4 +63,19 @@ Team *Match::getTeamByIndexes(const TeamList &teams, int combinationIndex, int t
     }
 
     return teams[index];
+}
+
+int Match::intFromPair(const QPair<int, int> &pair, int index)
+{
+    if(index == 1)
+        return pair.first;
+    else if(index == 2)
+        return pair.second;
+    else
+    {
+        W("index out of bounds: " + QString::number(index));
+        return -1;
+    }
+
+
 }

@@ -218,7 +218,7 @@ void Event::createMatchIfNotExist()
 Match *Event::createNewMatch()
 {
     Match *match = new Match(this);
-    QString matchNumber = "r" + QString::number(m_matches[m_phase].size());
+    QString matchNumber = "r" + QString::number(m_matches[m_phase].size()+1);
     QJsonArray matchCombinations = Personalization::getInstance()->getRoundsMatches()[matchNumber].toArray();
     for(const auto &_matchCombination : matchCombinations)
     {

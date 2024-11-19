@@ -114,7 +114,7 @@ void MatchTypeBase::computePlayersUsed(const PlayerList &players)
     {
         for(Player *p : m_usedPlayersInGroups[i])
             delete p;
-        m_usedPlayersInGroups.clear();
+        m_usedPlayersInGroups[i].clear();
     }
 
     /// create and add player to list coresponding to group
@@ -136,6 +136,7 @@ void MatchTypeBase::computePlayersUsed(const PlayerList &players)
             */
         }
     }
+    emit this->usedPlayersInGroupsChanged();
 }
 
 const BoolMatrix &MatchTypeBase::getSelection() const
@@ -151,4 +152,9 @@ uint MatchTypeBase::getRows() const
 uint MatchTypeBase::getColumns() const
 {
     return m_columns;
+}
+
+GroupsOfPlayersLists MatchTypeBase::getUsedPlayersInGroups() const
+{
+    return m_usedPlayersInGroups;
 }

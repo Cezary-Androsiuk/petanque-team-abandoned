@@ -8,6 +8,7 @@
 #include "cpp/objects/Player.h"
 
 typedef QVector<QVector<bool>> BoolMatrix;
+typedef QVector<PlayerList> GroupsOfPlayersLists;
 
 class MatchTypeBase : public QObject
 {
@@ -15,6 +16,8 @@ class MatchTypeBase : public QObject
     Q_PROPERTY(BoolMatrix selection READ getSelection NOTIFY selectionChanged FINAL)
     Q_PROPERTY(uint rows READ getRows CONSTANT FINAL)
     Q_PROPERTY(uint columns READ getColumns CONSTANT FINAL)
+    Q_PROPERTY(GroupsOfPlayersLists usedPlayersInGroups READ getUsedPlayersInGroups NOTIFY usedPlayersInGroupsChanged FINAL)
+
 public:
     explicit MatchTypeBase(uint playersCount, uint groups, QObject *parent = nullptr);
 
@@ -32,16 +35,19 @@ public:
     const BoolMatrix &getSelection() const;
     uint getRows() const;
     uint getColumns() const;
+    GroupsOfPlayersLists getUsedPlayersInGroups() const;
 
 signals:
     void selectionChanged();
+
+    void usedPlayersInGroupsChanged();
 
 protected:
     const uint m_rows; // players
     const uint m_columns; // groups
     BoolMatrix m_selection; // rows<columns> [row][col]
 
-    QVector<PlayerList> m_usedPlayersInGroups;
+    GroupsOfPlayersLists m_usedPlayersInGroups;
 };
 
 #endif // MATCHTYPEBASE_H
