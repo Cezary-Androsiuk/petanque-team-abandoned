@@ -33,7 +33,7 @@ Item {
             id: listView
             anchors.fill: parent
 
-            model: event.match.matchTeams.length // or event.teams.length
+            model: event.match.matchTypesList.length // or event.teams.length
             boundsBehavior: Flickable.StopAtBounds
             clip: true
             cacheBuffer: 10000 // for god sake, keep delegates alive while scrolling

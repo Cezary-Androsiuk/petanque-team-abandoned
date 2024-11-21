@@ -232,18 +232,18 @@ Match *Event::createNewMatch(bool assignMatchCombinations)
 
     for(int i=0; i<m_teams[m_phase].size(); i++)
     {
-        MatchTeam *matchTeam = new MatchTeam(match);
+        MatchTypes *matchTypes = new MatchTypes(match);
 
         int playersCount = m_teams[m_phase][i]->getPlayers().size();
-        MatchTriplets *triplets = new MatchTriplets(playersCount, matchTeam);
-        MatchDublets *dublets = new MatchDublets(playersCount, matchTeam);
-        MatchSingiels *singiels = new MatchSingiels(playersCount, matchTeam);
+        MatchTriplets *triplets = new MatchTriplets(playersCount, matchTypes);
+        MatchDublets *dublets = new MatchDublets(playersCount, matchTypes);
+        MatchSingiels *singiels = new MatchSingiels(playersCount, matchTypes);
 
-        matchTeam->setTriplets(triplets);
-        matchTeam->setDublets(dublets);
-        matchTeam->setSingiels(singiels);
+        matchTypes->setTriplets(triplets);
+        matchTypes->setDublets(dublets);
+        matchTypes->setSingiels(singiels);
 
-        match->addMatchTeam(matchTeam);
+        match->addMatchTypes(matchTypes);
     }
     // D("Match created")
 
@@ -253,7 +253,7 @@ Match *Event::createNewMatch(bool assignMatchCombinations)
 
 void Event::verifyCurrentRoundStage()
 {
-    const MatchTeamList &mtl = m_matches[m_phase][m_round-1]->getMatchTeams();
+    const MatchTypesList &mtl = m_matches[m_phase][m_round-1]->getMatchTypesList();
     for(int i=0; i<mtl.size(); i++)
     {
         QString errorMessage;

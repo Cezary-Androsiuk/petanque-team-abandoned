@@ -204,25 +204,25 @@ void Memory::jsonToMatches(const QJsonArray &jMatches, Event * const event) cons
 
         Match *match = event->createNewMatch(false);
 
-        QJsonArray jMatchTeams = jMatch["match teams"].toArray();
-        if(match->getMatchTeams().size() != jMatchTeams.size())
+        QJsonArray jMatchTypesList = jMatch["match types list"].toArray();
+        if(match->getMatchTypesList().size() != jMatchTypesList.size())
         {
-            W("match teams size: " + QString::number(match->getMatchTeams().size()) + ", jMatchTeams size: " + QString::number(jMatchTeams.size()))
+            W("match types list size: " + QString::number(match->getMatchTypesList().size()) + ", jMatchTeams size: " + QString::number(jMatchTypesList.size()))
             return;
         }
-        for(int j=0; j<jMatchTeams.size(); j++)
+        for(int j=0; j<jMatchTypesList.size(); j++)
         {
-            MatchTeam *matchTeam = match->getMatchTeams()[j];
-            QJsonObject jMatchTeam = jMatchTeams[j].toObject();
+            MatchTypes *matchTypes = match->getMatchTypesList()[j];
+            QJsonObject jMatchTypes = jMatchTypesList[j].toObject();
             const QJsonObject jMatchTypeBase[3] = {
-               jMatchTeam["triplets"].toObject(),
-               jMatchTeam["dublets"].toObject(),
-               jMatchTeam["singiels"].toObject()
+               jMatchTypes["triplets"].toObject(),
+               jMatchTypes["dublets"].toObject(),
+               jMatchTypes["singiels"].toObject()
             };
             MatchTypeBase *const matchTeamBase[3] = {
-                matchTeam->getTripletsRef(),
-                matchTeam->getDubletsRef(),
-                matchTeam->getSingielsRef()
+                matchTypes->getTripletsRef(),
+                matchTypes->getDubletsRef(),
+                matchTypes->getSingielsRef()
             };
 
 
@@ -319,15 +319,15 @@ void Memory::matchesToJson(const Event * const event, QJsonArray &jMatches) cons
     for(const Match *match : event->getMatches())
     {
         QJsonObject jMatch;
-        QJsonArray jMatchTeams;
-        for(const MatchTeam *matchTeam : match->getMatchTeams())
+        QJsonArray jMatchTypesList;
+        for(const MatchTypes *matchTypes : match->getMatchTypesList())
         {
-            QJsonObject jMatchTeam;
+            QJsonObject jMatchTypes;
             QJsonObject jMatchTypeBase[3];
             const MatchTypeBase *const matchTeamBase[3] = {
-                matchTeam->getTriplets(),
-                matchTeam->getDublets(),
-                matchTeam->getSingiels()
+                matchTypes->getTriplets(),
+                matchTypes->getDublets(),
+                matchTypes->getSingiels()
             };
 
             for(int i=0; i<3; i++)
@@ -346,12 +346,12 @@ void Memory::matchesToJson(const Event * const event, QJsonArray &jMatches) cons
                 jMatchTypeBase[i]["columns"] = static_cast<int>(matchTeamBase[i]->getColumns());
             }
 
-            jMatchTeam["triplets"] = jMatchTypeBase[0];
-            jMatchTeam["dublets"] = jMatchTypeBase[1];
-            jMatchTeam["singiels"] = jMatchTypeBase[2];
-            jMatchTeams.append(jMatchTeam);
+            jMatchTypes["triplets"] = jMatchTypeBase[0];
+            jMatchTypes["dublets"] = jMatchTypeBase[1];
+            jMatchTypes["singiels"] = jMatchTypeBase[2];
+            jMatchTypesList.append(jMatchTypes);
         }
-        jMatch["match teams"] = jMatchTeams;
+        jMatch["match types list"] = jMatchTypesList;
 
         QJsonArray jMatchCombinations;
         for(const auto &[teamIndex1, teamIndex2] : match->getMatchCombinations())

@@ -6,14 +6,13 @@ Item {
     required property int teamIndex;
     required property int groupSize; // 1, 2 or 3
 
-    readonly property var team: event.teams[teamIndex]
-    readonly property var matchTeam: event.match.matchTeams[teamIndex];
+    readonly property var currentTeam: event.teams[teamIndex]
+    readonly property var currentMatchTypes: event.match.matchTypesList[teamIndex];
     readonly property var currentMatchType: {
-        if(groupSize === 3)         matchTeam.triplets;
-        else if(groupSize === 2)    matchTeam.dublets;
-        else /* groupSize === 1 */  matchTeam.singiels;
+        if(groupSize === 3)         currentMatchTypes.triplets;
+        else if(groupSize === 2)    currentMatchTypes.dublets;
+        else /* groupSize === 1 */  currentMatchTypes.singiels;
     }
-    readonly property var matrix: currentMatchType.selection
     readonly property var matrixRows: currentMatchType.rows
     readonly property var matrixColumns: currentMatchType.columns
     readonly property string groupsSelectionName: {
@@ -22,12 +21,6 @@ Item {
         else /* groupSize === 1 */  "Singiels";
     }
 
-
-    // readonly property int groupsCount: {
-    //     if(groupSize === 3)         2;
-    //     else if(groupSize === 2)    3;
-    //     else /* groupSize === 1 */  6;
-    // }
 
     readonly property int delegateHeight: 30;
     readonly property int headerHeight: 60;
@@ -216,10 +209,10 @@ Item {
                     verticalAlignment: Text.AlignVCenter
                     // pixelSize is 14
                     text: {
-                        if(!groupSelection.team)
+                        if(!groupSelection.currentTeam)
                             "";
                         else{
-                            var player = groupSelection.team.players[rowDelegate.rowIndex];
+                            var player = groupSelection.currentTeam.players[rowDelegate.rowIndex];
                             player.fname + " " + player.lname;
                         }
                     }
@@ -249,7 +242,7 @@ Item {
                                 checked = false
                         }
 
-                        checked: groupSelection.matrix[rowDelegate.rowIndex][radioButton.colIndex]
+                        checked: groupSelection.currentMatchType.selection[rowDelegate.rowIndex][radioButton.colIndex]
                         onCheckedChanged: {
                             groupSelection.setSC(rowDelegate.rowIndex, radioButton.colIndex, checked)
                         }

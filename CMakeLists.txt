@@ -44,7 +44,7 @@ qt_add_qml_module(appPetanqueTeam
     QML_FILES qml/event/Continue/DubletsMatch.qml
     QML_FILES qml/event/Continue/SingielsMatch.qml
     QML_FILES qml/event/Continue/Selection/GroupSelection.qml
-    SOURCES cpp/objects/MatchTeam.h cpp/objects/MatchTeam.cpp
+    SOURCES cpp/objects/MatchTypes.h cpp/objects/MatchTypes.cpp
     SOURCES cpp/objects/MatchType/MatchTriplets.h cpp/objects/MatchType/MatchTriplets.cpp
     SOURCES cpp/objects/MatchType/MatchDublets.h cpp/objects/MatchType/MatchDublets.cpp
     SOURCES cpp/objects/MatchType/MatchSingiels.h cpp/objects/MatchType/MatchSingiels.cpp

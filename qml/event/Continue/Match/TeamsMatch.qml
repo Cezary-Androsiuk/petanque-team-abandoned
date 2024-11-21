@@ -5,13 +5,14 @@ Item {
     id: teamsMatch
 
     required property var event;
+    required property int teamIndex;
     required property int matchTypeIndex; // 1 - SingielsMatch, 2 - DubletsMatch, 3 - TripletsMatch
 
     readonly property var match: event.match;
-    readonly property var team1: match.getTeamByIndexes(event.teams, index, 1);
-    readonly property var team2: match.getTeamByIndexes(event.teams, index, 2);
-    readonly property var matchTeam1: match.getMatchTeamByIndexes(index, 1);
-    readonly property var matchTeam2: match.getMatchTeamByIndexes(index, 2);
+    readonly property var team1: match.getTeamByIndexes(event.teams, teamIndex, 1);
+    readonly property var team2: match.getTeamByIndexes(event.teams, teamIndex, 2);
+    readonly property var matchTypes1: match.getMatchTypesByIndexes(teamIndex, 1);
+    readonly property var matchTypes2: match.getMatchTypesByIndexes(teamIndex, 2);
 
     readonly property int widthAnchorMargin: 10
     readonly property int heightAnchorMargin: 10
@@ -19,24 +20,23 @@ Item {
     readonly property double higherTeamHeight: leftTeam.height > rightTeam.height ? leftTeam.height : rightTeam.height
     height: higherTeamHeight + (heightAnchorMargin * 2)
 
-
     Component.onCompleted: {
         // is exdcuted after filling properties
 
         if(matchTypeIndex === 1)
         {
-            matchTeam1.singiels.computePlayersUsed(team1.players);
-            matchTeam2.singiels.computePlayersUsed(team2.players);
+            matchTypes1.singiels.computePlayersUsed(team1.players);
+            matchTypes2.singiels.computePlayersUsed(team2.players);
         }
         else if(matchTypeIndex === 2)
         {
-            matchTeam1.dublets.computePlayersUsed(team1.players);
-            matchTeam2.dublets.computePlayersUsed(team2.players);
+            matchTypes1.dublets.computePlayersUsed(team1.players);
+            matchTypes2.dublets.computePlayersUsed(team2.players);
         }
         else //if(matchTypeIndex === 3)
         {
-            matchTeam1.triplets.computePlayersUsed(team1.players);
-            matchTeam2.triplets.computePlayersUsed(team2.players);
+            matchTypes1.triplets.computePlayersUsed(team1.players);
+            matchTypes2.triplets.computePlayersUsed(team2.players);
         }
     }
 
@@ -60,7 +60,7 @@ Item {
             }
 
             team: teamsMatch.team1
-            matchTeam: teamsMatch.matchTeam1
+            matchTypes: teamsMatch.matchTypes1
             matchTypeIndex: teamsMatch.matchTypeIndex
         }
 
@@ -93,7 +93,7 @@ Item {
             }
 
             team: teamsMatch.team2
-            matchTeam: teamsMatch.matchTeam2
+            matchTypes: teamsMatch.matchTypes2
             matchTypeIndex: teamsMatch.matchTypeIndex
         }
 

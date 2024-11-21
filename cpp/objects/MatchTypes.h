@@ -1,5 +1,5 @@
-#ifndef MATCHTEAM_H
-#define MATCHTEAM_H
+#ifndef MATCHTYPES_H
+#define MATCHTYPES_H
 
 #include <QObject>
 #include <QDebug>
@@ -9,7 +9,7 @@
 #include "cpp/objects/MatchType/MatchDublets.h"
 #include "cpp/objects/MatchType/MatchSingiels.h"
 
-class MatchTeam : public QObject
+class MatchTypes : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(uint teamID                  READ getTeamID      WRITE setTeamID NOTIFY teamIDChanged    FINAL)
@@ -18,7 +18,7 @@ class MatchTeam : public QObject
     Q_PROPERTY(const MatchTriplets *triplets       READ getTriplets    CONSTANT FINAL)
 
 public:
-    explicit MatchTeam(QObject *parent = nullptr);
+    explicit MatchTypes(QObject *parent = nullptr);
 
     uint getTeamID() const;
     const MatchSingiels *getSingiels() const;
@@ -48,6 +48,6 @@ private:
     MatchTriplets* m_triplets;
 };
 
-typedef QList<MatchTeam*> MatchTeamList;
+typedef QList<MatchTypes*> MatchTypesList;
 
-#endif // MATCHTEAM_H
+#endif // MATCHTYPES_H

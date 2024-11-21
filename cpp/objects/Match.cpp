@@ -4,10 +4,10 @@ Match::Match(QObject *parent)
     : QObject{parent}
 {}
 
-void Match::addMatchTeam(MatchTeam *matchTeam)
+void Match::addMatchTypes(MatchTypes *matchTypes)
 {
-    m_matchTeams.append(matchTeam);
-    emit this->matchTeamsChanged();
+    m_matchTypesList.append(matchTypes);
+    emit this->matchTypesListChanged();
 }
 
 void Match::addMatchCombination(int teamIndex1, int teamIndex2)
@@ -15,9 +15,9 @@ void Match::addMatchCombination(int teamIndex1, int teamIndex2)
     m_matchCombinations.append(QPair<int, int>(teamIndex1, teamIndex2));
 }
 
-const MatchTeamList &Match::getMatchTeams() const
+const MatchTypesList &Match::getMatchTypesList() const
 {
-    return m_matchTeams;
+    return m_matchTypesList;
 }
 
 const IntMap &Match::getMatchCombinations() const
@@ -64,13 +64,13 @@ Team *Match::getTeamByIndexes(const TeamList &teams, int combinationIndex, int t
     return teams[index];
 }
 
-MatchTeam *Match::getMatchTeamByIndexes(int combinationIndex, int teamIndex)
+MatchTypes *Match::getMatchTypesByIndexes(int combinationIndex, int teamIndex)
 {
-    const MatchTeamList &matchTeams = this->getMatchTeams();
+    const MatchTypesList &matchTypesList = this->getMatchTypesList();
 
-    if(matchTeams.empty())
+    if(matchTypesList.empty())
     {
-        E("matchTeams is empty");
+        E("matchTypesList is empty");
         return nullptr;
     }
 
@@ -79,14 +79,14 @@ MatchTeam *Match::getMatchTeamByIndexes(int combinationIndex, int teamIndex)
         auto a = QString::number(combinationIndex);
         auto b = QString::number(m_matchCombinations.size());
         W("input combinationIndex("+ a +") >= m_matchCombinations.size()("+ b +"), returning value on index 0");
-        return matchTeams[0];
+        return matchTypesList[0];
     }
 
     if(teamIndex != 1 && teamIndex != 2)
     {
         auto a = QString::number(teamIndex);
         W("teamIndex is "+ a +", not 1 or 2, returning value on index 0");
-        return matchTeams[0];
+        return matchTypesList[0];
     }
 
     int index;
@@ -94,13 +94,13 @@ MatchTeam *Match::getMatchTeamByIndexes(int combinationIndex, int teamIndex)
         index = m_matchCombinations[combinationIndex].first -1;
     else
         index = m_matchCombinations[combinationIndex].second -1;
-    if(matchTeams.size() <= index)
+    if(matchTypesList.size() <= index)
     {
-        auto a = QString::number(matchTeams.size());
+        auto a = QString::number(matchTypesList.size());
         auto b = QString::number(index);
         W("teams size is " + a + " and index is " + b + " - cannot read that team, returning value on index 0");
-        return matchTeams[0];
+        return matchTypesList[0];
     }
 
-    return matchTeams[index];
+    return matchTypesList[index];
 }

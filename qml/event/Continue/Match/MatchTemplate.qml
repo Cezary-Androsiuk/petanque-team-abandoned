@@ -45,7 +45,9 @@ Item {
                         left: parent.left
                         right: parent.right
                     }
+
                     event: matchTemplate.event
+                    teamIndex: index
                     matchTypeIndex: matchTemplate.matchTypeIndex
                 }
 
