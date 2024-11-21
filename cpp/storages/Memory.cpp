@@ -202,7 +202,7 @@ void Memory::jsonToMatches(const QJsonArray &jMatches, Event * const event) cons
     {
         QJsonObject jMatch = jMatches[i].toObject();
 
-        Match *match = event->createNewMatch();
+        Match *match = event->createNewMatch(false);
 
         QJsonArray jMatchTeams = jMatch["match teams"].toArray();
         if(match->getMatchTeams().size() != jMatchTeams.size())
@@ -240,12 +240,15 @@ void Memory::jsonToMatches(const QJsonArray &jMatches, Event * const event) cons
             }
         }
 
-        // QJsonArray jMatchCombinations = jMatch["match combinations"].toArray();
-        // for(int j=0; j<jMatchCombinations.size(); j++)
-        // {
-        //     QJsonObject jCombination = jMatchCombinations[j].toObject();
-        //     match->addMatchCombination(jCombination["teamIndex1"].toInt(), jCombination["teamIndex2"].toInt());
-        // }
+        if(!jMatch.contains("match combinations"))
+            continue;
+
+        QJsonArray jMatchCombinations = jMatch["match combinations"].toArray();
+        for(int j=0; j<jMatchCombinations.size(); j++)
+        {
+            QJsonObject jCombination = jMatchCombinations[j].toObject();
+            match->addMatchCombination(jCombination["teamIndex1"].toInt(), jCombination["teamIndex2"].toInt());
+        }
     }
 }
 
@@ -350,15 +353,15 @@ void Memory::matchesToJson(const Event * const event, QJsonArray &jMatches) cons
         }
         jMatch["match teams"] = jMatchTeams;
 
-        // QJsonArray jMatchCombinations;
-        // for(const auto &[teamIndex1, teamIndex2] : match->getMatchCombinations())
-        // {
-        //     QJsonObject jCombination;
-        //     jCombination["teamIndex1"] = teamIndex1;
-        //     jCombination["teamIndex2"] = teamIndex2;
-        //     jMatchCombinations.append(jCombination);
-        // }
-        // jMatch["match combinations"] = jMatchCombinations;
+        QJsonArray jMatchCombinations;
+        for(const auto &[teamIndex1, teamIndex2] : match->getMatchCombinations())
+        {
+            QJsonObject jCombination;
+            jCombination["teamIndex1"] = teamIndex1;
+            jCombination["teamIndex2"] = teamIndex2;
+            jMatchCombinations.append(jCombination);
+        }
+        jMatch["match combinations"] = jMatchCombinations;
 
         jMatches.append(jMatch);
     }

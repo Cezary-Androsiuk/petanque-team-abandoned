@@ -79,7 +79,7 @@ public slots:
     void goToPrevRoundStage();
 
     void createMatchIfNotExist(); /// mostly used by qml
-    Match *createNewMatch(); /// mostly used by Memory
+    Match *createNewMatch(bool assignMatchCombinations = true); /// mostly used by Memory
     void verifyCurrentRoundStage();
 
 public:

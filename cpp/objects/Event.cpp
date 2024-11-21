@@ -215,15 +215,19 @@ void Event::createMatchIfNotExist()
     }
 }
 
-Match *Event::createNewMatch()
+Match *Event::createNewMatch(bool assignMatchCombinations)
 {
     Match *match = new Match(this);
-    QString matchNumber = "r" + QString::number(m_matches[m_phase].size()+1);
-    QJsonArray matchCombinations = Personalization::getInstance()->getRoundsMatches()[matchNumber].toArray();
-    for(const auto &_matchCombination : matchCombinations)
+
+    if(assignMatchCombinations)
     {
-        QJsonObject matchCombination = _matchCombination.toObject();
-        match->addMatchCombination(matchCombination["t1"].toInt(), matchCombination["t2"].toInt());
+        QString matchNumber = "r" + QString::number(m_matches[m_phase].size()+1);
+        QJsonArray matchCombinations = Personalization::getInstance()->getRoundsMatches()[matchNumber].toArray();
+        for(const auto &_matchCombination : matchCombinations)
+        {
+            QJsonObject matchCombination = _matchCombination.toObject();
+            match->addMatchCombination(matchCombination["t1"].toInt(), matchCombination["t2"].toInt());
+        }
     }
 
     for(int i=0; i<m_teams[m_phase].size(); i++)
