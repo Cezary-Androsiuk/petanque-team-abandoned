@@ -5,7 +5,7 @@ Item {
     id: matchTemplate
     anchors.fill: parent
 
-    required property int matchType; // 1 - SingielsMatch, 2 - DubletsMatch, 3 - TripletsMatch
+    required property int matchTypeIndex; // 1 - SingielsMatch, 2 - DubletsMatch, 3 - TripletsMatch
     readonly property var event: Backend.event
     readonly property var match: event.match
 
@@ -33,26 +33,25 @@ Item {
                 policy: ScrollBar.AsNeeded
             }
 
-            footer: Item{
-                width: listView.width
-                height: 50
-            }
-
             delegate: Item{
                 width: listView.width - 40
                 anchors.horizontalCenter: parent.horizontalCenter
-                height: leftTeam.height + 30
+                height: teamsMatch.height
 
-                readonly property var team1: match.getTeamByIndexes(event.teams, index, 1);
-                readonly property var team2: match.getTeamByIndexes(event.teams, index, 2);
-                readonly property var matchTeam1: match.getMatchTeamByIndexes(index, 1);
-                readonly property var matchTeam2: match.getMatchTeamByIndexes(index, 2);
-
-                Component.onCompleted: {
-                    // is exdcuted after filling properties
-                    matchTeam1.dublets.computePlayersUsed(team1.players);
-                    matchTeam2.dublets.computePlayersUsed(team2.players);
+                TeamsMatch{
+                    id: teamsMatch
+                    anchors{
+                        top: parent.top
+                        left: parent.left
+                        right: parent.right
+                    }
+                    event: matchTemplate.event
+                    matchTypeIndex: matchTemplate.matchTypeIndex
                 }
+
+
+
+/*
 
                 Item{
                     id: leftTeam
@@ -245,7 +244,7 @@ Item {
                     }
                 }
 
-
+*/
             }
 
         }

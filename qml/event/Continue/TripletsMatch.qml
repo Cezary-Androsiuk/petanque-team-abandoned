@@ -13,6 +13,6 @@ Item {
 
     MatchTemplate{
         id: matchTemplate
-        matchType: 3
+        matchTypeIndex: 3
     }
 }
