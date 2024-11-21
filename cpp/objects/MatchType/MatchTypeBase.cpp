@@ -3,25 +3,31 @@
 MatchTypeBase::MatchTypeBase(uint playersCount, uint groups, QObject *parent)
     : QObject{parent}
     , m_rows{playersCount}
+    , m_playersCount{m_rows}
     , m_columns{groups}
+    , m_groupsCount{m_columns}
     , m_selection(playersCount, QVector<bool>(m_columns, false))
     , m_usedPlayersInGroups(groups, PlayerList())
 {}
 
-bool MatchTypeBase::isSelectionDataValid(const int minSelections, const int maxSelections, QString *message) const
+bool MatchTypeBase::isSelectionDataValid(const int rangeOfPlayersCountInGroup[2], QString *message) const
 {
     QVector<int> selectionCountsInGroups(m_columns, 0);
     this->countSelectionsInGroups(selectionCountsInGroups);
 
+    /// range is [min, max] (including)
+    const int minPlayersInGroup = rangeOfPlayersCountInGroup[0];
+    const int maxPlayersInGroup = rangeOfPlayersCountInGroup[1];
+
     for(int i=0; i<m_columns; i++)
     {
         int selectionsCountInGroup = selectionCountsInGroups[i];
-        if(minSelections <= selectionsCountInGroup && selectionsCountInGroup <= maxSelections)
+        if(minPlayersInGroup <= selectionsCountInGroup && selectionsCountInGroup <= maxPlayersInGroup)
             continue;
 
         QString _message = QAPF_T(
             "in group %d, %d players were selected, but %d or %d were expected",
-            i+1, selectionsCountInGroup, minSelections, maxSelections);
+            i+1, selectionsCountInGroup, minPlayersInGroup, maxPlayersInGroup);
         I(_message);
 
         if(message != nullptr)
@@ -149,9 +155,19 @@ uint MatchTypeBase::getRows() const
     return m_rows;
 }
 
+uint MatchTypeBase::getPlayersCount() const
+{
+    return m_playersCount;
+}
+
 uint MatchTypeBase::getColumns() const
 {
     return m_columns;
+}
+
+uint MatchTypeBase::getGroupsCount() const
+{
+    return m_groupsCount;
 }
 
 GroupsOfPlayersLists MatchTypeBase::getUsedPlayersInGroups() const

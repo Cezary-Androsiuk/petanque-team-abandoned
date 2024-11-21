@@ -49,26 +49,12 @@ Item {
             leftMargin: heightAnchorMargin
         }
         width: parent.width /2 - (2 * anchors.leftMargin)
-        height: leftTeamName.height + leftGroupsMatch.height
-
-        Label{
-            id: leftTeamName
-            anchors{
-                top: parent.top
-                left: parent.left
-                right: parent.right
-            }
-            height: 50
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-
-            text: team1.teamName
-        }
+        height: leftGroupsMatch.height
 
         GroupsMatch{
             id: leftGroupsMatch
             anchors{
-                top: leftTeamName.bottom
+                top: parent.top
                 left: parent.left
                 right: parent.right
             }
@@ -96,26 +82,12 @@ Item {
             rightMargin: heightAnchorMargin
         }
         width: parent.width /2 - (2 * anchors.rightMargin)
-        height: rightTeamName.height + rightGroupsMatch.height
-
-        Label{
-            id: rightTeamName
-            anchors{
-                top: parent.top
-                left: parent.left
-                right: parent.right
-            }
-            height: 50
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-
-            text: team2.teamName
-        }
+        height: rightGroupsMatch.height
 
         GroupsMatch{
             id: rightGroupsMatch
             anchors{
-                top: rightTeamName.bottom
+                top: parent.top
                 left: parent.left
                 right: parent.right
             }

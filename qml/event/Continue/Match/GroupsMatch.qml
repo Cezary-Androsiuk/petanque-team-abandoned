@@ -8,16 +8,20 @@ Item {
     required property var matchTeam;
     required property int matchTypeIndex; // 1 - SingielsMatch, 2 - DubletsMatch, 3 - TripletsMatch
 
-    readonly property int groupsCount: {
-        if(matchTypeIndex === 1)         6;
-        else if(matchTypeIndex === 2)    3;
-        else /* matchTypeIndex === 3 */  2;
+    readonly property var matchType: {
+        if(matchTypeIndex === 1)         matchTeam.singiels;
+        else if(matchTypeIndex === 2)    matchTeam.dublets;
+        else /* matchTypeIndex === 3 */  matchTeam.triplets;
     }
-    readonly property int groupsSize: matchTypeIndex
-    readonly property int playerDelegateHeight: 60;
-    readonly property int groupDelegateHeight: playerDelegateHeight * groupsSize;
+    onMatchTypeChanged: console.log("changed to: "+ matchType, matchType.groupsCount, matchType.playersCount)
 
-    height: (groupDelegateHeight + (10*2)) * groupsCount
+    readonly property int groupsCount: matchType.groupsCount;
+    readonly property int playersCountInGroup: matchTypeIndex // for now value //matchType.playersCountInGroup // ? can be 1 for singiels, 2 or 3 for dublets and 3 or 4 for triplets
+    readonly property int playerDelegateHeight: 60;
+    readonly property int groupHeaderHeight: 60
+    readonly property int groupDelegateHeight: playerDelegateHeight * playersCountInGroup;
+
+    height: groupHeaderHeight + ( (groupDelegateHeight + (10*2)) * groupsCount )
 
     ListView{
         id: groupsListView
@@ -28,6 +32,21 @@ Item {
         clip: true
         interactive: false
         cacheBuffer: 10000 // for god sake, keep delegates alive while scrolling
+
+        header: Item{
+            width: groupsListView.width
+            height: groupsMatch.playerDelegateHeight
+
+            Label{
+                id: leftTeamName
+                anchors.centerIn: parent
+                height: 50
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+
+                text: team.teamName
+            }
+        }
 
         delegate: Item{
             id: delegateItem
@@ -47,7 +66,7 @@ Item {
                     id: playersListView
                     anchors.fill: parent
 
-                    model: groupsMatch.groupsSize
+                    model: groupsMatch.playersCountInGroup
                     boundsBehavior: Flickable.StopAtBounds
                     clip: true
                     interactive: false

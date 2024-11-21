@@ -6,5 +6,6 @@ MatchTriplets::MatchTriplets(uint playersCount, QObject *parent)
 
 bool MatchTriplets::isSelectionDataValid(QString *message) const
 {
-    return MatchTypeBase::isSelectionDataValid(3, 4, message);
+    const int rangeOfPlayersCountInGroup[2] = {3, 4};
+    return MatchTypeBase::isSelectionDataValid(rangeOfPlayersCountInGroup, message);
 }
