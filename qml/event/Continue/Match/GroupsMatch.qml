@@ -76,6 +76,21 @@ Item {
                         width: groupsListView.width - playersListViewContainer.anchors.margins*2
                         height: groupsMatch.playerDelegateHeight
 
+
+                        Rectangle{
+                            anchors.fill: spinBox
+                            color: Qt.rgba(0.8,0,0, 0.6)
+                            visible: spinBox.value > 31
+                        }
+
+                        SpinBox{
+                            id: spinBox
+                            anchors.centerIn: parent
+                            editable: true
+                            to: 999
+                            onValueChanged: focus = false;
+                        }
+
                         Rectangle{
                             anchors.fill: parent
                             color: "transparent"

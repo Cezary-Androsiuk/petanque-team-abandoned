@@ -8,6 +8,7 @@
 #include "cpp/objects/Player.h"
 
 typedef QVector<QVector<bool>> BoolMatrix;
+typedef QVector<QVector<int>> IntMatrix;
 typedef QVector<PlayerList> GroupsOfPlayersLists;
 
 class MatchTypeBase : public QObject
@@ -54,6 +55,7 @@ protected:
     const uint &m_groupsCount; // = m_columns
 
     BoolMatrix m_selection; // rows<columns> [row][col]
+    IntMatrix m_points; // rows<coulumns> []
 
     GroupsOfPlayersLists m_usedPlayersInGroups;
 };
