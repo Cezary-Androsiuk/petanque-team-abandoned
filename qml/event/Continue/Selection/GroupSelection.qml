@@ -4,21 +4,17 @@ import QtQuick.Controls.Material
 Item {
     id: groupSelection
     required property int teamIndex;
-    required property int groupSize; // 1, 2 or 3
+    required property int matchTypeIndex; // 1, 2 or 3
 
     readonly property var currentTeam: event.teams[teamIndex]
-    readonly property var currentMatchTypes: event.match.matchTypesList[teamIndex];
-    readonly property var currentMatchType: {
-        if(groupSize === 3)         currentMatchTypes.triplets;
-        else if(groupSize === 2)    currentMatchTypes.dublets;
-        else /* groupSize === 1 */  currentMatchTypes.singiels;
-    }
+    readonly property var currentMatchTeam: event.match.matchTeamList[teamIndex];
+    readonly property var currentMatchType: currentMatchTeam.getMatchType(matchTypeIndex)
     readonly property var matrixRows: currentMatchType.rows
     readonly property var matrixColumns: currentMatchType.columns
     readonly property string groupsSelectionName: {
-        if(groupSize === 3)         "Triplets";
-        else if(groupSize === 2)    "Dublets";
-        else /* groupSize === 1 */  "Singiels";
+        if(matchTypeIndex === 3)         "Triplets";
+        else if(matchTypeIndex === 2)    "Dublets";
+        else /* matchTypeIndex === 1 */  "Singiels";
     }
 
 
@@ -44,18 +40,18 @@ Item {
         }
 
 
-        if(groupSize === 3)
+        if(matchTypeIndex === 3)
         {
             setSC(0, 0, true); setSC(1, 0, true); setSC(2, 0, true); // group 1
             setSC(3, 1, true); setSC(4, 1, true); setSC(5, 1, true); // group 2
         }
-        else if(groupSize === 2)
+        else if(matchTypeIndex === 2)
         {
             setSC(0, 0, true); setSC(1, 0, true); // group 1
             setSC(2, 1, true); setSC(3, 1, true); // group 2
             setSC(4, 2, true); setSC(5, 2, true); // group 3
         }
-        else /* groupSize === 1 */
+        else /* matchTypeIndex === 1 */
         {
             setSC(0, 0, true); // group 1
             setSC(1, 1, true); // group 2

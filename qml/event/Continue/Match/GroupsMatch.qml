@@ -5,15 +5,9 @@ Item {
     id: groupsMatch
 
     required property var team;
-    required property var matchTypes;
+    required property var matchTeam;
+    required property var matchType;
     required property int matchTypeIndex; // 1 - SingielsMatch, 2 - DubletsMatch, 3 - TripletsMatch
-
-    readonly property var matchType: {
-        if(matchTypeIndex === 1)         matchTypes.singiels;
-        else if(matchTypeIndex === 2)    matchTypes.dublets;
-        else /* matchTypeIndex === 3 */  matchTypes.triplets;
-    }
-    onMatchTypeChanged: console.log("changed to: "+ matchType, matchType.groupsCount, matchType.playersCount)
 
     readonly property int groupsCount: matchType.groupsCount;
     readonly property int playersCountInGroup: matchTypeIndex // for now value //matchType.playersCountInGroup // ? can be 1 for singiels, 2 or 3 for dublets and 3 or 4 for triplets

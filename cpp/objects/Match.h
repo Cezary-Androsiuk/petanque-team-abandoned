@@ -5,7 +5,7 @@
 #include <QList>
 #include <QPair>
 
-#include "cpp/objects/MatchTypes.h"
+#include "cpp/objects/MatchTeam.h"
 #include "cpp/objects/Team.h"
 
 typedef QList<QPair<int, int>> IntMap;
@@ -13,17 +13,17 @@ typedef QList<QPair<int, int>> IntMap;
 class Match : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(MatchTypesList matchTypesList READ getMatchTypesList NOTIFY matchTypesListChanged FINAL)
+    Q_PROPERTY(MatchTeamList matchTeamList READ getMatchTeamList NOTIFY matchTeamListChanged FINAL)
     Q_PROPERTY(IntMap matchCombinations READ getMatchCombinations CONSTANT FINAL)
 
 public:
     explicit Match(QObject *parent = nullptr);
 
-    void addMatchTypes(MatchTypes *matchTypes);
+    void addMatchTeam(MatchTeam *MatchTeam);
     void addMatchCombination(int teamIndex1, int teamIndex2);
 
 public:
-    const MatchTypesList &getMatchTypesList() const;
+    const MatchTeamList &getMatchTeamList() const;
     const IntMap &getMatchCombinations() const;
 
 public slots:
@@ -32,16 +32,16 @@ public slots:
     /// Returns teams[ m_matchCombinations[combinationIndex][teamIndex] ] value where combination is a matrix
     Team *getTeamByIndexes(const TeamList &teams, int combinationIndex, int teamIndex);
 
-    /// Returns one MatchTypes that is used in the combination(combinationIndex)
+    /// Returns one MatchTeam that is used in the combination(combinationIndex)
     /// and is one from two teams in that combination (teamIndex, first or second)
-    /// Returns m_m_matchTypes[ m_matchCombinations[combinationIndex][teamIndex] ] value where combination is a matrix
-    MatchTypes *getMatchTypesByIndexes(int combinationIndex, int teamIndex);
+    /// Returns m_matchTeam[ m_matchCombinations[combinationIndex][teamIndex] ] value where combination is a matrix
+    MatchTeam *getMatchTeamByIndexes(int combinationIndex, int teamIndex);
 
 signals:
-    void matchTypesListChanged();
+    void matchTeamListChanged();
 
 private:
-    MatchTypesList m_matchTypesList;
+    MatchTeamList m_matchTeamList;
     IntMap m_matchCombinations;
 };
 

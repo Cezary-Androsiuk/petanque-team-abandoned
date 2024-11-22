@@ -12,6 +12,6 @@ Item {
 
     SelectionTemplate{
         id: selectionTemplate
-        selectionType: 1
+        matchTypeIndex: 1
     }
 }

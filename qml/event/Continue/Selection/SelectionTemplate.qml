@@ -5,7 +5,7 @@ Item {
     id: selectionTemplate
     anchors.fill: parent
 
-    required property int selectionType; // 1 - SingielsSelection, 2 - DubletsSelection, 3 - TripletsSelection
+    required property int matchTypeIndex; // 1 - SingielsSelection, 2 - DubletsSelection, 3 - TripletsSelection
     readonly property var event: Backend !== null ? Backend.event : null
 
     function setExampleData(){
@@ -33,7 +33,7 @@ Item {
             id: listView
             anchors.fill: parent
 
-            model: event.match.matchTypesList.length // or event.teams.length
+            model: event.match.matchTeamList.length // or event.teams.length
             boundsBehavior: Flickable.StopAtBounds
             clip: true
             cacheBuffer: 10000 // for god sake, keep delegates alive while scrolling
@@ -80,7 +80,7 @@ Item {
                         margins: 10
                     }
                     teamIndex: index
-                    groupSize: selectionType
+                    matchTypeIndex: selectionTemplate.matchTypeIndex
                 }
 
                 Item{

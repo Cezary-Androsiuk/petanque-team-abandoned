@@ -47,7 +47,7 @@ Item {
                     }
 
                     event: matchTemplate.event
-                    teamIndex: index
+                    combinationIndex: index
                     matchTypeIndex: matchTemplate.matchTypeIndex
                 }
 
