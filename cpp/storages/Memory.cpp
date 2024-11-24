@@ -220,9 +220,9 @@ void Memory::jsonToMatches(const QJsonArray &jMatches, Event * const event) cons
                jMatchTeam["singiels"].toObject()
             };
             MatchTypeBase *const matchTeamBase[3] = {
-                matchTeam->getTripletsRef(),
-                matchTeam->getDubletsRef(),
-                matchTeam->getSingielsRef()
+                matchTeam->getMatchType(1),
+                matchTeam->getMatchType(2),
+                matchTeam->getMatchType(3)
             };
 
 
@@ -325,9 +325,9 @@ void Memory::matchesToJson(const Event * const event, QJsonArray &jMatches) cons
             QJsonObject jMatchTeam;
             QJsonObject jMatchTypeBase[3];
             const MatchTypeBase *const matchTeamBase[3] = {
-                matchTeam->getTriplets(),
-                matchTeam->getDublets(),
-                matchTeam->getSingiels()
+                matchTeam->getMatchType(1),
+                matchTeam->getMatchType(2),
+                matchTeam->getMatchType(3)
             };
 
             for(int i=0; i<3; i++)

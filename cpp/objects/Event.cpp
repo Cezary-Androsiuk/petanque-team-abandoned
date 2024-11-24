@@ -239,9 +239,9 @@ Match *Event::createNewMatch(bool assignMatchCombinations)
         MatchDublets *dublets = new MatchDublets(playersCount, matchTeam);
         MatchSingiels *singiels = new MatchSingiels(playersCount, matchTeam);
 
-        matchTeam->setTriplets(triplets);
-        matchTeam->setDublets(dublets);
-        matchTeam->setSingiels(singiels);
+        matchTeam->setMatchType(triplets);
+        matchTeam->setMatchType(dublets);
+        matchTeam->setMatchType(singiels);
 
         match->addMatchTeam(matchTeam);
     }
@@ -262,7 +262,7 @@ void Event::verifyCurrentRoundStage()
         switch(m_roundStage)
         {
         case RoundStage::SingielsSelection:
-            ok = mtl[i]->getSingiels()->isSelectionDataValid(&errorMessage);
+            ok = mtl[i]->getMatchType(1)->isSelectionDataValid(&errorMessage);
             if(!ok)
             {
                 QString returnMessage = tr("in team %1, singiels selection is not valid: %2")
@@ -277,7 +277,7 @@ void Event::verifyCurrentRoundStage()
 
             break;
         case RoundStage::DubletsSelection:
-            ok = mtl[i]->getDublets()->isSelectionDataValid(&errorMessage);
+            ok = mtl[i]->getMatchType(2)->isSelectionDataValid(&errorMessage);
             if(!ok)
             {
                 QString returnMessage = tr("in team %1, dublets selection is not valid: %2")
@@ -292,7 +292,7 @@ void Event::verifyCurrentRoundStage()
 
             break;
         case RoundStage::TripletsSelection:
-            ok = mtl[i]->getTriplets()->isSelectionDataValid(&errorMessage);
+            ok = mtl[i]->getMatchType(3)->isSelectionDataValid(&errorMessage);
             if(!ok)
             {
                 QString returnMessage = tr("in team %1, triplets selection is not valid: %2")

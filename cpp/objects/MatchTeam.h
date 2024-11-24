@@ -13,33 +13,16 @@
 class MatchTeam : public QObject
 {
     Q_OBJECT
-    // Q_PROPERTY(const MatchSingiels *singiels       READ getSingiels    CONSTANT FINAL)
-    // Q_PROPERTY(const MatchDublets *dublets         READ getDublets     CONSTANT FINAL)
-    // Q_PROPERTY(const MatchTriplets *triplets       READ getTriplets    CONSTANT FINAL)
 
 public:
     explicit MatchTeam(QObject *parent = nullptr);
 
-    const MatchSingiels *getSingiels() const;
-    const MatchDublets *getDublets() const;
-    const MatchTriplets *getTriplets() const;
-
-    MatchSingiels *getSingielsRef();
-    MatchDublets *getDubletsRef();
-    MatchTriplets *getTripletsRef();
-
-    void setSingiels(MatchSingiels *singiels);
-    void setDublets(MatchDublets *dublets);
-    void setTriplets(MatchTriplets *triplets);
-
-public slots:
-    MatchTypeBase* getMatchType(const QString &type);
-    MatchTypeBase* getMatchType(int type);
+    /// here the getter and the setter works differently - getter return original value
+    Q_INVOKABLE MatchTypeBase *getMatchType(int type) const;
+    Q_INVOKABLE MatchTypeBase *getMatchType(int type);
+    void setMatchType(MatchTypeBase *matchTypeBase);
 
 signals:
-    // void singielsChanged();
-    // void dubletsChanged();
-    // void tripletsChanged();
 
 private:
     MatchSingiels* m_singiels;

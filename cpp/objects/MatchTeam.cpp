@@ -5,57 +5,7 @@ MatchTeam::MatchTeam(QObject *parent)
 {
 }
 
-const MatchSingiels *MatchTeam::getSingiels() const
-{
-    return m_singiels;
-}
-
-const MatchDublets *MatchTeam::getDublets() const
-{
-    return m_dublets;
-}
-
-const MatchTriplets *MatchTeam::getTriplets() const
-{
-    return m_triplets;
-}
-
-MatchSingiels *MatchTeam::getSingielsRef()
-{
-    return m_singiels;
-}
-
-MatchDublets *MatchTeam::getDubletsRef()
-{
-    return m_dublets;
-}
-
-MatchTriplets *MatchTeam::getTripletsRef()
-{
-    return m_triplets;
-}
-
-MatchTypeBase *MatchTeam::getMatchType(const QString &type)
-{
-    const QString typeLower = type.toLower();
-    if(typeLower == "singiels")
-    {
-        return m_singiels;
-    }
-    else if(typeLower == "dublets")
-    {
-        return m_dublets;
-    }
-    else if(typeLower == "triplets")
-    {
-        return m_triplets;
-    }
-
-    W("no matching MatchType for '" + type + "' type");
-    return nullptr;
-}
-
-MatchTypeBase *MatchTeam::getMatchType(int type)
+MatchTypeBase *MatchTeam::getMatchType(int type) const
 {
     if(type == 1)
     {
@@ -74,18 +24,28 @@ MatchTypeBase *MatchTeam::getMatchType(int type)
     return nullptr;
 }
 
-void MatchTeam::setSingiels(MatchSingiels *singiels)
+MatchTypeBase *MatchTeam::getMatchType(int type)
 {
-    m_singiels = singiels;
+    return static_cast<const MatchTeam *>(this)->getMatchType(type);
 }
 
-void MatchTeam::setDublets(MatchDublets *dublets)
+void MatchTeam::setMatchType(MatchTypeBase *matchTypeBase)
 {
-    m_dublets = dublets;
-}
-
-void MatchTeam::setTriplets(MatchTriplets *triplets)
-{
-    m_triplets = triplets;
+    if(dynamic_cast<MatchSingiels *>(matchTypeBase))
+    {
+        m_singiels = static_cast<MatchSingiels *>(matchTypeBase);
+    }
+    else if(dynamic_cast<MatchDublets *>(matchTypeBase))
+    {
+        m_dublets = static_cast<MatchDublets *>(matchTypeBase);
+    }
+    else if(dynamic_cast<MatchTriplets *>(matchTypeBase))
+    {
+        m_triplets = static_cast<MatchTriplets *>(matchTypeBase);
+    }
+    else
+    {
+        W("no matching MatchType for given variable");
+    }
 }
 
