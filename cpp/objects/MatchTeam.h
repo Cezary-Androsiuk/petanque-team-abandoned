@@ -22,7 +22,8 @@ public:
     Q_INVOKABLE MatchTypeBase *getMatchType(int type);
     void setMatchType(MatchTypeBase *matchTypeBase);
 
-signals:
+private:
+    MatchTypeBase *_getMatchType(int type) const;
 
 private:
     MatchSingiels* m_singiels;

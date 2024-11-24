@@ -7,26 +7,18 @@ MatchTeam::MatchTeam(QObject *parent)
 
 MatchTypeBase *MatchTeam::getMatchType(int type) const
 {
-    if(type == 1)
-    {
-        return m_singiels;
-    }
-    else if(type == 2)
-    {
-        return m_dublets;
-    }
-    else if(type == 3)
-    {
-        return m_triplets;
-    }
-
-    W("no matching MatchType for '" + QString::number(type) + "' type");
-    return nullptr;
+    MatchTypeBase *mtb = this->_getMatchType(type);
+    if(!mtb)
+        W("need to return nullptr pointer - mark the track of the program")
+    return mtb;
 }
 
 MatchTypeBase *MatchTeam::getMatchType(int type)
 {
-    return static_cast<const MatchTeam *>(this)->getMatchType(type);
+    MatchTypeBase *mtb = this->_getMatchType(type);
+    if(!mtb)
+        W("need to return nullptr pointer - mark the track of the program")
+    return mtb;
 }
 
 void MatchTeam::setMatchType(MatchTypeBase *matchTypeBase)
@@ -46,6 +38,19 @@ void MatchTeam::setMatchType(MatchTypeBase *matchTypeBase)
     else
     {
         W("no matching MatchType for given variable");
+    }
+}
+
+MatchTypeBase *MatchTeam::_getMatchType(int type) const
+{
+    switch(type)
+    {
+    case 1: return m_singiels;
+    case 2: return m_dublets;
+    case 3: return m_triplets;
+    default:
+        W("no matching MatchType for '" + QString::number(type) + "' type");
+        return nullptr;
     }
 }
 
