@@ -9,8 +9,9 @@ Item {
     readonly property var currentTeam: event.teams[teamIndex]
     readonly property var currentMatchTeam: event.match.matchTeamList[teamIndex];
     readonly property var currentMatchType: currentMatchTeam.getMatchType(matchTypeIndex)
-    readonly property var matrixRows: currentMatchType.rows
-    readonly property var matrixColumns: currentMatchType.columns
+    readonly property var currentSelection: currentMatchType.selection
+    readonly property var matrixRows: currentSelection.rows
+    readonly property var matrixColumns: currentSelection.columns
     readonly property string groupsSelectionName: {
         if(matchTypeIndex === 3)         "Triplets";
         else if(matchTypeIndex === 2)    "Dublets";
@@ -25,7 +26,7 @@ Item {
 
     height: groupSelectionHeight
 
-    function setSC(row, column, value){ currentMatchType.setSelectionCell(row, column, value); }
+    function setSC(row, column, value){ currentSelection.setValueForCell(row, column, value); }
 
     function setExampleData(){
         var i,j,h;
@@ -238,7 +239,7 @@ Item {
                                 checked = false
                         }
 
-                        checked: groupSelection.currentMatchType.selection[rowDelegate.rowIndex][radioButton.colIndex]
+                        checked: groupSelection.currentSelection.values[rowDelegate.rowIndex][radioButton.colIndex]
                         onCheckedChanged: {
                             groupSelection.setSC(rowDelegate.rowIndex, radioButton.colIndex, checked)
                         }

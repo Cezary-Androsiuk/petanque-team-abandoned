@@ -233,8 +233,11 @@ void Memory::jsonToMatches(const QJsonArray &jMatches, Event * const event) cons
                 {
                     QJsonArray jSelectionColumns = jSelectionRows[r].toArray();
                     for(int c=0; c<jSelectionColumns.size(); c++)
-                        matchTeamBase[h]->setSelectionCell(r, c, jSelectionColumns[c].toBool());
-
+                    {
+                        bool v = jSelectionColumns[c].toBool();
+                        Selection *s = matchTeamBase[h]->getSelectionRef();
+                        s->setValueForCell(r, c, v);
+                    }
                 }
                 // rows and columns are set in createNewMatch;
             }
@@ -333,7 +336,8 @@ void Memory::matchesToJson(const Event * const event, QJsonArray &jMatches) cons
             for(int i=0; i<3; i++)
             {
                 QJsonArray jSelectionRows;
-                for(const auto &row : matchTeamBase[i]->getSelection())
+                const Selection *s = matchTeamBase[i]->getSelectionConst();
+                for(const auto &row : s->getValues())
                 {
                     QJsonArray jSelectionColumns;
                     for(bool column : row)
@@ -342,8 +346,8 @@ void Memory::matchesToJson(const Event * const event, QJsonArray &jMatches) cons
                 }
 
                 jMatchTypeBase[i]["selection"] = jSelectionRows;
-                jMatchTypeBase[i]["rows"] = static_cast<int>(matchTeamBase[i]->getRows());
-                jMatchTypeBase[i]["columns"] = static_cast<int>(matchTeamBase[i]->getColumns());
+                jMatchTypeBase[i]["rows"] = static_cast<int>(s->getRows());
+                jMatchTypeBase[i]["columns"] = static_cast<int>(s->getColumns());
             }
 
             jMatchTeam["triplets"] = jMatchTypeBase[0];
