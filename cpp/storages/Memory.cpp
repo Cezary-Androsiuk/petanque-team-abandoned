@@ -214,12 +214,12 @@ void Memory::jsonToMatches(const QJsonArray &jMatches, Event * const event) cons
         {
             MatchTeam *matchTeam = match->getMatchTeamList()[j];
             QJsonObject jMatchTeam = jMatchTeamList[j].toObject();
-            const QJsonObject jMatchTypeBase[3] = {
+            const QJsonObject jMatchType[3] = {
                jMatchTeam["triplets"].toObject(),
                jMatchTeam["dublets"].toObject(),
                jMatchTeam["singiels"].toObject()
             };
-            MatchTypeBase *const matchTeamBase[3] = {
+            MatchTypeBase *const matchType[3] = {
                 matchTeam->getMatchType(1),
                 matchTeam->getMatchType(2),
                 matchTeam->getMatchType(3)
@@ -228,18 +228,7 @@ void Memory::jsonToMatches(const QJsonArray &jMatches, Event * const event) cons
 
             for(int h=0; h<3; h++)
             {
-                QJsonArray jSelectionRows = jMatchTypeBase[h]["selection"].toArray();
-                for(int r=0; r<jSelectionRows.size(); r++)
-                {
-                    QJsonArray jSelectionColumns = jSelectionRows[r].toArray();
-                    for(int c=0; c<jSelectionColumns.size(); c++)
-                    {
-                        bool v = jSelectionColumns[c].toBool();
-                        Selection *s = matchTeamBase[h]->getSelection();
-                        s->setValueForCell(r, c, v);
-                    }
-                }
-                // rows and columns are set in createNewMatch;
+                this->jsonToMatchType(jMatchType[i], matchType[i]);
             }
         }
 
@@ -252,6 +241,44 @@ void Memory::jsonToMatches(const QJsonArray &jMatches, Event * const event) cons
             QJsonObject jCombination = jMatchCombinations[j].toObject();
             match->addMatchCombination(jCombination["teamIndex1"].toInt(), jCombination["teamIndex2"].toInt());
         }
+    }
+}
+
+void Memory::jsonToMatchType(const QJsonObject &jMatchType, MatchTypeBase * const matchType) const
+{
+    if(matchType == nullptr)
+    {
+        W("cannot initialize match type values, because matchType variable is a null");
+        return;
+    }
+
+    QJsonObject jSelection = jMatchType["selection"].toObject();
+    QJsonArray jSelectionValues = jSelection["values"].toArray();
+    // row and column was set in createNewMatch method;
+    // just set the values
+
+    Selection *const s = matchType->getSelection();
+    for(int r=0; r<jSelectionValues.size(); r++)
+    {
+        QJsonArray jSelectionColumns = jSelectionValues[r].toArray();
+        for(int c=0; c<jSelectionColumns.size(); c++)
+        {
+            bool v = jSelectionColumns[c].toBool();
+            s->setValueForCell(r, c, v);
+        }
+    }
+
+
+    QJsonObject jMatchPoints = jMatchType["match points"].toObject();
+    QJsonArray jMatchPointsPoints = jMatchPoints["points"].toArray();
+    // row was set in createNewMatch method;
+    // just set the values
+
+    MatchPoints *const mp = matchType->getMatchPoints();
+    for(int r=0; r<jMatchPointsPoints.size(); r++)
+    {
+        int v = jMatchPointsPoints[r].toInt();
+        mp->setPointsForPlayer(r, v);
     }
 }
 
@@ -326,8 +353,8 @@ void Memory::matchesToJson(const Event * const event, QJsonArray &jMatches) cons
         for(const MatchTeam *matchTeam : match->getMatchTeamList())
         {
             QJsonObject jMatchTeam;
-            QJsonObject jMatchTypeBase[3];
-            const MatchTypeBase *const matchTeamBase[3] = {
+            QJsonObject jMatchType[3];
+            const MatchTypeBase *const matchType[3] = {
                 matchTeam->getMatchType(1),
                 matchTeam->getMatchType(2),
                 matchTeam->getMatchType(3)
@@ -335,24 +362,12 @@ void Memory::matchesToJson(const Event * const event, QJsonArray &jMatches) cons
 
             for(int i=0; i<3; i++)
             {
-                QJsonArray jSelectionRows;
-                const Selection *s = matchTeamBase[i]->getSelection();
-                for(const auto &row : s->getValues())
-                {
-                    QJsonArray jSelectionColumns;
-                    for(bool column : row)
-                        jSelectionColumns.append(column);
-                    jSelectionRows.append(jSelectionColumns);
-                }
-
-                jMatchTypeBase[i]["selection"] = jSelectionRows;
-                jMatchTypeBase[i]["rows"] = static_cast<int>(s->getRows());
-                jMatchTypeBase[i]["columns"] = static_cast<int>(s->getColumns());
+                this->matchTypeToJson(matchType[i], jMatchType[i]);
             }
 
-            jMatchTeam["triplets"] = jMatchTypeBase[0];
-            jMatchTeam["dublets"] = jMatchTypeBase[1];
-            jMatchTeam["singiels"] = jMatchTypeBase[2];
+            jMatchTeam["triplets"] = jMatchType[0];
+            jMatchTeam["dublets"] = jMatchType[1];
+            jMatchTeam["singiels"] = jMatchType[2];
             jMatchTeamList.append(jMatchTeam);
         }
         jMatch["match team list"] = jMatchTeamList;
@@ -369,4 +384,47 @@ void Memory::matchesToJson(const Event * const event, QJsonArray &jMatches) cons
 
         jMatches.append(jMatch);
     }
+}
+
+void Memory::matchTypeToJson(const MatchTypeBase * const matchType, QJsonObject &jMatchType) const
+{
+    if(matchType == nullptr)
+    {
+        W("cannot read match type values, because matchType variable is a null");
+        return;
+    }
+
+    QJsonObject jSelection;
+    {
+        const Selection *s = matchType->getSelection();
+        QJsonArray jSelectionValues;
+        for(const auto &row : s->getValues())
+        {
+            QJsonArray jSelectionValuesColumns;
+            for(bool column : row)
+            {
+                jSelectionValuesColumns.append(column);
+            }
+            jSelectionValues.append(jSelectionValuesColumns);
+        }
+
+        jSelection["values"] = jSelectionValues;
+        jSelection["rows"] = static_cast<int>(s->getRows());
+        jSelection["columns"] = static_cast<int>(s->getColumns());
+    }
+
+    QJsonObject jMatchPoints;
+    {
+        const MatchPoints *mp = matchType->getMatchPoints();
+        QJsonArray jMatchPointsPoints;
+        for(int playerPoints : mp->getPoints())
+        {
+            jMatchPointsPoints.append(playerPoints);
+        }
+        jMatchPoints["points"] = jMatchPointsPoints;
+        jMatchPoints["rows"] = static_cast<int>(mp->getRows());
+    }
+
+    jMatchType["selection"] = jSelection;
+    jMatchType["match points"] = jMatchPoints;
 }

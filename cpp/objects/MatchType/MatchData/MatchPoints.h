@@ -18,7 +18,7 @@ public:
     explicit MatchPoints(uint rows, QObject *parent = nullptr);
 
 public:
-    bool isDataValid( QString *message) const;
+    bool isDataValid(QString *message) const;
 
 public slots:
     void setPointsForPlayer(uint playerIndex, int value);

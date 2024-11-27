@@ -39,10 +39,12 @@ private:
     void jsonToEvent(const QJsonObject &jsonObject, Event *const event) const;
     void jsonToTeams(const QJsonArray &jTeams, Event *const event) const;
     void jsonToMatches(const QJsonArray &jMatches, Event *const event) const;
+    void jsonToMatchType(const QJsonObject &jMatchType, MatchTypeBase *const matchType) const;
 
     void eventToJson(const Event *const event, QJsonObject &jsonObject) const;
     void teamsToJson(const Event *const event, QJsonArray &jTeams) const;
     void matchesToJson(const Event *const event, QJsonArray &jMatches) const;
+    void matchTypeToJson(const MatchTypeBase *const matchType, QJsonObject &jMatchType) const;
 
 signals:
     void memoryFileNotExist();

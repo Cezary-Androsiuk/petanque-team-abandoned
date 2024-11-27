@@ -26,7 +26,7 @@ public:
 
 protected:
     bool _isSelectionDataValid(const int rangeOfPlayersCountInGroup[2], QString *message) const;
-    bool _isMatchPointsDataValid( QString *message) const;
+    bool _isMatchPointsDataValid(QString *message) const;
 
 public slots:
     void computePlayersUsed(const PlayerList &players); /// should be used after selection
