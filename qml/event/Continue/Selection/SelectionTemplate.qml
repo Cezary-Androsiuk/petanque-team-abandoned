@@ -12,13 +12,7 @@ Item {
         for(let i=0; i<listView.count; i++)
         {
             let delegate = listView.itemAtIndex(i);
-            if(delegate)
-            {
-                delegate.itemGroupSelection.setExampleData();
-            }
-            else{
-                log.w("item at index " + i + " not found")
-            }
+            delegate.itemGroupSelection.setExampleData();
         }
     }
 
@@ -80,10 +74,8 @@ Item {
                         margins: 10
                     }
                     team: selectionTemplate.event.teams[index]
-                    matchTeam: selectionTemplate.event.match.matchTeamList[index]
                     matchTypeIndex: selectionTemplate.matchTypeIndex
-
-                    matchType: matchTeam.getMatchType(matchTypeIndex)
+                    matchType: selectionTemplate.event.match.matchTeamList[index].getMatchType(matchTypeIndex)
                 }
 
                 Item{

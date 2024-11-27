@@ -4,7 +4,6 @@ import QtQuick.Controls.Material
 Item {
     id: groupSelection
     required property var team;
-    required property var matchTeam;
     required property var matchType;
     required property int matchTypeIndex; // 1, 2 or 3
 
