@@ -3,34 +3,26 @@ import QtQuick.Controls.Material
 
 Item {
     id: groupSelection
-    required property int teamIndex;
+    required property var team;
+    required property var matchTeam;
+    required property var matchType;
     required property int matchTypeIndex; // 1, 2 or 3
 
-    readonly property var currentTeam: event.teams[teamIndex]
-    readonly property var currentMatchTeam: event.match.matchTeamList[teamIndex];
-    readonly property var currentMatchType: currentMatchTeam.getMatchType(matchTypeIndex)
-    readonly property var currentSelection: currentMatchType.selection
-    readonly property var matrixRows: currentSelection.rows
-    readonly property var matrixColumns: currentSelection.columns
-    readonly property string groupsSelectionName: {
-        if(matchTypeIndex === 3)         "Triplets";
-        else if(matchTypeIndex === 2)    "Dublets";
-        else /* matchTypeIndex === 1 */  "Singiels";
-    }
-
+    readonly property var selection: matchType.selection
+    readonly property var matrixRows: selection.rows
+    readonly property var matrixColumns: selection.columns
 
     readonly property int delegateHeight: 30;
-    readonly property int headerHeight: 60;
+    readonly property int headerHeight: 30;
     readonly property int footerHeight: 30;
     readonly property int groupSelectionHeight: matrixRows * delegateHeight + headerHeight + footerHeight
 
     height: groupSelectionHeight
 
-    function setSC(row, column, value){ currentSelection.setValueForCell(row, column, value); }
+    function setSC(row, column, value){ selection.setValueForCell(row, column, value); }
 
     function setExampleData(){
         var i,j,h;
-
 
         // turn off all rows
         for(i=0; i<matrixRows; i++)
@@ -40,7 +32,7 @@ Item {
             setSC(i, 0, false);
         }
 
-
+        // depends on the type set example data
         if(matchTypeIndex === 3)
         {
             setSC(0, 0, true); setSC(1, 0, true); setSC(2, 0, true); // group 1
@@ -84,65 +76,8 @@ Item {
             width: listView.width
             height: groupSelection.headerHeight
 
-            Item{
-                id: groupsSelectionNameTitle
-                anchors{
-                    top: parent.top
-                    left: parent.left
-                    right: parent.right
-                }
-                height: parent.height/2
-
-                Label{
-                    anchors.fill: parent
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                    font.pixelSize: 18 // default is 14
-                    text: groupSelection.groupsSelectionName
-                }
-                Item{
-                    id: exampleSelectionButtonField
-                    anchors{
-                        top: parent.top
-                        left: parent.left
-                        bottom: parent.bottom
-                    }
-                    width: 3* height
-
-                    Button{
-                        id: exampleSelectionButton
-                        anchors.fill: parent
-                        onClicked: {
-                            groupSelection.setExampleData();
-                        }
-                    }
-
-                    Label{
-                        id: exampleSelectionButtonText
-                        anchors.fill: parent
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                        font.pixelSize: 14
-                        text: "Set Example"
-                    }
-
-                }
-
-                Rectangle{
-                    anchors.fill: parent
-                    color: "transparent"
-                    border.color: Qt.rgba(1,1,1, 0.4)
-                    border.width: 1
-                }
-            }
-
             Row{
-                anchors{
-                    top: groupsSelectionNameTitle.bottom
-                    left: parent.left
-                    right: parent.right
-                    bottom: parent.bottom
-                }
+                anchors.fill: parent
 
                 spacing: 0
 
@@ -206,10 +141,10 @@ Item {
                     verticalAlignment: Text.AlignVCenter
                     // pixelSize is 14
                     text: {
-                        if(!groupSelection.currentTeam)
+                        if(!groupSelection.team)
                             "";
                         else{
-                            var player = groupSelection.currentTeam.players[rowDelegate.rowIndex];
+                            var player = groupSelection.team.players[rowDelegate.rowIndex];
                             player.fname + " " + player.lname;
                         }
                     }
@@ -239,7 +174,7 @@ Item {
                                 checked = false
                         }
 
-                        checked: groupSelection.currentSelection.values[rowDelegate.rowIndex][radioButton.colIndex]
+                        checked: groupSelection.selection.values[rowDelegate.rowIndex][radioButton.colIndex]
                         onCheckedChanged: {
                             groupSelection.setSC(rowDelegate.rowIndex, radioButton.colIndex, checked)
                         }

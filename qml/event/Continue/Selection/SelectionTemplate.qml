@@ -79,8 +79,11 @@ Item {
                         right: parent.right
                         margins: 10
                     }
-                    teamIndex: index
+                    team: selectionTemplate.event.teams[index]
+                    matchTeam: selectionTemplate.event.match.matchTeamList[index]
                     matchTypeIndex: selectionTemplate.matchTypeIndex
+
+                    matchType: matchTeam.getMatchType(matchTypeIndex)
                 }
 
                 Item{
