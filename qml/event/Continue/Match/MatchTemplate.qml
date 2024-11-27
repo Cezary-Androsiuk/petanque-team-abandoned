@@ -10,7 +10,11 @@ Item {
     readonly property var match: event.match
 
     function setExampleData(){
-        log.w("set example data not finished")
+        for(let i=0; i<listView.count; i++)
+        {
+            let delegate = listView.itemAtIndex(i);
+            delegate.itemTeamsMatch.setExampleData();
+        }
     }
 
     Item{
@@ -38,6 +42,8 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 height: teamsMatch.height
 
+                property alias itemTeamsMatch: teamsMatch
+
                 TeamsMatch{
                     id: teamsMatch
                     anchors{
@@ -50,204 +56,8 @@ Item {
                     combinationIndex: index
                     matchTypeIndex: matchTemplate.matchTypeIndex
                 }
-
-
-
-/*
-
-                Item{
-                    id: leftTeam
-                    anchors{
-                        top: parent.top
-                        left: parent.left
-                    }
-                    width: parent.width/2
-                    height: 200
-
-                    Column{
-                        id: column1
-
-                        Label{
-                            text: team1.teamName
-                        }
-
-                        Label{
-                            text: {
-                                var group = matchTeam1.dublets.usedPlayersInGroups[0];
-                                if(group)
-                                {
-                                    var player = group[0];
-                                    player.fname + player.lname;
-                                }
-                                else ""
-                            }
-                        }
-
-                        Label{
-                            text: {
-
-                                var group = matchTeam1.dublets.usedPlayersInGroups[0];
-                                if(group)
-                                {
-                                    var player = group[1];
-                                    player.fname + player.lname;
-                                }
-                                else ""
-                            }
-                        }
-
-                        Label{
-                            text: {
-
-                                var group = matchTeam1.dublets.usedPlayersInGroups[1];
-                                if(group)
-                                {
-                                    var player = group[0];
-                                    player.fname + player.lname;
-                                }
-                                else ""
-                            }
-                        }
-
-                        Label{
-                            text: {
-
-                                var group = matchTeam1.dublets.usedPlayersInGroups[1];
-                                if(group)
-                                {
-                                    var player = group[1];
-                                    player.fname + player.lname;
-                                }
-                                else ""
-                            }
-                        }
-
-                        Label{
-                            text: {
-
-                                var group = matchTeam1.dublets.usedPlayersInGroups[2];
-                                if(group)
-                                {
-                                    var player = group[0];
-                                    player.fname + player.lname;
-                                }
-                                else ""
-                            }
-                        }
-
-                        Label{
-                            text: {
-
-                                var group = matchTeam1.dublets.usedPlayersInGroups[2];
-                                if(group)
-                                {
-                                    var player = group[1];
-                                    player.fname + player.lname;
-                                }
-                                else ""
-                            }
-                        }
-
-                    }
-                }
-
-                Item{
-                    id: rightTeam
-                    anchors{
-                        top: parent.top
-                        right: parent.right
-                    }
-                    width: parent.width/2
-                    height: 200
-
-                    Column{
-                        id: column2
-
-                        Label{
-                            text: team2.teamName
-                        }
-
-                        Label{
-                            text: {
-                                var group = matchTeam2.dublets.usedPlayersInGroups[0];
-                                if(group)
-                                {
-                                    var player = group[0];
-                                    player.fname + player.lname;
-                                }
-                                else ""
-                            }
-                        }
-
-                        Label{
-                            text: {
-
-                                var group = matchTeam2.dublets.usedPlayersInGroups[0];
-                                if(group)
-                                {
-                                    var player = group[1];
-                                    player.fname + player.lname;
-                                }
-                                else ""
-                            }
-                        }
-
-                        Label{
-                            text: {
-
-                                var group = matchTeam2.dublets.usedPlayersInGroups[1];
-                                if(group)
-                                {
-                                    var player = group[0];
-                                    player.fname + player.lname;
-                                }
-                                else ""
-                            }
-                        }
-
-                        Label{
-                            text: {
-
-                                var group = matchTeam2.dublets.usedPlayersInGroups[1];
-                                if(group)
-                                {
-                                    var player = group[1];
-                                    player.fname + player.lname;
-                                }
-                                else ""
-                            }
-                        }
-
-                        Label{
-                            text: {
-
-                                var group = matchTeam2.dublets.usedPlayersInGroups[2];
-                                if(group)
-                                {
-                                    var player = group[0];
-                                    player.fname + player.lname;
-                                }
-                                else ""
-                            }
-                        }
-
-                        Label{
-                            text: {
-
-                                var group = matchTeam2.dublets.usedPlayersInGroups[2];
-                                if(group)
-                                {
-                                    var player = group[1];
-                                    player.fname + player.lname;
-                                }
-                                else ""
-                            }
-                        }
-                    }
-                }
-
-*/
             }
+
 
         }
     }

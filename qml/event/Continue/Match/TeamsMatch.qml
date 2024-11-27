@@ -29,6 +29,11 @@ Item {
         matchType2.computePlayersUsed(team2.players);
     }
 
+    function setExampleData(){
+        leftGroupsMatch.setExampleData();
+        rightGroupsMatch.setExampleData();
+    }
+
     Item{
         id: leftTeam
         anchors{

@@ -9,19 +9,26 @@ Item {
     required property var matchType;
     required property int matchTypeIndex; // 1 - SingielsMatch, 2 - DubletsMatch, 3 - TripletsMatch
 
-    readonly property int groupsCount: matchType.groupsCount;
+    readonly property var matchPoints: matchType.matchPoints;
+    readonly property int rows: matchPoints.rows; // rows == groups here
     readonly property int playersCountInGroup: matchTypeIndex // for now value //matchType.playersCountInGroup // ? can be 1 for singiels, 2 or 3 for dublets and 3 or 4 for triplets
     readonly property int playerDelegateHeight: 60;
     readonly property int groupHeaderHeight: 60
     readonly property int groupDelegateHeight: playerDelegateHeight * playersCountInGroup;
 
-    height: groupHeaderHeight + ( (groupDelegateHeight + (10*2)) * groupsCount )
+    height: groupHeaderHeight + ( (groupDelegateHeight + (10*2)) * rows )
+
+    function setPFP(row, value) {matchPoints.setPointsForPlayer(row, value);}
+
+    function setExampleData(){
+
+    }
 
     ListView{
         id: groupsListView
         anchors.fill: parent
 
-        model: groupsMatch.groupsCount
+        model: groupsMatch.rows
         boundsBehavior: Flickable.StopAtBounds
         clip: true
         interactive: false
@@ -82,7 +89,12 @@ Item {
                             anchors.centerIn: parent
                             editable: true
                             to: 999
-                            onValueChanged: focus = false;
+
+                            value: groupsMatch.matchPoints.points[index]
+                            onValueChanged: {
+                                groupsMatch.setPFP(index, value);
+                                focus = false; // prevents keeping spinbox constantly selected
+                            }
                         }
 
                         Rectangle{
