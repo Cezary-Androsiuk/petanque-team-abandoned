@@ -228,7 +228,7 @@ void Memory::jsonToMatches(const QJsonArray &jMatches, Event * const event) cons
 
             for(int h=0; h<3; h++)
             {
-                this->jsonToMatchType(jMatchType[i], matchType[i]);
+                this->jsonToMatchType(jMatchType[h], matchType[h]);
             }
         }
 
@@ -401,9 +401,9 @@ void Memory::matchTypeToJson(const MatchTypeBase * const matchType, QJsonObject 
         for(const auto &row : s->getValues())
         {
             QJsonArray jSelectionValuesColumns;
-            for(bool column : row)
+            for(bool value : row)
             {
-                jSelectionValuesColumns.append(column);
+                jSelectionValuesColumns.append(value);
             }
             jSelectionValues.append(jSelectionValuesColumns);
         }
@@ -412,6 +412,7 @@ void Memory::matchTypeToJson(const MatchTypeBase * const matchType, QJsonObject 
         jSelection["rows"] = static_cast<int>(s->getRows());
         jSelection["columns"] = static_cast<int>(s->getColumns());
     }
+    jMatchType["selection"] = jSelection;
 
     QJsonObject jMatchPoints;
     {
@@ -425,6 +426,5 @@ void Memory::matchTypeToJson(const MatchTypeBase * const matchType, QJsonObject 
         jMatchPoints["rows"] = static_cast<int>(mp->getRows());
     }
 
-    jMatchType["selection"] = jSelection;
     jMatchType["match points"] = jMatchPoints;
 }
