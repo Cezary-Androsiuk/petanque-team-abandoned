@@ -253,59 +253,92 @@ Match *Event::createNewMatch(bool assignMatchCombinations)
 
 void Event::verifyCurrentRoundStage()
 {
+    I("verifyCurrentRoundStage started")
     const MatchTeamList &mtl = m_matches[m_phase][m_round-1]->getMatchTeamList();
     for(int i=0; i<mtl.size(); i++)
     {
+        QString errorMessagePrefix(tr("in round %1 and %2 round stage, ").arg(m_round, m_roundStage));
         QString errorMessage;
+        QString returnMessage;
         bool ok = true;
-
+        const MatchTeam *const matchTeam = mtl[i];
         switch(m_roundStage)
         {
         case RoundStage::SingielsSelection:
-            ok = mtl[i]->getMatchType(1)->isSelectionDataValid(&errorMessage);
+            ok = matchTeam->getMatchType(1)->isSelectionDataValid(&errorMessage);
             if(!ok)
             {
-                QString returnMessage = tr("in team %1, singiels selection is not valid: %2")
-                                            .arg(m_teams[m_phase][i]->getTeamName(), errorMessage);
+                returnMessage = errorMessagePrefix + tr("in team %1, singiels selection is not valid: %2")
+                                                         .arg(m_teams[m_phase][i]->getTeamName(), errorMessage);
                 I(returnMessage);
                 emit this->currentRoundStageVerificationFailed(returnMessage);
                 return;
             }
 
             break;
-        case RoundStage::Singiels:
+        case RoundStage::SingielsMatch:
+            ok = matchTeam->getMatchType(1)->isMatchPointsDataValid(&errorMessage);
+            if(!ok)
+            {
+                returnMessage = errorMessagePrefix + tr("in team %1, singiels match points are not valid: %2")
+                                                         .arg(m_teams[m_phase][i]->getTeamName(), errorMessage);
+                I(returnMessage);
+                emit this->currentRoundStageVerificationFailed(returnMessage);
+                return;
+            }
 
             break;
         case RoundStage::DubletsSelection:
-            ok = mtl[i]->getMatchType(2)->isSelectionDataValid(&errorMessage);
+            ok = matchTeam->getMatchType(2)->isSelectionDataValid(&errorMessage);
             if(!ok)
             {
-                QString returnMessage = tr("in team %1, dublets selection is not valid: %2")
-                                            .arg(m_teams[m_phase][i]->getTeamName(), errorMessage);
+                returnMessage = errorMessagePrefix + tr("in team %1, dublets selection is not valid: %2")
+                                                         .arg(m_teams[m_phase][i]->getTeamName(), errorMessage);
                 I(returnMessage);
                 emit this->currentRoundStageVerificationFailed(returnMessage);
                 return;
             }
 
             break;
-        case RoundStage::Dublets:
+        case RoundStage::DubletsMatch:
+            ok = matchTeam->getMatchType(2)->isMatchPointsDataValid(&errorMessage);
+            if(!ok)
+            {
+                returnMessage = errorMessagePrefix + tr("in team %1, dublets match points are not valid: %2")
+                                                         .arg(m_teams[m_phase][i]->getTeamName(), errorMessage);
+                I(returnMessage);
+                emit this->currentRoundStageVerificationFailed(returnMessage);
+                return;
+            }
 
             break;
         case RoundStage::TripletsSelection:
-            ok = mtl[i]->getMatchType(3)->isSelectionDataValid(&errorMessage);
+            ok = matchTeam->getMatchType(3)->isSelectionDataValid(&errorMessage);
             if(!ok)
             {
-                QString returnMessage = tr("in team %1, triplets selection is not valid: %2")
-                                            .arg(m_teams[m_phase][i]->getTeamName(), errorMessage);
+                returnMessage = errorMessagePrefix + tr("in team %1, triplets selection is not valid: %2")
+                                                         .arg(m_teams[m_phase][i]->getTeamName(), errorMessage);
                 I(returnMessage);
                 emit this->currentRoundStageVerificationFailed(returnMessage);
                 return;
             }
 
             break;
-        case RoundStage::Triplets:
+        case RoundStage::TripletsMatch:
+            ok = matchTeam->getMatchType(3)->isMatchPointsDataValid(&errorMessage);
+            if(!ok)
+            {
+                returnMessage = errorMessagePrefix + tr("in team %1, triplets match points are not valid: %2")
+                                                         .arg(m_teams[m_phase][i]->getTeamName(), errorMessage);
+                I(returnMessage);
+                emit this->currentRoundStageVerificationFailed(returnMessage);
+                return;
+            }
 
             break;
+        case RoundStage::MatchConfirm:
+            I("there is nothing to verify, in the 'match confim' round stage, all fine");
+
         default:
             W("received unknown round stage: " + QString::number(m_roundStage));
         }
