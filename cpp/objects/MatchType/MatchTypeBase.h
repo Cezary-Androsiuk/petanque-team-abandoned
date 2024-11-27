@@ -13,7 +13,7 @@ typedef QVector<PlayerList> GroupsOfPlayersLists;
 class MatchTypeBase : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(Selection *selection READ getSelectionRef CONSTANT FINAL)
+    Q_PROPERTY(Selection *selection READ getSelection CONSTANT FINAL)
     Q_PROPERTY(GroupsOfPlayersLists usedPlayersInGroups READ getUsedPlayersInGroups NOTIFY usedPlayersInGroupsChanged FINAL)
 
 public:
@@ -28,8 +28,7 @@ public slots:
     void computePlayersUsed(const PlayerList &players); /// should be used after selection
 
 public:
-    Selection *getSelectionRef();
-    const Selection *getSelectionConst() const;
+    Selection *getSelection() const;
     GroupsOfPlayersLists getUsedPlayersInGroups() const;
 
 signals:

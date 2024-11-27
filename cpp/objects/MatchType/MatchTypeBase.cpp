@@ -57,12 +57,7 @@ void MatchTypeBase::computePlayersUsed(const PlayerList &players)
     emit this->usedPlayersInGroupsChanged();
 }
 
-Selection *MatchTypeBase::getSelectionRef()
-{
-    return m_selection;
-}
-
-const Selection *MatchTypeBase::getSelectionConst() const
+Selection *MatchTypeBase::getSelection() const
 {
     return m_selection;
 }

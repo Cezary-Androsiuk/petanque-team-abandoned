@@ -235,7 +235,7 @@ void Memory::jsonToMatches(const QJsonArray &jMatches, Event * const event) cons
                     for(int c=0; c<jSelectionColumns.size(); c++)
                     {
                         bool v = jSelectionColumns[c].toBool();
-                        Selection *s = matchTeamBase[h]->getSelectionRef();
+                        Selection *s = matchTeamBase[h]->getSelection();
                         s->setValueForCell(r, c, v);
                     }
                 }
@@ -336,7 +336,7 @@ void Memory::matchesToJson(const Event * const event, QJsonArray &jMatches) cons
             for(int i=0; i<3; i++)
             {
                 QJsonArray jSelectionRows;
-                const Selection *s = matchTeamBase[i]->getSelectionConst();
+                const Selection *s = matchTeamBase[i]->getSelection();
                 for(const auto &row : s->getValues())
                 {
                     QJsonArray jSelectionColumns;
