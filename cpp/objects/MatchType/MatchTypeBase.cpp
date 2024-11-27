@@ -3,12 +3,18 @@
 MatchTypeBase::MatchTypeBase(uint playersCount, uint groups, QObject *parent)
     : QObject{parent}
     , m_selection{new Selection(playersCount, groups, this)}
+    , m_matchPoints{new MatchPoints(playersCount, this)}
     , m_usedPlayersInGroups(groups, PlayerList())
 {}
 
-bool MatchTypeBase::isSelectionDataValid(const int rangeOfPlayersCountInGroup[2], QString *message) const
+bool MatchTypeBase::_isSelectionDataValid(const int rangeOfPlayersCountInGroup[2], QString *message) const
 {
     return m_selection->isDataValid(rangeOfPlayersCountInGroup, message);
+}
+
+bool MatchTypeBase::_isMatchPointsDataValid(QString *message) const
+{
+    return m_matchPoints->isDataValid(message);
 }
 
 void MatchTypeBase::computePlayersUsed(const PlayerList &players)
@@ -60,6 +66,11 @@ void MatchTypeBase::computePlayersUsed(const PlayerList &players)
 Selection *MatchTypeBase::getSelection() const
 {
     return m_selection;
+}
+
+MatchPoints *MatchTypeBase::getMatchPoints() const
+{
+    return m_matchPoints;
 }
 
 GroupsOfPlayersLists MatchTypeBase::getUsedPlayersInGroups() const

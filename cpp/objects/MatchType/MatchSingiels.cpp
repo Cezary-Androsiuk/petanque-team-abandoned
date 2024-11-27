@@ -7,5 +7,10 @@ MatchSingiels::MatchSingiels(uint playersCount, QObject *parent)
 bool MatchSingiels::isSelectionDataValid(QString *message) const
 {
     const int rangeOfPlayersCountInGroup[2] = {1, 1};
-    return MatchTypeBase::isSelectionDataValid(rangeOfPlayersCountInGroup, message);
+    return _isSelectionDataValid(rangeOfPlayersCountInGroup, message);
+}
+
+bool MatchSingiels::isMatchPointsDataValid(QString *message) const
+{
+    return _isMatchPointsDataValid(message);
 }

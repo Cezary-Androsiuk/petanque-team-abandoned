@@ -7,5 +7,10 @@ MatchDublets::MatchDublets(uint playersCount, QObject *parent)
 bool MatchDublets::isSelectionDataValid(QString *message) const
 {
     const int rangeOfPlayersCountInGroup[2] = {2, 3};
-    return MatchTypeBase::isSelectionDataValid(rangeOfPlayersCountInGroup, message);
+    return _isSelectionDataValid(rangeOfPlayersCountInGroup, message);
+}
+
+bool MatchDublets::isMatchPointsDataValid(QString *message) const
+{
+    return _isMatchPointsDataValid(message);
 }

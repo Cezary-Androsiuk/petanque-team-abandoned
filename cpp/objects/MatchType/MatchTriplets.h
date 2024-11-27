@@ -14,6 +14,7 @@ public:
     explicit MatchTriplets(uint playersCount, QObject *parent = nullptr);
 
     bool isSelectionDataValid(QString *message = nullptr) const override;
+    bool isMatchPointsDataValid(QString *message = nullptr) const override;
 signals:
 
 private:
