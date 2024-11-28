@@ -1,9 +1,9 @@
 #include "MatchPoints.h"
 
-MatchPoints::MatchPoints(uint rows, QObject *parent)
+MatchPoints::MatchPoints(uint groupsCount, QObject *parent)
     : QObject{parent}
-    , m_rows{rows}
-    , m_points(rows, 0)
+    , m_groupsCount{groupsCount}
+    , m_points(groupsCount, 0)
 {}
 
 bool MatchPoints::isDataValid(QString *message) const
@@ -11,20 +11,20 @@ bool MatchPoints::isDataValid(QString *message) const
     return true;
 }
 
-void MatchPoints::setPointsForPlayer(uint playerIndex, int value)
+void MatchPoints::setPointsForGroup(uint groupIndex, int value)
 {
-    if(playerIndex >= m_points.size())
+    if(groupIndex >= m_points.size())
     {
-        QString pi = QString::number(playerIndex);
+        QString pi = QString::number(groupIndex);
         QString ps = QString::number(m_points.size());
         W("given player index("+ pi +") is larger than size of vector(" +ps+ ")");
         return;
     }
 
-    if(m_points[playerIndex] == value)
+    if(m_points[groupIndex] == value)
         return;
 
-    m_points[playerIndex] = value;
+    m_points[groupIndex] = value;
     emit this->pointsChanged();
 }
 
@@ -33,7 +33,7 @@ const IntVector &MatchPoints::getPoints() const
     return m_points;
 }
 
-uint MatchPoints::getRows() const
+uint MatchPoints::getGroupsCount() const
 {
-    return m_rows;
+    return m_groupsCount;
 }

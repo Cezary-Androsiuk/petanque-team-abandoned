@@ -53,6 +53,7 @@ Item {
                 right: parent.right
             }
 
+            isLeft: true
             team: teamsMatch.team1
             matchTeam: teamsMatch.matchTeam1
             matchType: teamsMatch.matchType1
@@ -87,6 +88,7 @@ Item {
                 right: parent.right
             }
 
+            isLeft: false
             team: teamsMatch.team2
             matchTeam: teamsMatch.matchTeam2
             matchType: teamsMatch.matchType2

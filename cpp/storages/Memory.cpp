@@ -278,7 +278,7 @@ void Memory::jsonToMatchType(const QJsonObject &jMatchType, MatchTypeBase * cons
     for(int r=0; r<jMatchPointsPoints.size(); r++)
     {
         int v = jMatchPointsPoints[r].toInt();
-        mp->setPointsForPlayer(r, v);
+        mp->setPointsForGroup(r, v);
     }
 }
 
@@ -423,7 +423,7 @@ void Memory::matchTypeToJson(const MatchTypeBase * const matchType, QJsonObject 
             jMatchPointsPoints.append(playerPoints);
         }
         jMatchPoints["points"] = jMatchPointsPoints;
-        jMatchPoints["rows"] = static_cast<int>(mp->getRows());
+        jMatchPoints["rows"] = static_cast<int>(mp->getGroupsCount());
     }
 
     jMatchType["match points"] = jMatchPoints;

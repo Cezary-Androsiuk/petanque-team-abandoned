@@ -12,28 +12,28 @@ class MatchPoints : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(IntVector points READ getPoints NOTIFY pointsChanged() FINAL)
-    Q_PROPERTY(uint rows READ getRows CONSTANT FINAL)
+    Q_PROPERTY(uint groupsCount READ getGroupsCount CONSTANT FINAL)
 
 public:
-    explicit MatchPoints(uint rows, QObject *parent = nullptr);
+    explicit MatchPoints(uint groupsCount, QObject *parent = nullptr);
 
 public:
     bool isDataValid(QString *message) const;
 
 public slots:
-    void setPointsForPlayer(uint playerIndex, int value);
+    void setPointsForGroup(uint groupIndex, int value);
 
 public:
     const IntVector &getPoints() const;
-    uint getRows() const;
+    uint getGroupsCount() const;
 
 signals:
     void pointsChanged();
 
 private:
 
-    const uint m_rows; // players
-    IntVector m_points; // [row]
+    const uint m_groupsCount;
+    IntVector m_points; // [groupsCount]
 };
 
 #endif // MATCHPOINTS_H
