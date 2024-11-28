@@ -253,7 +253,12 @@ Match *Event::createNewMatch(bool assignMatchCombinations)
 
 void Event::verifyCurrentRoundStage()
 {
-    I("verifyCurrentRoundStage started")
+    if(m_roundStage == RoundStage::MatchSummary)
+    {
+        emit this->currentRoundStageVerified();
+        return;
+    }
+
     const MatchTeamList &mtl = m_matches[m_phase][m_round-1]->getMatchTeamList();
     for(int i=0; i<mtl.size(); i++)
     {
@@ -262,6 +267,7 @@ void Event::verifyCurrentRoundStage()
         QString returnMessage;
         bool ok = true;
         const MatchTeam *const matchTeam = mtl[i];
+
         switch(m_roundStage)
         {
         case RoundStage::SingielsSelection:
@@ -336,9 +342,10 @@ void Event::verifyCurrentRoundStage()
             }
 
             break;
-        case RoundStage::MatchConfirm:
-            I("there is nothing to verify, in the 'match confim' round stage, all fine");
+        case RoundStage::MatchSummary: // shouldn't be reached
+            I("there is nothing to verify, in the 'match summary' round stage, all fine");
 
+            break;
         default:
             W("received unknown round stage: " + QString::number(m_roundStage));
         }

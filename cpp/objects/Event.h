@@ -57,10 +57,10 @@ public:
         DubletsMatch,
         TripletsSelection,
         TripletsMatch,
-        MatchConfirm,
+        MatchSummary,
     };
     static constexpr RoundStage firstRoundStage = RoundStage::SingielsSelection;
-    static constexpr RoundStage lastRoundStage = RoundStage::MatchConfirm;
+    static constexpr RoundStage lastRoundStage = RoundStage::MatchSummary;
 
 public slots:
     void createDetachedTeam();
