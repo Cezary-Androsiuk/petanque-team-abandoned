@@ -1,22 +1,22 @@
 #include "Selection.h"
 
-Selection::Selection(uint rows, uint columns, QObject *parent)
+Selection::Selection(uint playersCount, uint groupsCount, QObject *parent)
     : QObject{parent}
-    , m_rows{rows}
-    , m_columns{columns}
-    , m_values(rows, QVector<bool>(columns, false))
+    , m_playersCount{playersCount}
+    , m_groupsCount{groupsCount}
+    , m_values(playersCount, QVector<bool>(groupsCount, false))
 {}
 
 bool Selection::isDataValid(const int rangeOfPlayersCountInGroup[], QString *message) const
 {
-    QVector<int> selectionCountsInGroups(m_columns, 0);
+    QVector<int> selectionCountsInGroups(m_groupsCount, 0);
     this->countSelectionsInGroups(selectionCountsInGroups);
 
     /// range is [min, max] (including)
     const int minPlayersInGroup = rangeOfPlayersCountInGroup[0];
     const int maxPlayersInGroup = rangeOfPlayersCountInGroup[1];
 
-    for(int i=0; i<m_columns; i++)
+    for(int i=0; i<m_groupsCount; i++)
     {
         int selectionsCountInGroup = selectionCountsInGroups[i];
         if(minPlayersInGroup <= selectionsCountInGroup && selectionsCountInGroup <= maxPlayersInGroup)
@@ -37,17 +37,17 @@ bool Selection::isDataValid(const int rangeOfPlayersCountInGroup[], QString *mes
 
 void Selection::countSelectionsInGroups(QVector<int> &groups) const
 {
-    if(groups.size() != m_columns)
+    if(groups.size() != m_groupsCount)
     {
         W("cannot count selections in groups due to uneven groups count")
         return;
     }
 
-    for(int ri=0; ri<m_rows; ri++)
+    for(int ri=0; ri<m_playersCount; ri++)
     {
         const QVector<bool> &row = m_values[ri];
 
-        for(int ci=0; ci<m_columns; ci++)
+        for(int ci=0; ci<m_groupsCount; ci++)
         {
             if(row[ci])
                 groups[ci]++;
@@ -55,36 +55,36 @@ void Selection::countSelectionsInGroups(QVector<int> &groups) const
     }
 }
 
-void Selection::setValueForCell(uint row, uint column, bool value)
+void Selection::setValueForCell(uint playerIndex, uint column, bool value)
 {
     /// input value protection (always use protection)
-    if(m_values.size() <= row)
+    if(m_values.size() <= playerIndex)
     {
-        W(QAPF("trying to access %u row, while this matrix contains %lld rows", row, m_values.size()))
+        W(QAPF("trying to access %u row/playerIndex, while this matrix contains %lld rows/players", playerIndex, m_values.size()))
         return;
     }
 
-    if(m_values[row].size() <= column)
+    if(m_values[playerIndex].size() <= column)
     {
         W(QAPF(
-            "trying to access %u column in %u row, while this row of matrix contains %lld columns",
-            column, row, m_values[row].size() ));
+            "trying to access %u column in %u row/playerIndex, while this row/playerIndex of matrix contains %lld columns",
+            column, playerIndex, m_values[playerIndex].size() ));
         return;
     }
 
     /// Binding loop protection
-    if(m_values[row][column] == value)
+    if(m_values[playerIndex][column] == value)
         return;
 
     /// keep row exclusive
     if(value == true)
     {
         /// set all values in that row to false
-        for(int i=0; i<m_values[row].size(); i++)
-            m_values[row][i] = false;
+        for(int i=0; i<m_values[playerIndex].size(); i++)
+            m_values[playerIndex][i] = false;
     }
 
-    m_values[row][column] = value;
+    m_values[playerIndex][column] = value;
 
     /// print matrix
     // for(const auto &row : m_values)
@@ -103,12 +103,12 @@ const BoolMatrix &Selection::getValues() const
     return m_values;
 }
 
-uint Selection::getRows() const
+uint Selection::getPlayersCount() const
 {
-    return m_rows;
+    return m_playersCount;
 }
 
-uint Selection::getColumns() const
+uint Selection::getGroupsCount() const
 {
-    return m_columns;
+    return m_groupsCount;
 }

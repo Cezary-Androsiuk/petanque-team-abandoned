@@ -20,7 +20,7 @@ Item {
 
     height: groupHeaderHeight + ( (groupDelegateHeight + (10*2)) * groupsCount )
 
-    function setPFP(row, value) {matchPoints.setPointsForPlayer(row, value);}
+    function setPFP(row, value) { matchPoints.setPointsForGroup(row, value); }
 
     function setExampleData(){
 

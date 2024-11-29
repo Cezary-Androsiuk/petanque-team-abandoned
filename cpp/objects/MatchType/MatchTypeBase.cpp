@@ -25,8 +25,8 @@ void MatchTypeBase::computePlayersUsed(const PlayerList &players)
         return;
     }
 
-    auto rows = m_selection->getRows();
-    auto columns = m_selection->getColumns();
+    uint rows = m_selection->getPlayersCount();
+    uint columns = m_selection->getGroupsCount();
     if(players.size() != rows)
     {
         W("players size(" + QString::number(players.size()) + ") is not equal to count of rows(" + QString::number(rows) + ")");

@@ -8,8 +8,8 @@ Item {
     required property int matchTypeIndex; // 1, 2 or 3
 
     readonly property var selection: matchType.selection
-    readonly property var matrixRows: selection.rows
-    readonly property var matrixColumns: selection.columns
+    readonly property var matrixRows: selection.playersCount
+    readonly property var matrixColumns: selection.groupsCount
 
     readonly property int delegateHeight: 30;
     readonly property int headerHeight: 30;

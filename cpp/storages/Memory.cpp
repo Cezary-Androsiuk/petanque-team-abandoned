@@ -409,8 +409,8 @@ void Memory::matchTypeToJson(const MatchTypeBase * const matchType, QJsonObject 
         }
 
         jSelection["values"] = jSelectionValues;
-        jSelection["rows"] = static_cast<int>(s->getRows());
-        jSelection["columns"] = static_cast<int>(s->getColumns());
+        // jSelection["rows"] = static_cast<int>(s->getPlayersCount());
+        // jSelection["columns"] = static_cast<int>(s->getGroupsCount());
     }
     jMatchType["selection"] = jSelection;
 
@@ -423,7 +423,7 @@ void Memory::matchTypeToJson(const MatchTypeBase * const matchType, QJsonObject 
             jMatchPointsPoints.append(playerPoints);
         }
         jMatchPoints["points"] = jMatchPointsPoints;
-        jMatchPoints["rows"] = static_cast<int>(mp->getGroupsCount());
+        // jMatchPoints["rows"] = static_cast<int>(mp->getGroupsCount());
     }
 
     jMatchType["match points"] = jMatchPoints;
