@@ -1,10 +1,10 @@
 #include "MatchTypeBase.h"
 
-MatchTypeBase::MatchTypeBase(uint playersCount, uint groups, QObject *parent)
+MatchTypeBase::MatchTypeBase(uint playersCount, uint groupsCount, QObject *parent)
     : QObject{parent}
-    , m_selection{new Selection(playersCount, groups, this)}
-    , m_matchPoints{new MatchPoints(playersCount, this)}
-    , m_usedPlayersInGroups(groups, PlayerList())
+    , m_selection{new Selection(playersCount, groupsCount, this)}
+    , m_matchPoints{new MatchPoints(groupsCount, this)}
+    , m_usedPlayersInGroups(groupsCount, PlayerList())
 {}
 
 bool MatchTypeBase::_isSelectionDataValid(const int rangeOfPlayersCountInGroup[2], QString *message) const

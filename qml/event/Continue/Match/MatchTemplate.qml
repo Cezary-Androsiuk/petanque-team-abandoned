@@ -28,7 +28,7 @@ Item {
             id: listView
             anchors.fill: parent
 
-            model: 1//match.matchCombinations.length
+            model: match.matchCombinations.length
             boundsBehavior: Flickable.StopAtBounds
             clip: true
             cacheBuffer: 10000 // for god sake, keep delegates alive while scrolling

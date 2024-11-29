@@ -19,7 +19,7 @@ class MatchTypeBase : public QObject
     Q_PROPERTY(GroupsOfPlayersLists usedPlayersInGroups READ getUsedPlayersInGroups NOTIFY usedPlayersInGroupsChanged FINAL)
 
 public:
-    explicit MatchTypeBase(uint playersCount, uint groups, QObject *parent = nullptr);
+    explicit MatchTypeBase(uint playersCount, uint groupsCount, QObject *parent = nullptr);
 
     virtual bool isSelectionDataValid(QString *message = nullptr) const = 0;
     virtual bool isMatchPointsDataValid(QString *message = nullptr) const = 0;
