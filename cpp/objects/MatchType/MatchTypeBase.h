@@ -5,18 +5,14 @@
 #include <QVector>
 
 #include "cpp/support/Log.h"
-#include "cpp/objects/Player.h"
 #include "cpp/objects/MatchType/MatchData/Selection.h"
 #include "cpp/objects/MatchType/MatchData/MatchPoints.h"
-
-typedef QVector<PlayerList> GroupsOfPlayersLists;
 
 class MatchTypeBase : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(Selection *selection READ getSelection CONSTANT FINAL)
     Q_PROPERTY(MatchPoints *matchPoints READ getMatchPoints CONSTANT FINAL)
-    Q_PROPERTY(GroupsOfPlayersLists usedPlayersInGroups READ getUsedPlayersInGroups NOTIFY usedPlayersInGroupsChanged FINAL)
 
 public:
     explicit MatchTypeBase(uint playersCount, uint groupsCount, QObject *parent = nullptr);
@@ -34,15 +30,10 @@ public slots:
 public:
     Selection *getSelection() const;
     MatchPoints *getMatchPoints() const;
-    GroupsOfPlayersLists getUsedPlayersInGroups() const;
-
-signals:
-    void usedPlayersInGroupsChanged();
 
 protected:
     Selection *m_selection;
     MatchPoints *m_matchPoints;
-    GroupsOfPlayersLists m_usedPlayersInGroups;
 };
 
 #endif // MATCHTYPEBASE_H

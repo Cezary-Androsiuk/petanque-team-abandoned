@@ -71,7 +71,8 @@ Item {
                 Rectangle{
                     anchors.fill: spinBox
                     color: Qt.rgba(0.8,0,0, 0.6)
-                    visible: spinBox.value > 31
+                    visible: spinBox.value > 13
+                    radius: 5
                 }
 
                 SpinBox{
@@ -105,29 +106,28 @@ Item {
                     margins: 10
                 }
 
-                // ListView{
-                //     id: playersListView
-                //     anchors.fill: parent
+                ListView{
+                    id: playersListView
+                    anchors.fill: parent
 
-                //     model: groupsMatch.playersCountInGroup
-                //     boundsBehavior: Flickable.StopAtBounds
-                //     clip: true
-                //     interactive: false
-                //     cacheBuffer: 10000 // for god sake, keep delegates alive while scrolling
+                    model: groupsMatch.playersCountInGroup
+                    boundsBehavior: Flickable.StopAtBounds
+                    interactive: false
+                    cacheBuffer: 10000 // for god sake, keep delegates alive while scrolling
 
-                //     delegate: Item{
-                //         width: groupsListView.width - playersListViewContainer.anchors.margins*2
-                //         height: groupsMatch.playerDelegateHeight
+                    delegate: Item{
+                        width: playersListViewContainer.width
+                        height: groupsMatch.playerDelegateHeight
+                        clip: true
 
-
-                //         Rectangle{
-                //             anchors.fill: parent
-                //             color: "transparent"
-                //             border.color: Qt.rgba(1,1,1, 0.4)
-                //             border.width: 1
-                //         }
-                //     }
-                // }
+                        Rectangle{
+                            anchors.fill: parent
+                            color: "transparent"
+                            border.color: Qt.rgba(1,1,1, 0.4)
+                            border.width: 1
+                        }
+                    }
+                }
 
                 Rectangle{
                     anchors.fill: parent

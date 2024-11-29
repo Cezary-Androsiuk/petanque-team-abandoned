@@ -4,7 +4,6 @@ MatchTypeBase::MatchTypeBase(uint playersCount, uint groupsCount, QObject *paren
     : QObject{parent}
     , m_selection{new Selection(playersCount, groupsCount, this)}
     , m_matchPoints{new MatchPoints(groupsCount, this)}
-    , m_usedPlayersInGroups(groupsCount, PlayerList())
 {}
 
 bool MatchTypeBase::_isSelectionDataValid(const int rangeOfPlayersCountInGroup[2], QString *message) const
@@ -33,34 +32,30 @@ void MatchTypeBase::computePlayersUsed(const PlayerList &players)
         return;
     }
 
-    /// clear usedPlayersInGroups
-    for(int i=0; i<columns; i++)
-    {
-        for(Player *p : m_usedPlayersInGroups[i])
-            delete p;
-        m_usedPlayersInGroups[i].clear();
-    }
-
     /// create and add player to list coresponding to group
+    GroupsOfPlayersLists usedPlayersInGroups;
+
     for(int i=0; i<columns; i++)
     {
+        usedPlayersInGroups.append(PlayerList());
         for(int j=0; j<rows; j++)
         {
             if(!m_selection->getValues()[j][i])
                 continue;
 
             Player *player = players[j];
-            Player *newPlayer = new Player(this);
+            Player *newPlayer = new Player(m_matchPoints);
             newPlayer->copyFromOtherPlayer(*player);
-            m_usedPlayersInGroups[i].append(newPlayer);
+            usedPlayersInGroups[i].append(newPlayer);
             /*
              * Now use copy of the value, but now I find out that I can use
              * std::shared_ptr or QSharedPointer in team along with std::weak_ptr or QWeakPointer
              * and verification if weak pointer exist before use
             */
         }
+
     }
-    emit this->usedPlayersInGroupsChanged();
+    m_matchPoints->setUsedPlayersInGroups(usedPlayersInGroups);
 }
 
 Selection *MatchTypeBase::getSelection() const
@@ -71,9 +66,4 @@ Selection *MatchTypeBase::getSelection() const
 MatchPoints *MatchTypeBase::getMatchPoints() const
 {
     return m_matchPoints;
-}
-
-GroupsOfPlayersLists MatchTypeBase::getUsedPlayersInGroups() const
-{
-    return m_usedPlayersInGroups;
 }
