@@ -29,7 +29,8 @@ Item{
     }
 
     Component.onCompleted: {
-        configureStackView.replace("Configure/Event.qml", {parentStackView: configureStackView})
+        const args = {parentStackView: configureStackView}
+        configureStackView.replace("Configure/Event.qml", args)
         rootWindow.minimumWidth = 500;
         rootWindow.minimumHeight = 350;
     }
@@ -39,27 +40,28 @@ Item{
         anchors.fill: parent
         // initialItem: "Configure/Event.qml" // idk how to parse arguments/properies
 
+
         pushEnter: Transition{
-            LineAnimation {
-                property: "y";
-                from: -configure.height;
-                to: 0
-            }
-            FadeIn{}
+            // LineAnimation {
+            //     property: "y";
+            //     from: -configure.height;
+            //     to: 0
+            // }
+            // FadeIn{}
         }
         pushExit: Transition{
-            StayStillAnimation{}
+            // StayStillAnimation{}
         }
         popEnter: Transition{
-            StayStillAnimation{}
+            // StayStillAnimation{}
         }
         popExit: Transition{
-            LineAnimation {
-                property: "y";
-                from: 0
-                to: -configure.height;
-            }
-            FadeOut{}
+            // LineAnimation {
+            //     property: "y";
+            //     from: 0
+            //     to: -configure.height;
+            // }
+            // FadeOut{}
         }
         replaceEnter: Transition{}
         replaceExit: Transition{}

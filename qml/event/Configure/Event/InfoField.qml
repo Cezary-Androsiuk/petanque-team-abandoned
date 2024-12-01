@@ -5,7 +5,7 @@ Item {
     id: infoField
     height: childrenRect.height + 20
 
-    required property var event
+   readonly property var event: Backend.event
 
     TextField{
         id: eventNameTextField

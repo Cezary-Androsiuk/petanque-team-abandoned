@@ -22,9 +22,15 @@ bool Selection::isDataValid(const int rangeOfPlayersCountInGroup[], QString *mes
         if(minPlayersInGroup <= selectionsCountInGroup && selectionsCountInGroup <= maxPlayersInGroup)
             continue;
 
-        QString _message = QAPF_T(
-            "in group %d, %d players were selected, but %d or %d were expected",
-            i+1, selectionsCountInGroup, minPlayersInGroup, maxPlayersInGroup);
+        QString _message;
+        if(minPlayersInGroup == maxPlayersInGroup)
+            _message = QAPF_T(
+                "in group %d, %d players were selected, but %d was expected",
+                i+1, selectionsCountInGroup, minPlayersInGroup);
+        else
+            _message = QAPF_T(
+                "in group %d, %d players were selected, but %d or %d were expected",
+                i+1, selectionsCountInGroup, minPlayersInGroup, maxPlayersInGroup);
         I(_message);
 
         if(message != nullptr)

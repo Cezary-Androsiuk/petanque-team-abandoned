@@ -6,8 +6,11 @@ import "Event"
 Item {
     id: configureEvent
 
-    readonly property var event: Backend !== null ? Backend.event : null
     required property var parentStackView
+
+    readonly property int headerHeight: 70
+    readonly property int footerHeight: 70
+
 
     Connections{
         target: Backend
@@ -39,17 +42,13 @@ Item {
             bottom: footer.top
         }
         width: parent.width * 0.5
-        Rectangle{
-            anchors.fill: parent
-            opacity: 0.2
-            color: "Green"
-        }
-
+        clip: true
 
         Item{
             anchors{
                 fill: parent
-                margins: 30
+                leftMargin: 30
+                rightMargin: 15
             }
             clip: true
 
@@ -64,7 +63,6 @@ Item {
             TeamsList{
                 id: teamsList
                 anchors.fill: parent
-                event: configureEvent.event
                 parentStackView: configureEvent.parentStackView
             }
         }
@@ -77,27 +75,23 @@ Item {
         id: eventInfoField
         anchors{
             top: header.bottom
-            left: eventTeamsList.right
             right: parent.right
             bottom: footer.top
         }
+        width: parent.width * 0.5
         clip: true
-        Rectangle{
-            anchors.fill: parent
-            opacity: 0.2
-            color: "Blue"
-        }
 
         Item{
             anchors{
                 fill: parent
-                margins: 30
+                leftMargin: 15
+                rightMargin: 30
             }
             clip: true
 
             Rectangle{
                 id: infoFieldFlickableBorder
-                anchors.fill: infoFieldFlickable
+                anchors.fill: parent
                 color: "transparent"
                 border.color: Qt.rgba(1,1,1, 0.5)
                 border.width: 1
@@ -124,7 +118,6 @@ Item {
                 InfoField{
                     id: infoField
                     width: parent.width
-                    event: configureEvent.event
                 }
             }
         }
@@ -143,11 +136,16 @@ Item {
             right: parent.right
             top: parent.top
         }
-        height: 70
-        Rectangle{
-            anchors.fill: parent
-            opacity: 0.2
-            color: "Red"
+        height: configureEvent.headerHeight
+
+        Label{
+            id: titleLabel
+            anchors.centerIn: parent
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+
+            text: "Team Selection"
+            font.pixelSize: 40
         }
     }
 
@@ -158,17 +156,12 @@ Item {
             right: parent.right
             bottom: parent.bottom
         }
-        height: 70
-        Rectangle{
-            anchors.fill: parent
-            opacity: 0.2
-            color: "Red"
-        }
+        height: configureEvent.footerHeight
 
         Button{
             anchors{
                 right: parent.right
-                rightMargin: 10
+                rightMargin: 20
                 verticalCenter: parent.verticalCenter
             }
 
@@ -182,6 +175,8 @@ Item {
             id: setExampleData
             anchors{
                 left: parent.left
+                leftMargin: 20
+                verticalCenter: parent.verticalCenter
             }
             text: "create example data"
             onClicked:{

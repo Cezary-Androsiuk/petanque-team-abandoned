@@ -3,15 +3,34 @@ import QtQuick.Controls.Material
 
 Item {
     id: configurePlayer
-    Rectangle{
-        anchors.fill: parent
-        color: "#1c1b1f" // dark theme color
-    }
 
     required property var parentStackView
     required property var team
     required property var player
     property bool edit: false
+
+    property int headerHeight: 70
+    property int footerHeight: 70
+    property int delegateHeight: 50
+
+    function goBack(){
+        parentStackView.pop();
+    }
+
+    function cancelAddingPlayer(){
+        parentStackView.pop();
+        configurePlayer.team.deleteDetachedPlayer();
+    }
+
+    function saveAddedPlayer(){
+        parentStackView.pop();
+        configurePlayer.team.addPlayerUsingDetachedPlayer();
+    }
+
+    Rectangle{ // required because of stack view animation
+        anchors.fill: parent
+        color: "#1c1b1f" // dark theme color
+    }
 
     Item{
         id: playerInfoField
@@ -20,26 +39,31 @@ Item {
             left: parent.left
             right: parent.right
             bottom: footer.top
+            leftMargin: 30
+            rightMargin: 30
         }
 
         Rectangle{
+            id: scrollViewBorder
             anchors.fill: parent
-            opacity: 0.2
-            color: "Green"
+            color: "transparent"
+            border.color: Qt.rgba(1,1,1, 0.5)
+            border.width: 1
         }
 
         TextField{
             id: fnameTextField
             anchors{
                 top: parent.top
+                topMargin: 10
             }
             height: 60
             width: 230
 
             placeholderText: qsTr("First Name")
-            text: (!player)?null: player.fname
+            text: configurePlayer.player.fname
             onTextEdited: {
-                player.fname = text
+                configurePlayer.player.fname = text
             }
         }
 
@@ -53,9 +77,9 @@ Item {
             width: 230
 
             placeholderText: qsTr("Last Name")
-            text: (!player)?null: player.lname
+            text: configurePlayer.player.lname
             onTextEdited: {
-                player.lname = text
+                configurePlayer.player.lname = text
             }
         }
 
@@ -69,9 +93,9 @@ Item {
             width: 230
 
             placeholderText: qsTr("License")
-            text: (!player)?null: player.license
+            text: configurePlayer.player.license
             onTextEdited: {
-                player.license = text
+                configurePlayer.player.license = text
             }
         }
 
@@ -82,13 +106,10 @@ Item {
                 topMargin: 10
             }
             model: ["Junior", "Youth", "Senior", "Veteran"]
-            currentIndex: (!player)?currentIndex: player.ageGroup
+            currentIndex: configurePlayer.player.ageGroup
 
             onCurrentIndexChanged: {
-                if(player)
-                {
-                    player.ageGroup = currentIndex
-                }
+                configurePlayer.player.ageGroup = currentIndex
             }
         }
 
@@ -99,13 +120,10 @@ Item {
                 topMargin: 10
             }
             model: ["Male", "Female"]
-            currentIndex: (!player)?currentIndex: player.gender
+            currentIndex: configurePlayer.player.gender
 
             onCurrentIndexChanged: {
-                if(player)
-                {
-                    player.gender = currentIndex
-                }
+                configurePlayer.player.gender = currentIndex
             }
         }
 
@@ -115,18 +133,15 @@ Item {
                 top: genderComboBox.bottom
                 topMargin: 10
             }
-            checked: (!player)?checked: player.isTeamLeader
+            checked: configurePlayer.player.isTeamLeader
             onCheckedChanged: {
-                if(player)
-                {
-                    if(checked === player.isTeamLeader)
-                         return;
+                if(checked === configurePlayer.player.isTeamLeader)
+                     return;
 
-                    configurePlayer.team.uncheckAllLeaders();
+                configurePlayer.team.uncheckAllLeaders();
 
-                    if(checked)
-                        player.isTeamLeader = true
-                }
+                if(checked)
+                    configurePlayer.player.isTeamLeader = true
             }
             text: "Is Team Leader"
         }
@@ -146,13 +161,7 @@ Item {
             right: parent.right
             top: parent.top
         }
-        height: 70
-
-        Rectangle{
-            anchors.fill: parent
-            opacity: 0.2
-            color: "Red"
-        }
+        height: configurePlayer.headerHeight
 
         Button{
             anchors{
@@ -160,12 +169,10 @@ Item {
                 leftMargin: 10
                 verticalCenter: parent.verticalCenter
             }
-
             text: "back"
-
             visible: configurePlayer.edit
             onClicked: {
-                parentStackView.pop();
+                configurePlayer.goBack();
             }
         }
     }
@@ -177,12 +184,7 @@ Item {
             right: parent.right
             bottom: parent.bottom
         }
-        height: 70
-        Rectangle{
-            anchors.fill: parent
-            opacity: 0.2
-            color: "Red"
-        }
+        height: configurePlayer.footerHeight
 
         Item{
             id: footerButtons
@@ -194,12 +196,9 @@ Item {
                     right: centerPoint.left
                     verticalCenter: parent.verticalCenter
                 }
-
                 text: "cancel"
-
                 onClicked: {
-                    parentStackView.pop();
-                    configurePlayer.team.deleteDetachedPlayer();
+                    configurePlayer.cancelAddingPlayer();
                 }
             }
 
@@ -218,8 +217,7 @@ Item {
                 text: "save player"
 
                 onClicked: {
-                    parentStackView.pop();
-                    configurePlayer.team.addPlayerUsingDetachedPlayer();
+                    configurePlayer.saveAddedPlayer();
                 }
             }
         }

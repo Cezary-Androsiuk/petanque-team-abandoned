@@ -4,92 +4,82 @@ import QtQuick.Controls.Material
 Item{
     id: playerDelegate
 
-    property double defaultHeight: 50
-    property var playerObject
+    required property var player
     required property var team
-    property var parentStackView
+    required property var parentStackView
 
     clip: true
 
-    height: defaultHeight
-
-    Loader{
-        id: contentLoader
-        anchors.fill: parent
-        sourceComponent: playerObject !== null ? contentComponent : null
+    function deletePlayer(){
+        team.deletePlayer(player);
     }
 
-    Component{
-        id: contentComponent
-        Item{
-            Rectangle{
-                id: playerInfoBorder
-                anchors{
-                    fill: parent
-                    margins: 2
-                }
+    function editPlayer(){
+        const args = {
+            edit: true,
+            parentStackView: playerDelegate.parentStackView,
+            player: playerDelegate.player,
+            team: playerDelegate.team
+        }
+        playerDelegate.parentStackView.push("Player.qml", args)
+    }
 
-                color: "transparent"
-                border.color: Qt.rgba(1,1,1, 0.5)
-                border.width: 1
+    Item{
+        anchors.fill: parent
+
+        Rectangle{
+            id: playerInfoBorder
+            anchors.fill: parent
+            color: "transparent"
+            border.color: Qt.rgba(1,1,1, 0.5)
+            border.width: 1
+        }
+
+        Label{
+            id: playerInfo
+            anchors{
+                left: parent.left
+                top: parent.top
+                leftMargin: 10
+                bottom: parent.bottom
             }
+            verticalAlignment: Text.AlignVCenter
+            text: player.fname + " " + player.lname +
+                  "    [" + player.license + "] ("+ player.ageGroup +") " + (player.gender ? "F" : "M") +
+                  (player.isTeamLeader ? " 👑" : "")
+        }
 
-            Label{
-                id: playerInfo
-                anchors{
-                    left: parent.left
-                    top: parent.top
-                    leftMargin: 10
-                }
-                verticalAlignment: Text.AlignVCenter
-                height: defaultHeight
-                text: playerObject.fname + " " + playerObject.lname +
-                      "    [" + playerObject.license + "] ("+ playerObject.ageGroup +") " + (playerObject.gender ? "F" : "M") +
-                      (playerObject.isTeamLeader ? " 👑" : "")
+        Button{
+            id: deletePlayerButton
+            anchors{
+                right: editPlayerButton.left
+                top: parent.top
             }
+            height: defaultHeight
+            width: height * 2
 
-            Button{
-                id: deletePlayerButton
-                anchors{
-                    right: editPlayerButton.left
-                    top: parent.top
-                }
-                height: defaultHeight
-                width: height * 2
+            text: "delete"
 
-                text: "delete"
-
-                onClicked:{
-                    var team = playerObject.getParent();
-                    team.deletePlayer(playerObject);
-                }
-            }
-
-            Button{
-                id: editPlayerButton
-                anchors{
-                    top: parent.top
-                    right: parent.right
-                }
-                height: defaultHeight
-                width: height * 2
-
-                text: "edit"
-
-                onClicked: {
-                    playerDelegate.parentStackView.push(
-                                "Player.qml",
-                                {
-                                    edit: true,
-                                    parentStackView: playerDelegate.parentStackView,
-                                    player: playerDelegate.playerObject,
-                                    team: playerDelegate.team
-                                }
-                    )
-                }
+            onClicked:{
+                playerDelegate.deletePlayer();
             }
         }
 
+        Button{
+            id: editPlayerButton
+            anchors{
+                top: parent.top
+                right: parent.right
+            }
+            height: defaultHeight
+            width: height * 2
+
+            text: "edit"
+
+            onClicked: {
+                playerDelegate.editPlayer();
+            }
+        }
     }
 
 

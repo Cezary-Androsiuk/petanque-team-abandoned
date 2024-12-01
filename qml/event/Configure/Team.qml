@@ -3,15 +3,43 @@ import QtQuick.Controls.Material
 
 Item {
     id: configureTeam
-    Rectangle{
+
+    required property var parentStackView
+    required property var team
+    property bool edit: false
+
+    property int headerHeight: 70
+    property int footerHeight: 70
+    property int delegateHeight: 50
+
+    function addNewPlayer(){
+        configureTeam.team.createDetachedPlayer();
+        const args = {
+            parentStackView: configureTeam.parentStackView,
+            team: configureTeam.team,
+            player: configureTeam.team.detachedPlayer
+        }
+        parentStackView.push("Player.qml", args)
+    }
+
+    function goBack(){
+        parentStackView.pop();
+    }
+
+    function cancelAddingTeam(){
+        parentStackView.pop();
+        Backend.event.deleteDetachedTeam();
+    }
+
+    function saveAddedTeam(){
+        parentStackView.pop();
+        Backend.event.addTeamUsingDetachedTeam();
+    }
+
+    Rectangle{ // required because of stack view animation
         anchors.fill: parent
         color: "#1c1b1f" // dark theme color
     }
-
-    required property var parentStackView
-    property var event
-    required property var team
-    property bool edit: false
 
     Item{
         id: playersListField
@@ -22,83 +50,64 @@ Item {
         }
         width: parent.width * 0.5
 
-        Rectangle{
-            anchors.fill: parent
-            opacity: 0.2
-            color: "Green"
-        }
-
-        Rectangle{
-            id: scrollViewBorder
-            anchors.fill: listLoader
-            color: "transparent"
-            border.color: Qt.rgba(1,1,1, 0.5)
-            border.width: 1
-        }
-
-        Loader{
-            id: listLoader
+        Item{
             anchors{
                 fill: parent
-                margins: 30
+                leftMargin: 30
+                rightMargin: 15
             }
-            // I prefer hiding whole list than changing model to 0
-            // seems more natural while closing site
-            sourceComponent: team !== null ? listComponent : null
-        }
+            clip: true
 
-        Component{
-            id: listComponent
-            ScrollView{
-                id: scrollView
+            Rectangle{
+                id: scrollViewBorder
+                anchors.fill: parent
+                color: "transparent"
+                border.color: Qt.rgba(1,1,1, 0.5)
+                border.width: 1
+            }
+
+            ListView{
+                id: listView
+                anchors.fill: parent
+
+                model: configureTeam.team.players.length
+                boundsBehavior: Flickable.StopAtBounds
                 clip: true
-                ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+                cacheBuffer: 10000
 
-                ListView{
-                    id: listView
-                    anchors{
-                        fill: parent
-                        rightMargin: 20
-                        leftMargin: 20
-                    }
+                ScrollBar.vertical: ScrollBar{
+                    policy: ScrollBar.AsNeeded
+                }
 
-                    model: team.players
-                    boundsBehavior: Flickable.StopAtBounds
-                    clip: true
+                delegate: Item{
+                    width: listView.width - 40
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    height: configureTeam.delegateHeight
 
-                    footer: Item{
-                        width: listView.width
-                        height: 50
-                        Button{
-                            anchors.fill: parent
-                            text: qsTr("Add new player")
-                            onClicked: {
-                                configureTeam.team.createDetachedPlayer();
-                                parentStackView.push(
-                                            "Player.qml",
-                                            {
-                                                parentStackView: configureTeam.parentStackView,
-                                                team: configureTeam.team,
-                                                player: configureTeam.team.detachedPlayer
-                                            }
-                                )
-                            }
-                        }
-                    }
+                    PlayerDelegate{
+                        anchors.fill: parent
 
-                    delegate: PlayerDelegate{
-                        defaultHeight: 50
-                        width: listView.width
                         team: configureTeam.team
-                        playerObject: modelData
+                        player: configureTeam.team.players[index]
                         parentStackView: configureTeam.parentStackView
                     }
+                }
 
+                footer: Item{
+                    width: listView.width - 40
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    height: configureTeam.delegateHeight
 
+                    Button{
+                        anchors.fill: parent
+                        text: qsTr("Add new player")
+                        onClicked: {
+                            configureTeam.addNewPlayer()
+                        }
+                    }
                 }
             }
         }
-
 
     }
 
@@ -106,32 +115,43 @@ Item {
         id: teamInfoField
         anchors{
             top: header.bottom
-            left: playersListField.right
             right: parent.right
             bottom: footer.top
         }
-        Rectangle{
-            anchors.fill: parent
-            opacity: 0.2
-            color: "Blue"
-        }
+        width: parent.width * 0.5
 
-
-        TextField{
-            id: teamNameTextField
+        Item{
             anchors{
-                top: parent.top
+                fill: parent
+                leftMargin: 15
+                rightMargin: 30
             }
-            height: 60
-            width: 230
+            clip: true
 
-            placeholderText: qsTr("Team Name")
-            text: (!team)?null: team.teamName
-            onTextEdited: {
-                team.teamName = text
+            Rectangle{
+                id: infoFieldFlickableBorder
+                anchors.fill: parent
+                color: "transparent"
+                border.color: Qt.rgba(1,1,1, 0.5)
+                border.width: 1
+            }
+
+            TextField{
+                id: teamNameTextField
+                anchors{
+                    top: parent.top
+                    topMargin: 10
+                }
+                height: 60
+                width: 230
+
+                placeholderText: qsTr("Team Name")
+                text: configureTeam.team.teamName
+                onTextEdited: {
+                    configureTeam.team.teamName = text
+                }
             }
         }
-
     }
 
 
@@ -145,12 +165,7 @@ Item {
             right: parent.right
             top: parent.top
         }
-        height: 70
-        Rectangle{
-            anchors.fill: parent
-            opacity: 0.2
-            color: "Red"
-        }
+        height: configureTeam.headerHeight
 
         Button{
             anchors{
@@ -163,7 +178,7 @@ Item {
 
             visible: configureTeam.edit
             onClicked: {
-                parentStackView.pop();
+                configureTeam.goBack();
             }
         }
     }
@@ -175,12 +190,7 @@ Item {
             right: parent.right
             bottom: parent.bottom
         }
-        height: 70
-        Rectangle{
-            anchors.fill: parent
-            opacity: 0.2
-            color: "Red"
-        }
+        height: configureTeam.footerHeight
 
         Item{
             id: footerButtons
@@ -192,12 +202,9 @@ Item {
                     right: centerPoint.left
                     verticalCenter: parent.verticalCenter
                 }
-
                 text: "cancel"
-
                 onClicked: {
-                    parentStackView.pop();
-                    configureTeam.event.deleteDetachedTeam();
+                    configureTeam.cancelAddingTeam();
                 }
             }
 
@@ -212,12 +219,9 @@ Item {
                     left: centerPoint.right
                     verticalCenter: parent.verticalCenter
                 }
-
                 text: "save team"
-
                 onClicked: {
-                    parentStackView.pop();
-                    configureTeam.event.addTeamUsingDetachedTeam();
+                    configureTeam.saveAddedTeam();
                 }
             }
         }
