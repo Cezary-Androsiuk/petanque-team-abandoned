@@ -13,12 +13,12 @@ Item {
 
     readonly property var matchPoints: matchType.matchPoints;
     readonly property int groupsCount: matchPoints.groupsCount;
-    readonly property int playersCountInGroup: matchTypeIndex // for now value //matchType.playersCountInGroup // ? can be 1 for singiels, 2 or 3 for dublets and 3 or 4 for triplets
-    readonly property int playerDelegateHeight: 60;
+    readonly property int defaultPlayersCountInGroup: matchTypeIndex
+    readonly property int defaultPlayerDelegateHeight: 60; // overwrited by players count in group to fit additional player
     readonly property int groupHeaderHeight: 60
-    readonly property int groupDelegateHeight: playerDelegateHeight * playersCountInGroup;
+    readonly property int groupDelegateHeight: defaultPlayerDelegateHeight * defaultPlayersCountInGroup;
 
-    height: groupHeaderHeight + ( (groupDelegateHeight + (10*2)) * groupsCount )
+    height: groupHeaderHeight + ( (groupDelegateHeight + /*add margins*/(10*2)) * groupsCount )
 
     function setPFP(row, value) { matchPoints.setPointsForGroup(row, value); }
 
@@ -38,7 +38,7 @@ Item {
 
         header: Item{
             width: groupsListView.width
-            height: groupsMatch.playerDelegateHeight
+            height: groupsMatch.groupHeaderHeight
 
             Label{
                 id: leftTeamName
@@ -52,7 +52,7 @@ Item {
         }
 
         delegate: Item{
-            id: delegateItem
+            id: groupDelegate
             width: groupsListView.width
             height: groupsMatch.groupDelegateHeight + playersListViewContainer.anchors.margins*2
 
@@ -95,6 +95,14 @@ Item {
             }
 
             readonly property int groupIndex: index
+            readonly property var playersInGroup: groupsMatch.matchPoints.usedPlayersInGroups[groupIndex]
+            readonly property int playersCountInGroup: playersInGroup.length
+            // computing playerDelegateHeight here allows to fit 3 players in 2 fields or 4 players in 3 fields
+            readonly property int dynamicPlayerDelegateHeight: {
+                let expectedDelegatesHeightSum = defaultPlayerDelegateHeight * defaultPlayersCountInGroup
+                let newDelegateHeight = expectedDelegatesHeightSum / playersCountInGroup
+                newDelegateHeight
+            }
 
             Item{
                 id: playersListViewContainer
@@ -110,15 +118,28 @@ Item {
                     id: playersListView
                     anchors.fill: parent
 
-                    model: groupsMatch.playersCountInGroup
+                    model: groupDelegate.playersCountInGroup
                     boundsBehavior: Flickable.StopAtBounds
                     interactive: false
                     cacheBuffer: 10000 // for god sake, keep delegates alive while scrolling
 
                     delegate: Item{
                         width: playersListViewContainer.width
-                        height: groupsMatch.playerDelegateHeight
+                        height: groupDelegate.dynamicPlayerDelegateHeight
                         clip: true
+
+                        Label{
+                            anchors{
+                                fill: parent
+                                leftMargin: 10
+                            }
+                            horizontalAlignment: Text.AlignLeft
+                            verticalAlignment: Text.AlignVCenter
+                            text: {
+                                let player = groupDelegate.playersInGroup[index]
+                                player.fname + " " + player.lname
+                            }
+                        }
 
                         Rectangle{
                             anchors.fill: parent
