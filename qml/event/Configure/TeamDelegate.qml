@@ -6,16 +6,13 @@ Item{
 
     required property double defaultHeight
     required property var team
-
     required property var parentStackView
 
-    height: teamDelegate.extended ?
-                defaultHeight * 1.5 + playersInfo.height :
-                defaultHeight
+    property bool extended: false
+    readonly property double extendedHeight: defaultHeight * 1.5 + playersInfo.height
+    height: extended ? extendedHeight : defaultHeight
 
     clip: true
-
-    property bool extended: false
 
     function editTeam(){
         const args = {
@@ -23,7 +20,7 @@ Item{
             parentStackView: teamDelegate.parentStackView,
             team: teamDelegate.team
         }
-        teamDelegate.parentStackView.push("Team.qml", args)
+        parentStackView.push("Team.qml", args)
     }
 
     function deleteTeam(){
@@ -31,14 +28,7 @@ Item{
     }
 
     function extendTeam(){
-        teamDelegate.extended = !teamDelegate.extended
-        teamDelegate.updateDelegateHeight();
-    }
-
-    function updateDelegateHeight(){
-        // teamDelegate.height = teamDelegate.extended ?
-        //             defaultHeight * 1.5 + playersInfo.height :
-        //             defaultHeight
+        extended = !extended
     }
 
     Item{
@@ -77,7 +67,7 @@ Item{
                     leftMargin: 10
                 }
                 height: defaultHeight
-                text: teamDelegate.team.teamName
+                text: (!teamDelegate.team)?"": teamDelegate.team.teamName
 
                 verticalAlignment: Text.AlignVCenter
             }
@@ -139,15 +129,9 @@ Item{
                 right: parent.right
                 leftMargin: parent.width * 0.1
             }
-            height: teamDelegate.team.players.length * defaultHeight
+            height: playersCount * defaultHeight
 
-            Connections{
-                target: team
-                function onPlayersChanged() {
-                    // after any change of players, change also height
-                    teamDelegate.updateDelegateHeight()
-                }
-            }
+            readonly property int playersCount: (!teamDelegate.team)?0: teamDelegate.team.players.length
 
             ListView{
                 anchors.fill: parent
@@ -155,7 +139,7 @@ Item{
                 boundsBehavior: Flickable.StopAtBounds
                 interactive: false
                 clip: true
-                model: teamDelegate.team.players.length
+                model: playersInfo.playersCount
 
                 // SOMETHING LIKE THIS CAUSED AN ERROR XD
                 // delegate: PlayerDelegate{

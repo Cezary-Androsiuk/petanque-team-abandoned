@@ -21,7 +21,7 @@ Item{
             player: playerDelegate.player,
             team: playerDelegate.team
         }
-        playerDelegate.parentStackView.push("Player.qml", args)
+        parentStackView.push("Player.qml", args)
     }
 
     Item{
@@ -44,9 +44,21 @@ Item{
                 bottom: parent.bottom
             }
             verticalAlignment: Text.AlignVCenter
-            text: player.fname + " " + player.lname +
-                  "    [" + player.license + "] ("+ player.ageGroup +") " + (player.gender ? "F" : "M") +
-                  (player.isTeamLeader ? " 👑" : "")
+            text: {
+                if(!playerDelegate.player) ""; else
+                {
+                    let player = playerDelegate.player;
+
+                    let fname = player.fname;
+                    let lname = player.lname;
+                    let license = "[" + player.license + "]";
+                    let ageGroup = "("+ player.ageGroup +")";
+                    let gender = player.gender ? "F" : "M";
+                    let isTeamLeader = player.isTeamLeader ? " 👑" : "";
+
+                    fname + " " + lname + "    " + license + " " + ageGroup + " " + gender + " " + isTeamLeader;
+                }
+            }
         }
 
         Button{

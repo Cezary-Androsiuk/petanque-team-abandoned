@@ -8,6 +8,7 @@ Item {
     required property var team
     property bool edit: false
 
+    property var event: Backend.event
     property int headerHeight: 70
     property int footerHeight: 70
     property int delegateHeight: 50
@@ -28,12 +29,12 @@ Item {
 
     function cancelAddingTeam(){
         parentStackView.pop();
-        Backend.event.deleteDetachedTeam();
+        event.deleteDetachedTeam();
     }
 
     function saveAddedTeam(){
         parentStackView.pop();
-        Backend.event.addTeamUsingDetachedTeam();
+        event.addTeamUsingDetachedTeam();
     }
 
     Rectangle{ // required because of stack view animation
@@ -70,7 +71,7 @@ Item {
                 id: listView
                 anchors.fill: parent
 
-                model: configureTeam.team.players.length
+                model: (!configureTeam.team)?0: configureTeam.team.players.length
                 boundsBehavior: Flickable.StopAtBounds
                 clip: true
                 cacheBuffer: 10000
@@ -146,9 +147,12 @@ Item {
                 width: 230
 
                 placeholderText: qsTr("Team Name")
-                text: configureTeam.team.teamName
+                text: (!configureTeam.team)?text: configureTeam.team.teamName
                 onTextEdited: {
-                    configureTeam.team.teamName = text
+                    if(configureTeam.team)
+                    {
+                        configureTeam.team.teamName = text
+                    }
                 }
             }
         }

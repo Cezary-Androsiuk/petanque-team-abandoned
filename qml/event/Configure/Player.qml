@@ -19,12 +19,12 @@ Item {
 
     function cancelAddingPlayer(){
         parentStackView.pop();
-        configurePlayer.team.deleteDetachedPlayer();
+        team.deleteDetachedPlayer();
     }
 
     function saveAddedPlayer(){
         parentStackView.pop();
-        configurePlayer.team.addPlayerUsingDetachedPlayer();
+        team.addPlayerUsingDetachedPlayer();
     }
 
     Rectangle{ // required because of stack view animation
@@ -61,9 +61,10 @@ Item {
             width: 230
 
             placeholderText: qsTr("First Name")
-            text: configurePlayer.player.fname
+            text: (!configurePlayer.player)?text: configurePlayer.player.fname
             onTextEdited: {
-                configurePlayer.player.fname = text
+                if(configurePlayer.player)
+                    configurePlayer.player.fname = text
             }
         }
 
@@ -77,9 +78,10 @@ Item {
             width: 230
 
             placeholderText: qsTr("Last Name")
-            text: configurePlayer.player.lname
+            text: (!configurePlayer.player)?text: configurePlayer.player.lname
             onTextEdited: {
-                configurePlayer.player.lname = text
+                if(configurePlayer.player)
+                    configurePlayer.player.lname = text
             }
         }
 
@@ -93,9 +95,10 @@ Item {
             width: 230
 
             placeholderText: qsTr("License")
-            text: configurePlayer.player.license
+            text: (!configurePlayer.player)?text: configurePlayer.player.license
             onTextEdited: {
-                configurePlayer.player.license = text
+                if(configurePlayer.player)
+                    configurePlayer.player.license = text
             }
         }
 
@@ -106,10 +109,11 @@ Item {
                 topMargin: 10
             }
             model: ["Junior", "Youth", "Senior", "Veteran"]
-            currentIndex: configurePlayer.player.ageGroup
+            currentIndex: (!configurePlayer.player)?currentIndex: configurePlayer.player.ageGroup
 
             onCurrentIndexChanged: {
-                configurePlayer.player.ageGroup = currentIndex
+                if(configurePlayer.player)
+                    configurePlayer.player.ageGroup = currentIndex
             }
         }
 
@@ -120,10 +124,11 @@ Item {
                 topMargin: 10
             }
             model: ["Male", "Female"]
-            currentIndex: configurePlayer.player.gender
+            currentIndex: (!configurePlayer.player)?currentIndex: configurePlayer.player.gender
 
             onCurrentIndexChanged: {
-                configurePlayer.player.gender = currentIndex
+                if(configurePlayer.player)
+                    configurePlayer.player.gender = currentIndex
             }
         }
 
@@ -133,15 +138,19 @@ Item {
                 top: genderComboBox.bottom
                 topMargin: 10
             }
-            checked: configurePlayer.player.isTeamLeader
+            checked: (!configurePlayer.player)?checked: configurePlayer.player.isTeamLeader
             onCheckedChanged: {
-                if(checked === configurePlayer.player.isTeamLeader)
-                     return;
+                if(configurePlayer.player)
+                {
+                    if(checked === configurePlayer.player.isTeamLeader)
+                         return;
 
-                configurePlayer.team.uncheckAllLeaders();
+                    configurePlayer.team.uncheckAllLeaders();
 
-                if(checked)
-                    configurePlayer.player.isTeamLeader = true
+                    if(checked)
+                        configurePlayer.player.isTeamLeader = true
+                }
+
             }
             text: "Is Team Leader"
         }
@@ -213,9 +222,7 @@ Item {
                     left: centerPoint.right
                     verticalCenter: parent.verticalCenter
                 }
-
                 text: "save player"
-
                 onClicked: {
                     configurePlayer.saveAddedPlayer();
                 }
