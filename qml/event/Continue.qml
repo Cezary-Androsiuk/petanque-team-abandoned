@@ -144,7 +144,7 @@ Item {
             }
             enabled: Backend.event.hasPrevRoundStage;
 
-            text: "left"
+            text: "Back"
             onClicked: {
                 Backend.event.goToPrevRoundStage();
             }
@@ -158,7 +158,7 @@ Item {
                 verticalCenter: parent.verticalCenter
             }
             enabled: Backend.event.hasNextRoundStage;
-            text: "right"
+            text: "Next"
             onClicked: {
                 Backend.event.verifyCurrentRoundStage();
             }
@@ -174,6 +174,20 @@ Item {
             text: "Set Example Data"
             onClicked:{
                 continueLoader.item.setExampleData()
+            }
+        }
+
+        Button{
+            id: exampleDataAndNextButton
+            anchors{
+                left: exampleDataButton.right
+                leftMargin: 30
+                verticalCenter: parent.verticalCenter
+            }
+            text: "Set Example Data And Go Next"
+            onClicked:{
+                exampleDataButton.clicked();
+                nextButton.clicked();
             }
         }
     }
