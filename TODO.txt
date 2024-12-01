@@ -1,0 +1,3 @@
+1. add second phase
+2. runtime saving event info, teams and players while adding them
+3. add timer that saves data ~10 seconds

@@ -34,12 +34,27 @@ Item {
 
         function onCurrentRoundStageVerified(){
             continueLoader.active = false;
-            Backend.event.goToNextRoundStage();
-            Memory.save()
+            if(Backend.event.hasNextRoundStage)
+            {
+                Backend.event.goToNextRoundStage();
+                Memory.save()
+            }
+            else
+            {
+                // confirm popup
+                onConfirmed()
+            }
         }
         function onCurrentRoundStageVerificationFailed(message){
             console.log("verification current stage failed: " + message)
         }
+    }
+
+    /////////////////// onCurrentRoundStageVerified
+    function onConfirmed(){
+        Memory.save(); // saves data
+        Backend.event.goToNextStage(); // changes stage from Continue to Finish
+        // Memory.save(); // saves changed stage // exiting doing it as well // and timer will be
     }
 
     Item{
@@ -157,7 +172,6 @@ Item {
                 leftMargin: 5
                 verticalCenter: parent.verticalCenter
             }
-            enabled: Backend.event.hasNextRoundStage;
             text: "Next"
             onClicked: {
                 Backend.event.verifyCurrentRoundStage();
