@@ -150,11 +150,6 @@ Item {
                     }
                 }
 
-                Rectangle{
-                    anchors.fill: parent
-                    color: "red"
-                    opacity: 0.2
-                }
             }
 
             Rectangle{

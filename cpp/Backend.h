@@ -8,7 +8,6 @@
 
 #include "cpp/support/Log.h"
 #include "cpp/objects/Event.h"
-#include "cpp/storages/Personalization.h"
 
 class Backend : public QObject
 {
@@ -20,19 +19,11 @@ public:
     ~Backend();
     Event *getEvent() const;
 
-    Q_INVOKABLE void createExampleData();
-
 public slots:
-    void validateData();
     bool debugMemoryFileExist();
     void debugDeleteMemory();
 
-private:
-
-
 signals:
-    void dataValidatedCorrectly();
-    void dataValidationFailed(QString description);
 
 private:
     Event *m_event;

@@ -6,7 +6,8 @@ Item {
     anchors.fill: parent
 
     required property int matchTypeIndex; // 1 - SingielsSelection, 2 - DubletsSelection, 3 - TripletsSelection
-    readonly property var event: Backend !== null ? Backend.event : null
+    readonly property var event: Backend ? Backend.event : null
+    readonly property var match: event ? event.match : null
 
     function setExampleData(){
         for(let i=0; i<listView.count; i++)
@@ -27,7 +28,7 @@ Item {
             id: listView
             anchors.fill: parent
 
-            model: event.match.matchTeamList.length // or event.teams.length
+            model: selectionTemplate.match.matchTeamList.length // or event.teams.length
             boundsBehavior: Flickable.StopAtBounds
             clip: true
             cacheBuffer: 10000 // for god sake, keep delegates alive while scrolling
@@ -58,7 +59,16 @@ Item {
                     height: 60
                     Label{
                         anchors.fill: parent
-                        text: (!event)?"": (!event.teams[index])?"": event.teams[index].teamName
+                        text: {
+                            if(!event)
+                                return "";
+
+                            if(!event.teams[index])
+                                return "";
+
+                            event.teams[index].teamName
+                        }
+
                         font.pixelSize: 26
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
@@ -75,7 +85,7 @@ Item {
                     }
                     team: selectionTemplate.event.teams[index]
                     matchTypeIndex: selectionTemplate.matchTypeIndex
-                    matchType: selectionTemplate.event.match.matchTeamList[index].getMatchType(matchTypeIndex)
+                    matchType: selectionTemplate.match.matchTeamList[index].getMatchType(matchTypeIndex)
                 }
 
                 Item{

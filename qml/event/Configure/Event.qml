@@ -13,15 +13,15 @@ Item {
 
 
     Connections{
-        target: Backend
-        function onDataValidatedCorrectly(){
+        target: Backend.event
+        function onConfigureDataValidatedCorrectly(){
             log.i("data are valid")
 
             // confirm popup
             onConfirmed()
         }
 
-        function onDataValidationFailed(description){
+        function onConfigureDataValidationFailed(description){
             log.i("data are NOT valid")
         }
 
@@ -167,7 +167,7 @@ Item {
 
             text: "start event"
             onClicked: {
-                Backend.validateData()
+                Backend.event.validateConfigureData();
             }
         }
 
@@ -180,7 +180,7 @@ Item {
             }
             text: "create example data"
             onClicked:{
-                Backend.createExampleData()
+                Backend.event.createExampleConfigureData();
             }
         }
     }

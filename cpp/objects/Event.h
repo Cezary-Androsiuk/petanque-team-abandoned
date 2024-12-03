@@ -29,7 +29,7 @@ class Event : public QObject
     Q_PROPERTY(Stage stage              READ getStage                               NOTIFY stageChanged             FINAL)
     Q_PROPERTY(int round                READ getRound           WRITE setRound      NOTIFY roundChanged             FINAL)
     Q_PROPERTY(RoundStage roundStage    READ getRoundStage      WRITE setRoundStage NOTIFY roundStageChanged        FINAL)
-    // Q_PROPERTY(Match *match             READ getMatch                               NOTIFY matchesChanged           FINAL)
+    Q_PROPERTY(Match *match             READ getMatch                               NOTIFY matchesChanged           FINAL)
 
     Q_PROPERTY(bool hasNextRoundStage READ hasNextRoundStage NOTIFY roundStageChanged FINAL)
     Q_PROPERTY(bool hasPrevRoundStage READ hasPrevRoundStage NOTIFY roundStageChanged FINAL)
@@ -63,6 +63,9 @@ public:
     static constexpr RoundStage lastRoundStage = RoundStage::MatchSummary;
 
 public slots:
+    void validateConfigureData();
+    void createExampleConfigureData();
+
     void createDetachedTeam();
     void deleteDetachedTeam();
 
@@ -92,6 +95,9 @@ public:
     bool hasPrevRoundStage() const;
 
 signals:
+    void configureDataValidatedCorrectly();
+    void configureDataValidationFailed(QString description);
+
     void matchWasCreated();
     void matchAlreadyExist();
     void currentRoundStageVerified();
@@ -100,6 +106,9 @@ signals:
     void secondPhaseStarted();
 
 private:
+    void validateConfigureFirstPhaseData();
+    void validateConfigureSecondPhaseData();
+
     uint generateUniqueTeamID() const;
     bool isTeamIDUniqueInTeamssList(uint id) const;
 

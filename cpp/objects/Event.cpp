@@ -34,6 +34,64 @@ void Event::clearEvent()
     this->setPhase(Event::Phase::First);
 }
 
+void Event::validateConfigureData()
+{
+    /// this should be called only after starting the event before continue stage
+
+    if(m_phase == Phase::First)
+    {
+        this->validateConfigureFirstPhaseData();
+    }
+    else
+    {
+        this->validateConfigureSecondPhaseData();
+    }
+}
+
+void Event::createExampleConfigureData()
+{
+    // this->clearEvent();
+    this->blockSignals(true);
+
+    QJsonArray jTeams = Personalization::getInstance()->getExampleData()["teams"].toArray();
+    for(int i=0; i<jTeams.size(); i++)
+    {
+        QJsonObject jTeam = jTeams[i].toObject();
+
+        this->createDetachedTeam();
+        Team *team = m_detachedTeam;
+        team->blockSignals(true);
+
+        team->setTeamName( jTeam["team name"].toString() );
+
+        QJsonArray jPlayers = jTeam["players"].toArray();
+        for(int j=0; j<jPlayers.size(); j++)
+        {
+            QJsonObject jPlayer = jPlayers[j].toObject();
+
+            team->createDetachedPlayer();
+            Player *player = team->getDetachedPlayer();
+
+            player->setFname( jPlayer["fname"].toString() );
+            player->setLname( jPlayer["lname"].toString() );
+            player->setLicense( jPlayer["license"].toString() );
+            player->setAgeGroup( jPlayer["age group"].toInt() );
+            player->setGender( jPlayer["gender"].toInt() );
+            player->setIsTeamLeader( jPlayer["isTeamLeader"].toBool() );
+
+            team->addPlayerUsingDetachedPlayer();
+        }
+
+        team->blockSignals(false);
+        emit team->playersChanged();
+
+        this->addTeamUsingDetachedTeam();
+    }
+
+    this->blockSignals(false);
+    emit this->teamsChanged();
+}
+
 void Event::createDetachedTeam()
 {
     // I("Creating detached Team")
@@ -410,6 +468,118 @@ bool Event::hasPrevRoundStage() const
         return true;
     else
         return m_roundStage != Event::firstRoundStage;
+}
+
+void Event::validateConfigureFirstPhaseData()
+{
+    Personalization *p = Personalization::getInstance();
+
+    /// check if 8 teams was registered
+    int teamsCount = m_teams[m_phase].size();
+    if(teamsCount != p->getRequiredTeamsCount())
+    {
+        /// less or more than 8 teams
+        QString message = tr("Event requires %1 teams").arg(p->getRequiredTeamsCount());
+        I(message);
+        emit this->configureDataValidationFailed(message);
+        return;
+    }
+
+    /// check data for teams:
+    for(Team *team : m_teams[m_phase])
+    {
+        /// check if team has at least 6 players
+        int playersCount = team->getPlayers().size();
+        if(playersCount < p->getMinimumPlayersInTeam())
+        {
+            /// team has least than 6 players
+            QString message = tr("Team %1 has less than %2 players")
+                                  .arg(team->getTeamName())
+                                  .arg(p->getMinimumPlayersInTeam());
+            I(message);
+            emit this->configureDataValidationFailed(message);
+            return;
+        }
+
+        /// check if team has both genders
+        bool foundMale = false;
+        bool foundFemale = false;
+        for(Player *player : team->getPlayers())
+        {
+            if(player->getGender() == Player::Gender::Male)
+                foundMale = true;
+
+            if(player->getGender() == Player::Gender::Female)
+                foundFemale = true;
+        }
+        if(!foundMale || !foundFemale)
+        {
+            /// one gender is missing in team
+            QString message = tr("Team %1 doesn't contain players of either gender")
+                                  .arg(team->getTeamName());
+            I(message);
+            emit this->configureDataValidationFailed(message);
+            return;
+        }
+
+        /// check if team has a junior
+        if(p->getRequiresJuniors())
+        {
+            bool foundJunior = false;
+            for(Player *player : team->getPlayers())
+            {
+                if(player->getAgeGroup() == Player::AgeGroup::Junior)
+                {
+                    foundJunior = true;
+                    break;
+                }
+            }
+
+            if(!foundJunior)
+            {
+                /// junior player is missing in team
+                QString message = tr("Team %1 doesn't contain any junior player")
+                                      .arg(team->getTeamName());
+                I(message);
+                emit this->configureDataValidationFailed(message);
+                return;
+            }
+        }
+
+        /// check if team has one leader
+        int foundLeaders = 0;
+        for(Player *player : team->getPlayers())
+        {
+            if(player->getIsTeamLeader())
+                ++ foundLeaders;
+        }
+        if(foundLeaders == 0)
+        {
+            /// team missing leader
+            QString message = tr("In team %1, no leader was selected, each team requires leader")
+                                  .arg(team->getTeamName());
+            I(message);
+            emit this->configureDataValidationFailed(message);
+            return;
+        }
+        else if(foundLeaders > 1)
+        {
+            /// team contains few leaders
+            QString message = tr("Team %1 has %2 leaders, but should be only one")
+                                  .arg(team->getTeamName())
+                                  .arg(foundLeaders);
+            I(message);
+            emit this->configureDataValidationFailed(message);
+            return;
+        }
+    }
+
+    emit this->configureDataValidatedCorrectly();
+}
+
+void Event::validateConfigureSecondPhaseData()
+{
+
 }
 
 uint Event::generateUniqueTeamID() const
