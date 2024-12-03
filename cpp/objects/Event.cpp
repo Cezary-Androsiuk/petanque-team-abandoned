@@ -153,6 +153,17 @@ void Event::goToPrevStage()
     emit this->stageChanged();
 }
 
+void Event::goToConfigureStage()
+{
+    if(m_stage == Stage::Configure)
+    {
+        W("stage is already at Configure");
+        return;
+    }
+    m_stage = Stage::Configure;
+    emit this->stageChanged();
+}
+
 void Event::goToNextRoundStage()
 {
     if(m_round >= Personalization::getInstance()->getRoundsCount() && m_roundStage == Event::lastRoundStage)
@@ -195,6 +206,29 @@ void Event::goToPrevRoundStage()
     {
         m_roundStage = static_cast<RoundStage>(m_roundStage -1);
         emit this->roundStageChanged();
+    }
+}
+
+void Event::goToFirstRoundStage()
+{
+    if(m_roundStage == Event::firstRoundStage)
+    {
+        W("roundStage is already first")
+    }
+    else
+    {
+        m_roundStage = Event::firstRoundStage;
+        emit this->roundStageChanged();
+    }
+
+    if(m_round == 1)
+    {
+        W("round is already first round")
+    }
+    else
+    {
+        m_round = 1;
+        emit this->roundChanged();
     }
 }
 
@@ -353,6 +387,13 @@ void Event::verifyCurrentRoundStage()
 
     }
     emit this->currentRoundStageVerified();
+}
+
+void Event::startSecondPhase()
+{
+    m_phase = Phase::Second;
+
+    emit this->secondPhaseStarted();
 }
 
 bool Event::hasNextRoundStage() const

@@ -91,18 +91,6 @@ Item {
             verticalAlignment: Text.AlignVCenter
             font.pixelSize: 14
         }
-
-        Rectangle{
-            anchors.fill: parent
-            color: "red"
-            opacity: 0.2
-        }
-    }
-
-    Rectangle{
-        anchors.fill: parent
-        color: "blue"
-        opacity: 0.2
     }
 
     BusyIndicator{

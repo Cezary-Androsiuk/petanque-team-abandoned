@@ -29,7 +29,7 @@ class Event : public QObject
     Q_PROPERTY(Stage stage              READ getStage                               NOTIFY stageChanged             FINAL)
     Q_PROPERTY(int round                READ getRound           WRITE setRound      NOTIFY roundChanged             FINAL)
     Q_PROPERTY(RoundStage roundStage    READ getRoundStage      WRITE setRoundStage NOTIFY roundStageChanged        FINAL)
-    Q_PROPERTY(Match *match             READ getMatch                               NOTIFY matchesChanged           FINAL)
+    // Q_PROPERTY(Match *match             READ getMatch                               NOTIFY matchesChanged           FINAL)
 
     Q_PROPERTY(bool hasNextRoundStage READ hasNextRoundStage NOTIFY roundStageChanged FINAL)
     Q_PROPERTY(bool hasPrevRoundStage READ hasPrevRoundStage NOTIFY roundStageChanged FINAL)
@@ -75,13 +75,17 @@ public slots:
 
     void goToNextStage();
     void goToPrevStage();
+    void goToConfigureStage(); /// used after changing to second phase
 
     void goToNextRoundStage();
     void goToPrevRoundStage();
+    void goToFirstRoundStage();
 
     void createMatchIfNotExist(); /// mostly used by qml
     Match *createNewMatch(bool assignMatchCombinations = true); /// mostly used by Memory
     void verifyCurrentRoundStage();
+
+    void startSecondPhase();
 
 public:
     bool hasNextRoundStage() const;
@@ -92,6 +96,8 @@ signals:
     void matchAlreadyExist();
     void currentRoundStageVerified();
     void currentRoundStageVerificationFailed(QString message);
+
+    void secondPhaseStarted();
 
 private:
     uint generateUniqueTeamID() const;
