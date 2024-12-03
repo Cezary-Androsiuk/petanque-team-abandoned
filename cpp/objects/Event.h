@@ -115,24 +115,24 @@ private:
     void copyPlayersFromFirstToSecondPhase();
 
 public:
-    TeamList getTeams() const;
+    const TeamList &getTeams() const;
     Team *getDetachedTeam() const;
 
     Phase getPhase() const;
-    QString getName() const;
-    QString getFirstPhaseDate() const;
-    QString getSecondPhaseDate() const;
-    QString getCompetitionOrganizer() const;
-    QString getFirstPhasePlace() const;
-    QString getSecondPhasePlace() const;
-    QStringList getJudges() const;
-    QString getUnionDelegate() const;
+    const QString &getName() const;
+    const QString &getFirstPhaseDate() const;
+    const QString &getSecondPhaseDate() const;
+    const QString &getCompetitionOrganizer() const;
+    const QString &getFirstPhasePlace() const;
+    const QString &getSecondPhasePlace() const;
+    const QStringList &getJudges() const;
+    const QString &getUnionDelegate() const;
 
     Stage getStage() const;
     int getRound() const;
     RoundStage getRoundStage() const;
     Match* getMatch() const;
-    MatchList getMatches() const;
+    const MatchList &getMatches() const;
 
 
     void setPhase(Phase phase);
@@ -149,6 +149,10 @@ public:
     void setRound(int round);
     void setRoundStage(RoundStage roundStage);
 
+    TeamList &getTeamsP1();
+    TeamList &getTeamsP2();
+    MatchList &getMatchesP1();
+    MatchList &getMatchesP2();
 
 signals:
     void teamsChanged();

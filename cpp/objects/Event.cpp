@@ -749,7 +749,7 @@ void Event::copyPlayersFromFirstToSecondPhase()
     }
 }
 
-TeamList Event::getTeams() const
+const TeamList &Event::getTeams() const
 {
     return m_teams[m_phase];
 }
@@ -764,42 +764,42 @@ Event::Phase Event::getPhase() const
     return m_phase;
 }
 
-QString Event::getName() const
+const QString &Event::getName() const
 {
     return m_name;
 }
 
-QString Event::getFirstPhaseDate() const
+const QString &Event::getFirstPhaseDate() const
 {
     return m_firstPhaseDate;
 }
 
-QString Event::getSecondPhaseDate() const
+const QString &Event::getSecondPhaseDate() const
 {
     return m_secondPhaseDate;
 }
 
-QString Event::getCompetitionOrganizer() const
+const QString &Event::getCompetitionOrganizer() const
 {
     return m_competitionOrganizer;
 }
 
-QString Event::getFirstPhasePlace() const
+const QString &Event::getFirstPhasePlace() const
 {
     return m_firstPhasePlace;
 }
 
-QString Event::getSecondPhasePlace() const
+const QString &Event::getSecondPhasePlace() const
 {
     return m_secondPhasePlace;
 }
 
-QStringList Event::getJudges() const
+const QStringList &Event::getJudges() const
 {
     return m_judges;
 }
 
-QString Event::getUnionDelegate() const
+const QString &Event::getUnionDelegate() const
 {
     return m_unionDelegate;
 }
@@ -829,7 +829,7 @@ Match *Event::getMatch() const
     return m_matches[m_phase][m_round-1];
 }
 
-MatchList Event::getMatches() const
+const MatchList &Event::getMatches() const
 {
     return m_matches[m_phase];
 }
@@ -928,4 +928,24 @@ void Event::setRoundStage(RoundStage roundStage)
         return;
     m_roundStage = roundStage;
     emit roundStageChanged();
+}
+
+TeamList &Event::getTeamsP1()
+{
+    return m_teams[Phase::First];
+}
+
+TeamList &Event::getTeamsP2()
+{
+    return m_teams[Phase::Second];
+}
+
+MatchList &Event::getMatchesP1()
+{
+    return m_matches[Phase::First];
+}
+
+MatchList &Event::getMatchesP2()
+{
+    return m_matches[Phase::Second];
 }

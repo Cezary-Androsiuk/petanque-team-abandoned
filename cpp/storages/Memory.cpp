@@ -121,20 +121,22 @@ void Memory::jsonToEvent(const QJsonObject &jsonObject, Event *const event) cons
 {
     event->clearEvent();
 
-    event->setPhase(Event::Phase::First);
-    QJsonObject phase1 = jsonObject["phase first"].toObject();
 
-    this->jsonToTeams(phase1["teams"].toArray(), event);
-
-    this->jsonToMatches(phase1["matches"].toArray(), event);
-
-    if(jsonObject.contains("phase second"))
-    {
-        event->setPhase(Event::Phase::Second);
-        QJsonObject phase2 = jsonObject["phase second"].toObject();
-
+    { /// Phase 1
+        event->setPhase(Event::Phase::First); /// thanks to my genius detached Team algorithm... ough...
+        QJsonObject phase = jsonObject["first phase data"].toObject();
+        this->jsonToTeams(phase["teams"].toArray(), event);
+        this->jsonToMatches(phase["matches"].toArray(), event);
     }
 
+    { /// Phase 2
+        event->setPhase(Event::Phase::Second); /// thanks to my genius detached Team algorithm... ough...
+        QJsonObject phase = jsonObject["second phase data"].toObject();
+        this->jsonToTeams(phase["teams"].toArray(), event);
+        this->jsonToMatches(phase["matches"].toArray(), event);
+    }
+
+    event->setPhase( static_cast<Event::Phase>( jsonObject["phase"].toInt() ) );
     event->setName( jsonObject["name"].toString() );
     event->setFirstPhaseDate( jsonObject["first phhase date"].toString() );
     event->setSecondPhaseDate( jsonObject["second phase date"].toString() );
@@ -153,7 +155,7 @@ void Memory::jsonToEvent(const QJsonObject &jsonObject, Event *const event) cons
 
 }
 
-void Memory::jsonToTeams(const QJsonArray &jTeams, Event * const event) const
+void Memory::jsonToTeams(const QJsonArray &jTeams, Event *const event) const
 {
     event->blockSignals(true);
 
@@ -196,7 +198,7 @@ void Memory::jsonToTeams(const QJsonArray &jTeams, Event * const event) const
     emit event->teamsChanged();
 }
 
-void Memory::jsonToMatches(const QJsonArray &jMatches, Event * const event) const
+void Memory::jsonToMatches(const QJsonArray &jMatches, Event *const event) const
 {
     for(int i=0; i<jMatches.size(); i++)
     {
@@ -282,30 +284,45 @@ void Memory::jsonToMatchType(const QJsonObject &jMatchType, MatchTypeBase * cons
     }
 }
 
-void Memory::eventToJson(const Event *const event, QJsonObject &jsonObject) const
+void Memory::eventToJson(Event *const event, QJsonObject &jsonObject) const
 {
-    Event::Phase phase = event->getPhase();
-    if(phase == Event::Phase::First)
-    {
-        QJsonObject phase1;
+    jsonObject["phase"] = event->getPhase();
+
+    { /// Phase 1
+        QJsonObject phase;
 
         QJsonArray jTeams;
-        this->teamsToJson(event, jTeams);
-        phase1["teams"] = jTeams;
+        this->teamsToJson(event->getTeamsP1(), jTeams);
+        phase["teams"] = jTeams;
 
         QJsonArray jMatches;
-        this->matchesToJson(event, jMatches);
-        phase1["matches"] = jMatches;
+        this->matchesToJson(event->getMatchesP1(), jMatches);
+        phase["matches"] = jMatches;
 
-        jsonObject["phase first"] = phase1;
+        jsonObject["first phase data"] = phase;
     }
 
+    { /// Phase 2
+        QJsonObject phase;
+
+        QJsonArray jTeams;
+        this->teamsToJson(event->getTeamsP2(), jTeams);
+        phase["teams"] = jTeams;
+
+        QJsonArray jMatches;
+        this->matchesToJson(event->getMatchesP2(), jMatches);
+        phase["matches"] = jMatches;
+
+        jsonObject["second phase data"] = phase;
+    }
+
+    /// move following to the phases
     jsonObject["name"] = event->getName();
-    jsonObject["first phhase date"] = event->getFirstPhaseDate();
-    jsonObject["second phase date"] = event->getSecondPhaseDate();
+    jsonObject["date phase 1"] = event->getFirstPhaseDate();
+    jsonObject["date phase 2"] = event->getSecondPhaseDate();
     jsonObject["competition organizer"] = event->getCompetitionOrganizer();
-    jsonObject["first phase place"] = event->getFirstPhasePlace();
-    jsonObject["second phase place"] = event->getSecondPhasePlace();
+    jsonObject["place phase 1"] = event->getFirstPhasePlace();
+    jsonObject["place phase 2"] = event->getSecondPhasePlace();
     QJsonArray judges;
     for(const QString &judge : event->getJudges())
         judges.append(judge);
@@ -316,9 +333,9 @@ void Memory::eventToJson(const Event *const event, QJsonObject &jsonObject) cons
     jsonObject["round stage"] = event->getRoundStage();
 }
 
-void Memory::teamsToJson(const Event * const event, QJsonArray &jTeams) const
+void Memory::teamsToJson(TeamList &teamList, QJsonArray &jTeams) const
 {
-    for(Team *team : event->getTeams())
+    for(Team *team : teamList)
     {
         QJsonArray players;
         for(Player *player : team->getPlayers())
@@ -344,17 +361,17 @@ void Memory::teamsToJson(const Event * const event, QJsonArray &jTeams) const
     }
 }
 
-void Memory::matchesToJson(const Event * const event, QJsonArray &jMatches) const
+void Memory::matchesToJson(MatchList &matchList, QJsonArray &jMatches) const
 {
-    for(const Match *match : event->getMatches())
+    for(Match *match : matchList)
     {
         QJsonObject jMatch;
         QJsonArray jMatchTeamList;
-        for(const MatchTeam *matchTeam : match->getMatchTeamList())
+        for(MatchTeam *matchTeam : match->getMatchTeamList())
         {
             QJsonObject jMatchTeam;
             QJsonObject jMatchType[3];
-            const MatchTypeBase *const matchType[3] = {
+            MatchTypeBase *const matchType[3] = {
                 matchTeam->getMatchType(1),
                 matchTeam->getMatchType(2),
                 matchTeam->getMatchType(3)
@@ -373,7 +390,7 @@ void Memory::matchesToJson(const Event * const event, QJsonArray &jMatches) cons
         jMatch["match team list"] = jMatchTeamList;
 
         QJsonArray jMatchCombinations;
-        for(const auto &[teamIndex1, teamIndex2] : match->getMatchCombinations())
+        for(auto &[teamIndex1, teamIndex2] : match->getMatchCombinations())
         {
             QJsonObject jCombination;
             jCombination["teamIndex1"] = teamIndex1;
@@ -386,7 +403,7 @@ void Memory::matchesToJson(const Event * const event, QJsonArray &jMatches) cons
     }
 }
 
-void Memory::matchTypeToJson(const MatchTypeBase * const matchType, QJsonObject &jMatchType) const
+void Memory::matchTypeToJson(MatchTypeBase * const matchType, QJsonObject &jMatchType) const
 {
     if(matchType == nullptr)
     {
@@ -396,9 +413,9 @@ void Memory::matchTypeToJson(const MatchTypeBase * const matchType, QJsonObject 
 
     QJsonObject jSelection;
     {
-        const Selection *s = matchType->getSelection();
+        Selection *s = matchType->getSelection();
         QJsonArray jSelectionValues;
-        for(const auto &row : s->getValues())
+        for(auto &row : s->getValues())
         {
             QJsonArray jSelectionValuesColumns;
             for(bool value : row)
@@ -416,7 +433,7 @@ void Memory::matchTypeToJson(const MatchTypeBase * const matchType, QJsonObject 
 
     QJsonObject jMatchPoints;
     {
-        const MatchPoints *mp = matchType->getMatchPoints();
+        MatchPoints *mp = matchType->getMatchPoints();
         QJsonArray jMatchPointsPoints;
         for(int playerPoints : mp->getPoints())
         {
