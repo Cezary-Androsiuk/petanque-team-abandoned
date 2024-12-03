@@ -20,6 +20,7 @@ public:
     explicit Team(QObject *parent = nullptr);
     ~Team();
     void clearPlayers();
+    void copyFromOtherTeam(const Team &team);
 
 public slots:
     void createDetachedPlayer();

@@ -19,6 +19,26 @@ void Team::clearPlayers()
     m_players.clear();
 }
 
+void Team::copyFromOtherTeam(const Team &team)
+{
+    // I("Using other Team as a reference")
+    if(this == &team)
+        return;
+
+    /// NOTE! THIS NOT COPY TEAM ID
+    this->setTeamName(team.getTeamName());
+
+    this->clearPlayers();
+    for(Player *player : team.getPlayers())
+    {
+        Player *newPlayer = new Player(this);
+        newPlayer->copyFromOtherPlayer(*player);
+        m_players.append(newPlayer);
+    }
+    emit this->playersChanged();
+
+}
+
 void Team::createDetachedPlayer()
 {
     // I("Creating detached Player")

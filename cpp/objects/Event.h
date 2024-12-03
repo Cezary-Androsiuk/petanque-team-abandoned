@@ -112,6 +112,8 @@ private:
     uint generateUniqueTeamID() const;
     bool isTeamIDUniqueInTeamssList(uint id) const;
 
+    void copyPlayersFromFirstToSecondPhase();
+
 public:
     TeamList getTeams() const;
     Team *getDetachedTeam() const;

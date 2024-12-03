@@ -451,6 +451,8 @@ void Event::startSecondPhase()
 {
     m_phase = Phase::Second;
 
+    this->copyPlayersFromFirstToSecondPhase();
+
     emit this->secondPhaseStarted();
 }
 
@@ -579,7 +581,110 @@ void Event::validateConfigureFirstPhaseData()
 
 void Event::validateConfigureSecondPhaseData()
 {
+    Personalization *p = Personalization::getInstance();
 
+    /// check if 4 teams was registered
+    int teamsCount = m_teams[m_phase].size();
+    int requiredTeamsCount = p->getRequiredTeamsCount()/2;
+    if(teamsCount != requiredTeamsCount)
+    {
+        /// less or more than 8 teams
+        QString message = tr("Event requires %1 teams").arg(requiredTeamsCount);
+        I(message);
+        emit this->configureDataValidationFailed(message);
+        return;
+    }
+
+    /// check data for teams:
+    for(Team *team : m_teams[m_phase])
+    {
+        /// check if team has at least 6 players
+        int playersCount = team->getPlayers().size();
+        if(playersCount < p->getMinimumPlayersInTeam())
+        {
+            /// team has least than 6 players
+            QString message = tr("Team %1 has less than %2 players")
+                                  .arg(team->getTeamName())
+                                  .arg(p->getMinimumPlayersInTeam());
+            I(message);
+            emit this->configureDataValidationFailed(message);
+            return;
+        }
+
+        /// check if team has both genders
+        bool foundMale = false;
+        bool foundFemale = false;
+        for(Player *player : team->getPlayers())
+        {
+            if(player->getGender() == Player::Gender::Male)
+                foundMale = true;
+
+            if(player->getGender() == Player::Gender::Female)
+                foundFemale = true;
+        }
+        if(!foundMale || !foundFemale)
+        {
+            /// one gender is missing in team
+            QString message = tr("Team %1 doesn't contain players of either gender")
+                                  .arg(team->getTeamName());
+            I(message);
+            emit this->configureDataValidationFailed(message);
+            return;
+        }
+
+        /// check if team has a junior
+        if(p->getRequiresJuniors())
+        {
+            bool foundJunior = false;
+            for(Player *player : team->getPlayers())
+            {
+                if(player->getAgeGroup() == Player::AgeGroup::Junior)
+                {
+                    foundJunior = true;
+                    break;
+                }
+            }
+
+            if(!foundJunior)
+            {
+                /// junior player is missing in team
+                QString message = tr("Team %1 doesn't contain any junior player")
+                                      .arg(team->getTeamName());
+                I(message);
+                emit this->configureDataValidationFailed(message);
+                return;
+            }
+        }
+
+        /// check if team has one leader
+        int foundLeaders = 0;
+        for(Player *player : team->getPlayers())
+        {
+            if(player->getIsTeamLeader())
+                ++ foundLeaders;
+        }
+        if(foundLeaders == 0)
+        {
+            /// team missing leader
+            QString message = tr("In team %1, no leader was selected, each team requires leader")
+                                  .arg(team->getTeamName());
+            I(message);
+            emit this->configureDataValidationFailed(message);
+            return;
+        }
+        else if(foundLeaders > 1)
+        {
+            /// team contains few leaders
+            QString message = tr("Team %1 has %2 leaders, but should be only one")
+                                  .arg(team->getTeamName())
+                                  .arg(foundLeaders);
+            I(message);
+            emit this->configureDataValidationFailed(message);
+            return;
+        }
+    }
+
+    emit this->configureDataValidatedCorrectly();
 }
 
 uint Event::generateUniqueTeamID() const
@@ -619,6 +724,29 @@ bool Event::isTeamIDUniqueInTeamssList(uint id) const
         }
     }
     return true;
+}
+
+void Event::copyPlayersFromFirstToSecondPhase()
+{
+    W("function not finished - selecting only first 4 players")
+    const TeamList &teamsPhase1 = m_teams[Phase::First];
+    TeamList &teamsPhase2 = m_teams[Phase::Second];
+
+    if(teamsPhase1.size() < 4)
+    {
+        W("Cannot copy teams from phase1 to phase2 - phase1 teamList contain only "
+          +QString::number(teamsPhase1.size())+" teams, required at least 4")
+        return;
+    }
+
+    for(int i=0; i<4; i++)
+    {
+        Team *teamPhase1 = teamsPhase1[i];
+        this->createDetachedTeam();
+        Team *teamPhase2 = m_detachedTeam;
+        teamPhase2->copyFromOtherTeam(*teamPhase1);
+        this->addTeamUsingDetachedTeam();
+    }
 }
 
 TeamList Event::getTeams() const
