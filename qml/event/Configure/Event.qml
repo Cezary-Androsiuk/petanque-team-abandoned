@@ -140,12 +140,31 @@ Item {
 
         Label{
             id: titleLabel
-            anchors.centerIn: parent
+            anchors{
+                horizontalCenter: parent.horizontalCenter
+                top: parent.top
+                topMargin: 5
+            }
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
 
-            text: "Team Selection"
-            font.pixelSize: 40
+            text: qsTr("Team Selection")
+            font.pixelSize: 30
+        }
+
+        Label{
+            id: phaseLabel
+            anchors{
+                horizontalCenter: parent.horizontalCenter
+                bottom: parent.bottom
+                bottomMargin: 5
+            }
+
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+
+            text: qsTr("Phase ") + (Backend.event.phase +1)
+            font.pixelSize: 20
         }
     }
 

@@ -8,6 +8,9 @@ Item {
     property int round: Backend.event.round
     property int roundStage: Backend.event.roundStage
 
+    property int headerHeight: 90
+    property int footerHeight: 70
+
     Component.onCompleted: {
         Backend.event.createMatchIfNotExist();
     }
@@ -64,33 +67,59 @@ Item {
             right: parent.right
             top: parent.top
         }
-        height: 70
+        height: headerHeight
 
         Label{
             id: roundLabel
             anchors{
-                top: parent.top
                 horizontalCenter: parent.horizontalCenter
+                top: parent.top
+                topMargin: 5
             }
-            height: parent.height * 0.6
-            text: "Round " + continueEvent.round
+            text: qsTr("Round ") + continueEvent.round
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
-            font.pixelSize: 22
+            font.pixelSize: 24
         }
 
         Label{
             id: roundStageLabel
             anchors{
-                bottom: parent.bottom
                 horizontalCenter: parent.horizontalCenter
+                top: roundLabel.bottom
             }
-            height: parent.height * 0.4
-            text: "Stage " + continueEvent.roundStage
+            text: {
+                switch(continueEvent.roundStage)
+                {
+                case 0: qsTr("Singiels Selection"); break;
+                case 1: qsTr("Singiels Match"); break;
+                case 2: qsTr("Dublets Selection"); break;
+                case 3: qsTr("Dublets Match"); break;
+                case 4: qsTr("Triplets Selection"); break;
+                case 5: qsTr("Triplets Match"); break;
+                case 6: qsTr("Round Summary"); break;
+                default: qsTr("Unknown Round Stage ") + continueEvent.roundStage;
+                }
+            }
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
+            font.pixelSize: 20
+        }
+        Label{
+            id: phaseLabel
+            anchors{
+                horizontalCenter: parent.horizontalCenter
+                bottom: parent.bottom
+                bottomMargin: 5
+            }
+
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+
+            text: qsTr("Phase ") + (Backend.event.phase+1)
             font.pixelSize: 14
         }
+
     }
 
     BusyIndicator{
@@ -129,7 +158,7 @@ Item {
             right: parent.right
             bottom: parent.bottom
         }
-        height: 70
+        height: footerHeight
 
         Item{
             id: centerItem

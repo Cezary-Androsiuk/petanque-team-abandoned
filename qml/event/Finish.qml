@@ -7,6 +7,9 @@ Item {
 
     readonly property var event: Backend.event
 
+    property int headerHeight: 70
+    property int footerHeight: 70
+
     function startSecondPhase(){
         log.i("startSecondPhase")
         // confirm popup
@@ -37,19 +40,18 @@ Item {
             right: parent.right
             top: parent.top
         }
-        height: 70
+        height: headerHeight
 
         Label{
             id: roundLabel
             anchors{
-                top: parent.top
-                horizontalCenter: parent.horizontalCenter
+                centerIn: parent
             }
             height: parent.height * 0.6
-            text: "Finish"
+            text: qsTr("Phase ") + (Backend.event.phase+1) + qsTr(" Summary");
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
-            font.pixelSize: 26
+            font.pixelSize: 34
         }
     }
 
@@ -71,7 +73,7 @@ Item {
             right: parent.right
             bottom: parent.bottom
         }
-        height: 70
+        height: footerHeight
 
         Button{
             id: nextButton

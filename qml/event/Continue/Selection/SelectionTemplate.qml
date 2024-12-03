@@ -20,7 +20,8 @@ Item {
     Item{
         anchors{
             fill: parent
-            margins: 30
+            leftMargin: 30
+            rightMargin: 30
         }
         clip: true
 
