@@ -128,6 +128,7 @@ void Memory::jsonToEvent(const QJsonObject &jsonObject, Event *const event) cons
         this->jsonToTeams(phase["teams"].toArray(), event);
         this->jsonToMatches(phase["matches"].toArray(), event);
         event->setDate(phase["date"].toString(), Event::Phase::First);
+        event->setPlace(phase["place"].toString(), Event::Phase::First);
     }
 
     { /// Phase 2
@@ -136,13 +137,12 @@ void Memory::jsonToEvent(const QJsonObject &jsonObject, Event *const event) cons
         this->jsonToTeams(phase["teams"].toArray(), event);
         this->jsonToMatches(phase["matches"].toArray(), event);
         event->setDate(phase["date"].toString(), Event::Phase::Second);
+        event->setPlace(phase["place"].toString(), Event::Phase::Second);
     }
 
     event->setPhase( static_cast<Event::Phase>( jsonObject["phase"].toInt() ) );
     event->setName( jsonObject["name"].toString() );
     event->setCompetitionOrganizer( jsonObject["competition organizer"].toString() );
-    event->setFirstPhasePlace( jsonObject["first phase place"].toString() );
-    event->setSecondPhasePlace( jsonObject["second phase place"].toString() );
     QJsonArray jsonJudges = jsonObject["judges"].toArray();
     QStringList judges;
     for(auto jJudge : jsonJudges)
@@ -300,6 +300,7 @@ void Memory::eventToJson(Event *const event, QJsonObject &jsonObject) const
         phase["matches"] = jMatches;
 
         phase["date"] = event->getDate(Event::Phase::First);
+        phase["place"] = event->getPlace(Event::Phase::First);
 
         jsonObject["first phase data"] = phase;
     }
@@ -316,6 +317,7 @@ void Memory::eventToJson(Event *const event, QJsonObject &jsonObject) const
         phase["matches"] = jMatches;
 
         phase["date"] = event->getDate(Event::Phase::Second);
+        phase["place"] = event->getPlace(Event::Phase::Second);
 
         jsonObject["second phase data"] = phase;
     }
@@ -323,8 +325,6 @@ void Memory::eventToJson(Event *const event, QJsonObject &jsonObject) const
     /// move following to the phases
     jsonObject["name"] = event->getName();
     jsonObject["competition organizer"] = event->getCompetitionOrganizer();
-    jsonObject["place phase 1"] = event->getFirstPhasePlace();
-    jsonObject["place phase 2"] = event->getSecondPhasePlace();
     QJsonArray judges;
     for(const QString &judge : event->getJudges())
         judges.append(judge);

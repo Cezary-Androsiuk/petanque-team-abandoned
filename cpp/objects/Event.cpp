@@ -797,14 +797,11 @@ const QString &Event::getCompetitionOrganizer() const
     return m_competitionOrganizer;
 }
 
-const QString &Event::getFirstPhasePlace() const
+const QString &Event::getPlace(int phase) const
 {
-    return m_firstPhasePlace;
-}
-
-const QString &Event::getSecondPhasePlace() const
-{
-    return m_secondPhasePlace;
+    if(phase != Phase::First && phase != Phase::Second)
+        return m_place[m_phase];
+    return m_place[phase];
 }
 
 const QStringList &Event::getJudges() const
@@ -885,20 +882,18 @@ void Event::setCompetitionOrganizer(const QString &competitionOrganizer)
     emit competitionOrganizerChanged();
 }
 
-void Event::setFirstPhasePlace(const QString &firstPhasePlace)
+void Event::setPlace(const QString &place, int phase)
 {
-    if (m_firstPhasePlace == firstPhasePlace)
-        return;
-    m_firstPhasePlace = firstPhasePlace;
-    emit firstPhasePlaceChanged();
-}
+    QString *pm_place;
+    if(phase != Phase::First && phase != Phase::Second)
+        pm_place = &(m_place[m_phase]);
+    else
+        pm_place = &(m_place[phase]);
 
-void Event::setSecondPhasePlace(const QString &secondPhasePlace)
-{
-    if (m_secondPhasePlace == secondPhasePlace)
+    if (*pm_place == place)
         return;
-    m_secondPhasePlace = secondPhasePlace;
-    emit secondPhasePlaceChanged();
+    *pm_place = place;
+    emit placeChanged();
 }
 
 void Event::setJudges(const QStringList &judges)

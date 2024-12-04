@@ -13,17 +13,16 @@
 class Event : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(TeamList teams       READ getTeams                               NOTIFY teamsChanged             FINAL)
-    Q_PROPERTY(Team* detachedTeam   READ getDetachedTeam                        NOTIFY detachedTeamChanged      FINAL)
+    Q_PROPERTY(TeamList teams       READ getTeams                           NOTIFY teamsChanged             FINAL)
+    Q_PROPERTY(Team* detachedTeam   READ getDetachedTeam                    NOTIFY detachedTeamChanged      FINAL)
 
-    Q_PROPERTY(Phase phase                  READ getPhase                       WRITE setPhase                  NOTIFY phaseChanged                 FINAL)
-    Q_PROPERTY(QString name                 READ getName                        WRITE setName                   NOTIFY nameChanged                  FINAL)
-    Q_PROPERTY(QString date       READ getDate              WRITE setDate         NOTIFY dateChanged        FINAL)
-    Q_PROPERTY(QString competitionOrganizer READ getCompetitionOrganizer        WRITE setCompetitionOrganizer   NOTIFY competitionOrganizerChanged  FINAL)
-    Q_PROPERTY(QString firstPhasePlace      READ getFirstPhasePlace             WRITE setFirstPhasePlace        NOTIFY firstPhasePlaceChanged       FINAL)
-    Q_PROPERTY(QString secondPhasePlace     READ getSecondPhasePlace            WRITE setSecondPhasePlace       NOTIFY secondPhasePlaceChanged      FINAL)
-    Q_PROPERTY(QStringList judges           READ getJudges                      WRITE setJudges                 NOTIFY judgesChanged                FINAL)
-    Q_PROPERTY(QString unionDelegate        READ getUnionDelegate               WRITE setUnionDelegate          NOTIFY unionDelegateChanged         FINAL)
+    Q_PROPERTY(Phase phase                  READ getPhase                   WRITE setPhase                  NOTIFY phaseChanged                 FINAL)
+    Q_PROPERTY(QString name                 READ getName                    WRITE setName                   NOTIFY nameChanged                  FINAL)
+    Q_PROPERTY(QString date                 READ getDate                    WRITE setDate                   NOTIFY dateChanged                  FINAL)
+    Q_PROPERTY(QString competitionOrganizer READ getCompetitionOrganizer    WRITE setCompetitionOrganizer   NOTIFY competitionOrganizerChanged  FINAL)
+    Q_PROPERTY(QString place                READ getPlace                   WRITE setPlace                  NOTIFY placeChanged                 FINAL)
+    Q_PROPERTY(QStringList judges           READ getJudges                  WRITE setJudges                 NOTIFY judgesChanged                FINAL)
+    Q_PROPERTY(QString unionDelegate        READ getUnionDelegate           WRITE setUnionDelegate          NOTIFY unionDelegateChanged         FINAL)
 
     Q_PROPERTY(Stage stage              READ getStage                               NOTIFY stageChanged             FINAL)
     Q_PROPERTY(int round                READ getRound           WRITE setRound      NOTIFY roundChanged             FINAL)
@@ -123,8 +122,7 @@ public:
     const QString &getName() const;
     const QString &getDate(int phase = -1) const;
     const QString &getCompetitionOrganizer() const;
-    const QString &getFirstPhasePlace() const;
-    const QString &getSecondPhasePlace() const;
+    const QString &getPlace(int phase = -1) const;
     const QStringList &getJudges() const;
     const QString &getUnionDelegate() const;
 
@@ -139,8 +137,7 @@ public:
     void setName(const QString &name);
     void setDate(const QString &date, int phase = -1);
     void setCompetitionOrganizer(const QString &competitionOrganizer);
-    void setFirstPhasePlace(const QString &firstPhasePlace);
-    void setSecondPhasePlace(const QString &secondPhasePlace);
+    void setPlace(const QString &place, int phase = -1);
     void setJudges(const QStringList &judges);
     void setUnionDelegate(const QString &unionDelegate);
 
@@ -161,8 +158,7 @@ signals:
     void nameChanged();
     void dateChanged();
     void competitionOrganizerChanged();
-    void firstPhasePlaceChanged();
-    void secondPhasePlaceChanged();
+    void placeChanged();
     void judgesChanged();
     void unionDelegateChanged();
 
@@ -180,8 +176,7 @@ private:
     QString m_name;
     QString m_date[2];
     QString m_competitionOrganizer;
-    QString m_firstPhasePlace;
-    QString m_secondPhasePlace;
+    QString m_place[2];
     QStringList m_judges;
     QString m_unionDelegate;
 
