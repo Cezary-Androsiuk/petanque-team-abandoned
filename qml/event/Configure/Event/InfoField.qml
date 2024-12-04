@@ -17,14 +17,14 @@ Item {
         width: 230
 
         placeholderText: qsTr("Event name")
-        // text: (!event)?null: event.name
+        text: (!event)?null: event.name
         onTextEdited: {
             event.name = text
         }
     }
 
     TextField{
-        id: firstPhaseDateTextField
+        id: dateTextField
         anchors{
             top: eventNameTextField.bottom
             topMargin: 10
@@ -33,16 +33,17 @@ Item {
         width: 230
 
         placeholderText: qsTr("First phase date (YYYY-MM-DD)")
+        text: (!event)?null: event.date
         onTextEdited: {
             event.date = text
         }
     }
     Button{
-        id: setTodayFirstPhaseDateButton
+        id: setTodayDateButton
         anchors{
-            left: firstPhaseDateTextField.right
-            top: firstPhaseDateTextField.top
-            bottom: firstPhaseDateTextField.bottom
+            left: dateTextField.right
+            top: dateTextField.top
+            bottom: dateTextField.bottom
             leftMargin: 10
         }
         text: qsTr("Todays Date")
@@ -50,60 +51,29 @@ Item {
             var now = new Date();
             var todaysDate = now.toISOString().slice(0, 10); // Gemini
 
-            firstPhaseDateTextField.text = todaysDate;
+            dateTextField.text = todaysDate;
             event.date = todaysDate
         }
     }
 
-    // TextField{
-    //     id: secondPhaseDateTextField
-    //     anchors{
-    //         top: firstPhaseDateTextField.bottom
-    //         topMargin: 10
-    //     }
-    //     height: 60
-    //     width: 230
-
-    //     placeholderText: qsTr("Second phase date (YYYY-MM-DD)")
-    //     onTextEdited: {
-    //         event.secondPhaseDate = text
-    //     }
-    // }
-    // Button{
-    //     id: setTodaySecondPhaseDateButton
-    //     anchors{
-    //         left: secondPhaseDateTextField.right
-    //         top: secondPhaseDateTextField.top
-    //         bottom: secondPhaseDateTextField.bottom
-    //         leftMargin: 10
-    //     }
-    //     text: qsTr("Todays Date")
-    //     onClicked: {
-    //         var now = new Date();
-    //         var todaysDate = now.toISOString().slice(0, 10); // Gemini
-
-    //         secondPhaseDateTextField.text = todaysDate;
-    //         event.secondPhaseDate = todaysDate
-    //     }
-    // }
-
     TextField{
         id: competitionOrganizerTextField
         anchors{
-            top: firstPhaseDateTextField.bottom
+            top: dateTextField.bottom
             topMargin: 10
         }
         height: 60
         width: 230
 
         placeholderText: qsTr("Competition Organizer")
+        text: (!event)?null: event.competitionOrganizer
         onTextEdited: {
             event.competitionOrganizer = text
         }
     }
 
     TextField{
-        id: firstPhasePlaceTextField
+        id: placeTextField
         anchors{
             top: competitionOrganizerTextField.bottom
             topMargin: 10
@@ -112,30 +82,16 @@ Item {
         width: 230
 
         placeholderText: qsTr("First phase place")
+        text: (!event)?null: event.place
         onTextEdited: {
-            event.firstPhasePlace = text
-        }
-    }
-
-    TextField{
-        id: secondPhasePlaceTextField
-        anchors{
-            top: firstPhasePlaceTextField.bottom
-            topMargin: 10
-        }
-        height: 60
-        width: 230
-
-        placeholderText: qsTr("Second phase place")
-        onTextEdited: {
-            event.secondPhasePlace = text
+            event.place = text
         }
     }
 
     Item{
         id: judgesItem
         anchors{
-            top: secondPhasePlaceTextField.bottom
+            top: placeTextField.bottom
             topMargin: 10
         }
         height: ((!event)?1: (event.judges.length+1)) * judgesItem.judgeHeight
@@ -220,6 +176,7 @@ Item {
         width: 230
 
         placeholderText: qsTr("Union delegate")
+        text: (!event)?null: event.unionDelegate
         onTextEdited: {
             event.unionDelegate = text
         }

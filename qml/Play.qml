@@ -28,6 +28,10 @@ Item {
         }
     }
 
+    Component.onDestruction: {
+        Memory.save();
+    }
+
     // BusyIndicator{
     //     anchors.centerIn: parent
     //     running: loaderSource === ""

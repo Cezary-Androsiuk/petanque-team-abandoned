@@ -15,10 +15,6 @@ Item {
         Backend.event.createMatchIfNotExist();
     }
 
-    Component.onDestruction: {
-        Memory.save();
-    }
-
     Connections{
         target: Backend.event
         function onRoundChanged(){
