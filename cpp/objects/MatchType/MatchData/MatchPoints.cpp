@@ -9,6 +9,24 @@ MatchPoints::MatchPoints(uint groupsCount, QObject *parent)
 
 bool MatchPoints::isDataValid(QString *message) const
 {
+    constexpr int maxPoints = 13;
+
+    /// check if each group have up to maxPoints
+    for(int i=0; i<m_points.size(); i++)
+    {
+        if(m_points[i] > maxPoints)
+        {
+            QString _message = QAPF_T(
+                "group %d, have %d points, but none should have more than %d",
+                i+1, m_points[i], maxPoints);
+            I(_message);
+
+            if(message != nullptr)
+                *message = _message;
+            return false;
+        }
+    }
+
     return true;
 }
 

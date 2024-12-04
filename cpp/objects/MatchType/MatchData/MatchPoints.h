@@ -38,7 +38,6 @@ signals:
     void usedPlayersInGroupsChanged();
 
 private:
-
     const uint m_groupsCount;
     IntVector m_points; // [groupsCount]
     GroupsOfPlayersLists m_usedPlayersInGroups;// [groupsCount]
