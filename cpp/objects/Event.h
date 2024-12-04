@@ -18,8 +18,7 @@ class Event : public QObject
 
     Q_PROPERTY(Phase phase                  READ getPhase                       WRITE setPhase                  NOTIFY phaseChanged                 FINAL)
     Q_PROPERTY(QString name                 READ getName                        WRITE setName                   NOTIFY nameChanged                  FINAL)
-    Q_PROPERTY(QString firstPhaseDate       READ getFirstPhaseDate              WRITE setFirstPhaseDate         NOTIFY firstPhaseDateChanged        FINAL)
-    Q_PROPERTY(QString secondPhaseDate      READ getSecondPhaseDate             WRITE setSecondPhaseDate        NOTIFY secondPhaseDateChanged       FINAL)
+    Q_PROPERTY(QString date       READ getDate              WRITE setDate         NOTIFY dateChanged        FINAL)
     Q_PROPERTY(QString competitionOrganizer READ getCompetitionOrganizer        WRITE setCompetitionOrganizer   NOTIFY competitionOrganizerChanged  FINAL)
     Q_PROPERTY(QString firstPhasePlace      READ getFirstPhasePlace             WRITE setFirstPhasePlace        NOTIFY firstPhasePlaceChanged       FINAL)
     Q_PROPERTY(QString secondPhasePlace     READ getSecondPhasePlace            WRITE setSecondPhasePlace       NOTIFY secondPhasePlaceChanged      FINAL)
@@ -38,6 +37,7 @@ public:
     explicit Event(QObject *parent = nullptr);
     ~Event();
     void clearTeams();
+    void clearMatches();
     void clearEvent();
 
     enum Phase{
@@ -104,6 +104,7 @@ signals:
     void currentRoundStageVerificationFailed(QString message);
 
     void secondPhaseStarted();
+    void newEventStarted();
 
 private:
     void validateConfigureFirstPhaseData();
@@ -120,8 +121,7 @@ public:
 
     Phase getPhase() const;
     const QString &getName() const;
-    const QString &getFirstPhaseDate() const;
-    const QString &getSecondPhaseDate() const;
+    const QString &getDate(int phase = -1) const;
     const QString &getCompetitionOrganizer() const;
     const QString &getFirstPhasePlace() const;
     const QString &getSecondPhasePlace() const;
@@ -137,8 +137,7 @@ public:
 
     void setPhase(Phase phase);
     void setName(const QString &name);
-    void setFirstPhaseDate(const QString &firstPhaseDate);
-    void setSecondPhaseDate(const QString &secondPhaseDate);
+    void setDate(const QString &date, int phase = -1);
     void setCompetitionOrganizer(const QString &competitionOrganizer);
     void setFirstPhasePlace(const QString &firstPhasePlace);
     void setSecondPhasePlace(const QString &secondPhasePlace);
@@ -160,8 +159,7 @@ signals:
 
     void phaseChanged();
     void nameChanged();
-    void firstPhaseDateChanged();
-    void secondPhaseDateChanged();
+    void dateChanged();
     void competitionOrganizerChanged();
     void firstPhasePlaceChanged();
     void secondPhasePlaceChanged();
@@ -180,8 +178,7 @@ private:
 
     Phase m_phase;
     QString m_name;
-    QString m_firstPhaseDate;
-    QString m_secondPhaseDate;
+    QString m_date[2];
     QString m_competitionOrganizer;
     QString m_firstPhasePlace;
     QString m_secondPhasePlace;

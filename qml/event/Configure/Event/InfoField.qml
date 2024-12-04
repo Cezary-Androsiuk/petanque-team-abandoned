@@ -34,7 +34,7 @@ Item {
 
         placeholderText: qsTr("First phase date (YYYY-MM-DD)")
         onTextEdited: {
-            event.firstPhaseDate = text
+            event.date = text
         }
     }
     Button{
@@ -51,46 +51,46 @@ Item {
             var todaysDate = now.toISOString().slice(0, 10); // Gemini
 
             firstPhaseDateTextField.text = todaysDate;
-            event.firstPhaseDate = todaysDate
+            event.date = todaysDate
         }
     }
 
-    TextField{
-        id: secondPhaseDateTextField
-        anchors{
-            top: firstPhaseDateTextField.bottom
-            topMargin: 10
-        }
-        height: 60
-        width: 230
+    // TextField{
+    //     id: secondPhaseDateTextField
+    //     anchors{
+    //         top: firstPhaseDateTextField.bottom
+    //         topMargin: 10
+    //     }
+    //     height: 60
+    //     width: 230
 
-        placeholderText: qsTr("Second phase date (YYYY-MM-DD)")
-        onTextEdited: {
-            event.secondPhaseDate = text
-        }
-    }
-    Button{
-        id: setTodaySecondPhaseDateButton
-        anchors{
-            left: secondPhaseDateTextField.right
-            top: secondPhaseDateTextField.top
-            bottom: secondPhaseDateTextField.bottom
-            leftMargin: 10
-        }
-        text: qsTr("Todays Date")
-        onClicked: {
-            var now = new Date();
-            var todaysDate = now.toISOString().slice(0, 10); // Gemini
+    //     placeholderText: qsTr("Second phase date (YYYY-MM-DD)")
+    //     onTextEdited: {
+    //         event.secondPhaseDate = text
+    //     }
+    // }
+    // Button{
+    //     id: setTodaySecondPhaseDateButton
+    //     anchors{
+    //         left: secondPhaseDateTextField.right
+    //         top: secondPhaseDateTextField.top
+    //         bottom: secondPhaseDateTextField.bottom
+    //         leftMargin: 10
+    //     }
+    //     text: qsTr("Todays Date")
+    //     onClicked: {
+    //         var now = new Date();
+    //         var todaysDate = now.toISOString().slice(0, 10); // Gemini
 
-            secondPhaseDateTextField.text = todaysDate;
-            event.secondPhaseDate = todaysDate
-        }
-    }
+    //         secondPhaseDateTextField.text = todaysDate;
+    //         event.secondPhaseDate = todaysDate
+    //     }
+    // }
 
     TextField{
         id: competitionOrganizerTextField
         anchors{
-            top: setTodaySecondPhaseDateButton.bottom
+            top: firstPhaseDateTextField.bottom
             topMargin: 10
         }
         height: 60

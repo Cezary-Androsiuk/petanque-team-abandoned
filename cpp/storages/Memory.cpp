@@ -127,6 +127,7 @@ void Memory::jsonToEvent(const QJsonObject &jsonObject, Event *const event) cons
         QJsonObject phase = jsonObject["first phase data"].toObject();
         this->jsonToTeams(phase["teams"].toArray(), event);
         this->jsonToMatches(phase["matches"].toArray(), event);
+        event->setDate(phase["date"].toString(), Event::Phase::First);
     }
 
     { /// Phase 2
@@ -134,12 +135,11 @@ void Memory::jsonToEvent(const QJsonObject &jsonObject, Event *const event) cons
         QJsonObject phase = jsonObject["second phase data"].toObject();
         this->jsonToTeams(phase["teams"].toArray(), event);
         this->jsonToMatches(phase["matches"].toArray(), event);
+        event->setDate(phase["date"].toString(), Event::Phase::Second);
     }
 
     event->setPhase( static_cast<Event::Phase>( jsonObject["phase"].toInt() ) );
     event->setName( jsonObject["name"].toString() );
-    event->setFirstPhaseDate( jsonObject["first phhase date"].toString() );
-    event->setSecondPhaseDate( jsonObject["second phase date"].toString() );
     event->setCompetitionOrganizer( jsonObject["competition organizer"].toString() );
     event->setFirstPhasePlace( jsonObject["first phase place"].toString() );
     event->setSecondPhasePlace( jsonObject["second phase place"].toString() );
@@ -299,6 +299,8 @@ void Memory::eventToJson(Event *const event, QJsonObject &jsonObject) const
         this->matchesToJson(event->getMatchesP1(), jMatches);
         phase["matches"] = jMatches;
 
+        phase["date"] = event->getDate(Event::Phase::First);
+
         jsonObject["first phase data"] = phase;
     }
 
@@ -313,13 +315,13 @@ void Memory::eventToJson(Event *const event, QJsonObject &jsonObject) const
         this->matchesToJson(event->getMatchesP2(), jMatches);
         phase["matches"] = jMatches;
 
+        phase["date"] = event->getDate(Event::Phase::Second);
+
         jsonObject["second phase data"] = phase;
     }
 
     /// move following to the phases
     jsonObject["name"] = event->getName();
-    jsonObject["date phase 1"] = event->getFirstPhaseDate();
-    jsonObject["date phase 2"] = event->getSecondPhaseDate();
     jsonObject["competition organizer"] = event->getCompetitionOrganizer();
     jsonObject["place phase 1"] = event->getFirstPhasePlace();
     jsonObject["place phase 2"] = event->getSecondPhasePlace();

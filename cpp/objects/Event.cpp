@@ -28,10 +28,26 @@ void Event::clearTeams()
     emit this->teamsChanged();
 }
 
+void Event::clearMatches()
+{
+    for(Match *match : m_matches[Phase::First])
+        delete match;
+    m_matches[Phase::First].clear();
+
+    for(Match *match : m_matches[Phase::Second])
+        delete match;
+    m_matches[Phase::Second].clear();
+
+    emit this->matchesChanged();
+}
+
 void Event::clearEvent()
 {
     this->clearTeams();
+    this->clearMatches();
     this->setPhase(Event::Phase::First);
+    this->setName("");
+
 }
 
 void Event::validateConfigureData()
@@ -769,14 +785,11 @@ const QString &Event::getName() const
     return m_name;
 }
 
-const QString &Event::getFirstPhaseDate() const
+const QString &Event::getDate(int phase) const
 {
-    return m_firstPhaseDate;
-}
-
-const QString &Event::getSecondPhaseDate() const
-{
-    return m_secondPhaseDate;
+    if(phase != Phase::First && phase != Phase::Second)
+        return m_date[m_phase];
+    return m_date[phase];
 }
 
 const QString &Event::getCompetitionOrganizer() const
@@ -850,20 +863,18 @@ void Event::setName(const QString &name)
     emit nameChanged();
 }
 
-void Event::setFirstPhaseDate(const QString &firstPhaseDate)
+void Event::setDate(const QString &date, int phase)
 {
-    if (m_firstPhaseDate == firstPhaseDate)
-        return;
-    m_firstPhaseDate = firstPhaseDate;
-    emit firstPhaseDateChanged();
-}
+    QString *pm_date;
+    if(phase != Phase::First && phase != Phase::Second)
+        pm_date = &(m_date[m_phase]);
+    else
+        pm_date = &(m_date[phase]);
 
-void Event::setSecondPhaseDate(const QString &secondPhaseDate)
-{
-    if (m_secondPhaseDate == secondPhaseDate)
+    if (*pm_date == date)
         return;
-    m_secondPhaseDate = secondPhaseDate;
-    emit secondPhaseDateChanged();
+    *pm_date = date;
+    emit dateChanged();
 }
 
 void Event::setCompetitionOrganizer(const QString &competitionOrganizer)

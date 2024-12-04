@@ -7,19 +7,33 @@ Item {
 
     readonly property var event: Backend.event
 
+    readonly property bool isFirstPhase: (Backend.event.phase+1) == 1
+
     property int headerHeight: 70
     property int footerHeight: 70
 
     function startSecondPhase(){
         log.i("startSecondPhase")
         // confirm popup
-        onConfirmed()
+        onConfirmed1()
+    }
+
+    function startNewEvent(){
+        log.i("startNewEvent")
+        // confirm popup
+        onConfirmed2()
     }
 
     /////////////////// startSecondPhase
-    function onConfirmed(){
-        log.i("onConfirmed")
+    function onConfirmed1(){
+        log.i("onConfirmed1")
         Backend.event.startSecondPhase();
+        Memory.save();
+    }
+
+    function onConfirmed2(){
+        log.i("onConfirmed2")
+        Backend.event.startNewEvent();
         Memory.save();
     }
 
@@ -30,6 +44,10 @@ Item {
             Backend.event.goToConfigureStage(); // changes stage from Finish back to Configure (but with second phase)
             Backend.event.goToFirstRoundStage();
             Memory.save();
+        }
+        function onNewEventStarted(){
+            log.i("onNewEventStarted")
+
         }
     }
 
@@ -82,9 +100,17 @@ Item {
                 rightMargin: 30
                 verticalCenter: parent.verticalCenter
             }
-            text: "Start the second phase"
+            text: {
+                if(finish.isFirstPhase)
+                    "Start the second phase"
+                else
+                    "Start the new event"
+            }
             onClicked: {
-                finish.startSecondPhase();
+                if(finish.isFirstPhase)
+                    finish.startSecondPhase();
+                else
+                    finish.startNewEvent();
             }
         }
     }
