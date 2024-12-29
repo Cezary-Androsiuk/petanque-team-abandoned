@@ -1,8 +1,8 @@
 # PetanqueTeam - abandoned
 
-## New Project - [PetanqueTeam](https://github.com/Cezary-Androsiuk/petanque-team)
+### New Project - [PetanqueTeam](https://github.com/Cezary-Androsiuk/petanque-team)
 
-## Images
+### Images
 ![](https://github.com/Cezary-Androsiuk/petanque-team-abandoned/blob/master/images/0010.png "")
 ![](https://github.com/Cezary-Androsiuk/petanque-team-abandoned/blob/master/images/0020.png "")
 ![](https://github.com/Cezary-Androsiuk/petanque-team-abandoned/blob/master/images/0030.png "")
